@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>0x isometric engine</title>
+  <style>
+    html {
+      color: white;
+      font-size: 10px;
+      font-family: arial, sans;
+    }
+    body {
+      text-align: center;
+      background-color: #2E3436;
+    }
+    canvas {
+      border: 1px solid #4C5153;
+    }
+    a {
+      color: white;
+    }
+    section.panel {
+      text-align: left;
+      border: 1px solid #4C5153;
+      background-color: #2E3436;
+      padding: 1rem;
+      position: absolute;
+      opacity: 0.5;
+      -webkit-transition: opacity 0.2s;
+      -moz-transition:    opacity 0.2s;
+      -o-transition:      opacity 0.2s;
+      transition:         opacity 0.2s;
+    }
+    section.panel:hover {
+      opacity: 1;
+    }
+    section.panel h2 {
+      font-size: 1.8rem;
+      padding: 0;
+      padding-bottom: 0.5rem;
+      margin: 0;
+      border-bottom: 1px solid #4C5153;
+    }
+    section.panel pre {
+      margin: 1rem 0;
+    }
+    #viewer {
+      left: 2rem;
+      top: 2rem;
+      font-size: 1.5rem;
+    }
+  </style>
+  <script>
+    'use strict';
+
+    function memoize(f) {
+      var cache = {};
+      return function() {
+        var key = JSON.stringify([].slice.call(arguments, 0));
+        if (!(key in cache))
+          cache[key] = f.apply(this, arguments);
+
+        return cache[key];
+      };
+    }
+
+    Math.sin = memoize(Math.sin);
+    Math.cos = memoize(Math.cos);
+
+    var arc = 2*Math.PI/6;
+    function pointMaker(x, y, size) {
+      return memoize(function getPoint(i) {
+        return {
+          x: (i ? size * Math.cos(arc*(i-2.5)) : 0) + x,
+          y: (i ? size * Math.sin(arc*(i-2.5)) : 0) + y
+        };
+      });
+    }
+
+    function makeCube(x, y, size) {
+      var getPoint = pointMaker(x, y, size);
+
+      ctx.strokeStyle = '#333333';
+
+      // top face
+      ctx.beginPath();
+      ctx.moveTo(getPoint(1).x, getPoint(1).y);
+      ctx.lineTo(getPoint(2).x, getPoint(2).y);
+      ctx.lineTo(getPoint(0).x, getPoint(0).y);
+      ctx.lineTo(getPoint(6).x, getPoint(6).y);
+      ctx.closePath();
+      ctx.fillStyle = '#33393A';
+      ctx.fill();
+      ctx.stroke();
+
+      // rigth face
+      ctx.beginPath();
+      ctx.moveTo(getPoint(2).x, getPoint(2).y);
+      ctx.lineTo(getPoint(3).x, getPoint(3).y);
+      ctx.lineTo(getPoint(4).x, getPoint(4).y);
+      ctx.lineTo(getPoint(0).x, getPoint(0).y);
+      ctx.closePath();
+      ctx.fillStyle = '#485152';
+      ctx.fill();
+      ctx.stroke();
+
+      // left face
+      ctx.beginPath();
+      ctx.moveTo(getPoint(4).x, getPoint(4).y);
+      ctx.lineTo(getPoint(5).x, getPoint(5).y);
+      ctx.lineTo(getPoint(6).x, getPoint(6).y);
+      ctx.lineTo(getPoint(0).x, getPoint(0).y);
+      ctx.closePath();
+      ctx.fillStyle = '#2A2F30';
+      ctx.fill();
+      ctx.stroke();
+    }
+
+    function makeColumn(x, y, height, size) {
+      makeCube(x, y, size);
+      for (var i=0; i<height-1; i++) {
+        y -= size;
+        makeCube(x, y, size);
+      }
+    }
+
+    function makeRow(width, index, y, size) {
+      var stepX = 2 * pointMaker(0, 0, size)(2).x;
+      var start = index%2 ? stepX/2 : 0;
+      for (var x=start, last=stepX*width; x<last; x+=stepX) {
+        var height = Math.floor((Math.random()*3)) + 1;
+        heightMap[index].push(height);
+        makeColumn(x, y, height, size);
+      }
+    }
+
+    var heightMap = [];
+    function makeGrid(width, deep, size) {
+      for (var i=0, y=size/2; i<deep; i++) {
+        heightMap.push([]);
+        y += size/2;
+        makeRow(width, i, y, size);
+      }
+      viewer.querySelector('pre').innerHTML = printMap();
+    }
+
+    function printMap() {
+      var rep = '';
+      for (var r=0, rl=heightMap.length; r<rl; r++) {
+        var row = heightMap[r];
+        rep += (r%2? ' ' : '') + row.join(' ') + '\n';
+      }
+      return rep;
+    }
+
+    var canvas, ctx, viewer;
+    function setup() {
+      canvas = document.getElementById('background');
+      viewer = document.getElementById('viewer');
+      ctx = canvas.getContext('2d');
+    }
+  </script>
+</head>
+<body>
+  <canvas id="background" width="1000" height="650"></canvas>
+  <section id="viewer" class="panel">
+    <h2>Height map</h2>
+    <pre contenteditable>
+    </pre>
+    <a href="#gen">Generate</a>
+  </section>
+  <script>
+    'use strict';
+    setup();
+    makeGrid(10, 12, 50);
+  </script>
+</body>
+</html>
