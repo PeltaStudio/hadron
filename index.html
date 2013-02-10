@@ -68,9 +68,40 @@
     Math.sin = memoize(Math.sin);
     Math.cos = memoize(Math.cos);
 
+    function occluseSelection(i, j) {
+      var w = heightMap[0].length,
+          d = heightMap.length
+      if (selectedTile.i < 0 || selectedTile.j < 0 ||
+          selectedTile.i >= w || selectedTile.j >= d) {
+        return false;
+      }
+
+      var h = pointMaker(i, j, heightMap[j][i])(6).y;
+      var b = pointMaker(selectedTile.i, selectedTile.j,
+                         heightMap[selectedTile.j][selectedTile.i])(0).y;
+      if (h>=b) {
+        return false;
+      }
+
+      if (selectedTile.j % 2) {
+        return j > selectedTile.j && i === selectedTile.i ||
+               j > selectedTile.j && j % 2 === 0 && i === selectedTile.i + 1;
+      } else {
+        return j > selectedTile.j && i === selectedTile.i ||
+               j > selectedTile.j && j % 2 === 1 && i === selectedTile.i - 1;
+      }
+    }
+
     var arc = 2*Math.PI/6;
-    function pointMaker(x, y, side, height) {
-      height = height || 0;
+    function pointMaker(i, j, h) {
+      h = h || 0;
+      var x = i ? i * tileInfo.step.x : 0,
+          y = j ? j * tileInfo.step.y : 0,
+          even = !(j % 2),
+          side = tileInfo.side;
+      if (!even) {
+        x += tileInfo.step.x / 2;
+      }
       return memoize(function getPoint(i) {
         switch (i) {
           case 0:
@@ -85,7 +116,7 @@
           case 4:
             return {
               x: side * Math.cos(arc*(i+1.5)) + x,
-              y: side * Math.sin(arc*(i+1.5)) + y - height
+              y: side * Math.sin(arc*(i+1.5)) + y - h
             };
           case 5:
             return {
@@ -93,16 +124,16 @@
               y: side * Math.sin(arc*(-0.5)) + y
             };
           case 6:
-            return { x: x, y: y-height };
+            return { x: x, y: y-h };
         }
       });
     }
 
-    function makeCube(x, y, side, height, xi, yi, sx, sy) {
-      var getPoint = pointMaker(x, y, side, height);
+    function makeCube(i, j, h) {
+      var getPoint = pointMaker(i, j, h);
 
       ctx.save();
-      ctx.strokeStyle = (xi === selectedTile.x && yi === selectedTile.y) ?
+      ctx.strokeStyle = (i === selectedTile.i && j === selectedTile.j) ?
                         'red' : 'black';
 
       // top face
@@ -113,7 +144,8 @@
       ctx.lineTo(getPoint(2).x, getPoint(2).y);
       ctx.closePath();
       ctx.fillStyle = '#33393A';
-      ctx.fill();
+      !occluseSelection(i, j) && ctx.fill();
+      occluseSelection(i, j) && (ctx.strokeStyle = 'rgba(0, 0, 0, 0.5)');
       ctx.stroke();
 
       // rigth face
@@ -124,7 +156,8 @@
       ctx.lineTo(getPoint(6).x, getPoint(6).y);
       ctx.closePath();
       ctx.fillStyle = '#485152';
-      ctx.fill();
+      !occluseSelection(i, j) && ctx.fill();
+      occluseSelection(i, j) && (ctx.strokeStyle = 'rgba(0, 0, 0, 0.5)');
       ctx.stroke();
 
       // left face
@@ -135,26 +168,21 @@
       ctx.lineTo(getPoint(6).x, getPoint(6).y);
       ctx.closePath();
       ctx.fillStyle = '#2A2F30';
-      ctx.fill();
+      !occluseSelection(i, j) && ctx.fill();
+      occluseSelection(i, j) && (ctx.strokeStyle = 'rgba(0, 0, 0, 0.5)');
       ctx.stroke();
     }
 
-    function makeColumn(x, y, side, height, xi, yi) {
-      makeCube(x, y, side, height, xi, yi);
-    }
-
-    function makeRow(index, y, side) {
-      var stepX = tileInfo.step.x;
-      var start = index%2 ? stepX/2 : 0;
-      for (var j=0, x=start; j<heightMap[index].length; j++, x+=stepX) {
-        var h = heightMap[index][j];
-        makeColumn(x, y, side, h, j, index);
+    function makeRow(j) {
+      for (var i=0; i<heightMap[j].length; i++) {
+        var h = heightMap[j][i];
+        makeCube(i, j, h);
       }
     }
 
     function makeGrid() {
-      for (var i=0, y=0; i<heightMap.length; i++, y += tileInfo.side/2) {
-        makeRow(i, y, tileInfo.side);
+      for (var j=0; j<heightMap.length; j++) {
+        makeRow(j);
       }
     }
 
@@ -215,10 +243,10 @@
     }
 
     function getOrigin(gridPoint) {
-      var even = !(gridPoint.y % 2);
+      var even = !(gridPoint.j % 2);
       return {
-        x: (gridPoint.x + 0.5) * tileInfo.step.x,
-        y: (gridPoint.y + (even ? 1 : 0)) * tileInfo.step.y
+        x: (gridPoint.i + 0.5) * tileInfo.step.x,
+        y: (gridPoint.j + (even ? 1 : 0)) * tileInfo.step.y
       };
     }
 
@@ -228,35 +256,32 @@
 
     var ANGLE_30 = Math.PI/6;
     var ANGLE_150 = 5*ANGLE_30; 
-    function fixTile(pos, o, gridPoint) {
-      var even = !(gridPoint.y % 2);
+    function getFixing(pos, o, gridPoint) {
+      var even = !(gridPoint.j % 2);
       var v = {
         x: pos.x - o.x,
         y: pos.y - o.y
       };
       var angle = Math.acos(v.x/mod(v));
-      var fix = { x: 0, y: 0 };
+      var fixing = { i: 0, j: 0 };
       if (even) {
         if (0 <= angle && angle < ANGLE_30) {
-          fix.x = 1; fix.y = 2;
+          fixing.i = 1; fixing.j = 2;
         } else if (angle < ANGLE_150) {
-          fix.y = 1;
+          fixing.j = 1;
         } else {
-          fix.y = 2;
+          fixing.j = 2;
         }
       } else {
         if (0 <= angle && angle < ANGLE_30) {
-          fix.x = fix.y = 1;
+          fixing.i = 1; fixing.j = 1;
         } else if (angle < ANGLE_150) {
-          fix.y = 2;
+          fixing.j = 2;
         } else {
-          fix.y = 1;
+          fixing.j = 1;
         }
       }
-      return {
-        x: gridPoint.x + fix.x,
-        y: gridPoint.y + fix.y
-      };
+      return fixing;
     }
 
     function getCanvasPoint(evt) {
@@ -270,23 +295,26 @@
     function getTile(canvas, evt) {
       var c = getCanvasPoint(evt);
       var gridPoint = {
-        x: Math.floor(c.x/tileInfo.step.x),
-        y: Math.floor(c.y/tileInfo.step.y)
+        i: Math.floor(c.x/tileInfo.step.x),
+        j: Math.floor(c.y/tileInfo.step.y)
       }
       var o = getOrigin(gridPoint);
-      return fixTile(c, o, gridPoint);
+      var fixing = getFixing(c, o, gridPoint);
+      return {
+        i: gridPoint.i + fixing.i,
+        j: gridPoint.j + fixing.j
+      }
     }
 
     var selectedTile = { x: 0, y: 0 };
     function onMove(evt) {
       var tile = getTile(canvas, evt);
-      console.log(tile);
       if (!extrude.enabled) {
         selectedTile = tile;
       } else {
         var c = getCanvasPoint(evt);
         var h = Math.max(0, extrude.y - c.y);
-        heightMap[selectedTile.y][selectedTile.x] = h;
+        heightMap[selectedTile.j][selectedTile.i] = h;
       }
       cls();
       render();
