@@ -14,6 +14,7 @@
     }
     canvas {
       border: 1px solid #4C5153;
+      cursor: crosshair;
     }
     a {
       color: white;
@@ -39,6 +40,7 @@
       padding-bottom: 0.5rem;
       margin: 0;
       border-bottom: 1px solid #4C5153;
+      cursor: move;
     }
     section.panel pre {
       margin: 1rem 0;
@@ -67,26 +69,48 @@
     Math.cos = memoize(Math.cos);
 
     var arc = 2*Math.PI/6;
-    function pointMaker(x, y, size) {
+    function pointMaker(x, y, side, height) {
+      height = height || 0;
       return memoize(function getPoint(i) {
-        return {
-          x: (i ? size * Math.cos(arc*(i-2.5)) : 0) + x,
-          y: (i ? size * Math.sin(arc*(i-2.5)) : 0) + y
-        };
+        switch (i) {
+          case 0:
+            return { x: x, y: y };
+          case 1:
+            return {
+              x: side * Math.cos(arc*(3.5)) + x,
+              y: side * Math.sin(arc*(3.5)) + y
+            };
+          case 2:
+          case 3:
+          case 4:
+            return {
+              x: side * Math.cos(arc*(i+1.5)) + x,
+              y: side * Math.sin(arc*(i+1.5)) + y - height
+            };
+          case 5:
+            return {
+              x: side * Math.cos(arc*(-0.5)) + x,
+              y: side * Math.sin(arc*(-0.5)) + y
+            };
+          case 6:
+            return { x: x, y: y-height };
+        }
       });
     }
 
-    function makeCube(x, y, size) {
-      var getPoint = pointMaker(x, y, size);
+    function makeCube(x, y, side, height, xi, yi, sx, sy) {
+      var getPoint = pointMaker(x, y, side, height);
 
-      ctx.strokeStyle = '#333333';
+      ctx.save();
+      ctx.strokeStyle = (xi === selectedTile.x && yi === selectedTile.y) ?
+                        'red' : 'black';
 
       // top face
       ctx.beginPath();
-      ctx.moveTo(getPoint(1).x, getPoint(1).y);
-      ctx.lineTo(getPoint(2).x, getPoint(2).y);
-      ctx.lineTo(getPoint(0).x, getPoint(0).y);
+      ctx.moveTo(getPoint(3).x, getPoint(3).y);
+      ctx.lineTo(getPoint(4).x, getPoint(4).y);
       ctx.lineTo(getPoint(6).x, getPoint(6).y);
+      ctx.lineTo(getPoint(2).x, getPoint(2).y);
       ctx.closePath();
       ctx.fillStyle = '#33393A';
       ctx.fill();
@@ -94,10 +118,10 @@
 
       // rigth face
       ctx.beginPath();
-      ctx.moveTo(getPoint(2).x, getPoint(2).y);
-      ctx.lineTo(getPoint(3).x, getPoint(3).y);
-      ctx.lineTo(getPoint(4).x, getPoint(4).y);
+      ctx.moveTo(getPoint(4).x, getPoint(4).y);
+      ctx.lineTo(getPoint(5).x, getPoint(5).y);
       ctx.lineTo(getPoint(0).x, getPoint(0).y);
+      ctx.lineTo(getPoint(6).x, getPoint(6).y);
       ctx.closePath();
       ctx.fillStyle = '#485152';
       ctx.fill();
@@ -105,73 +129,229 @@
 
       // left face
       ctx.beginPath();
-      ctx.moveTo(getPoint(4).x, getPoint(4).y);
-      ctx.lineTo(getPoint(5).x, getPoint(5).y);
+      ctx.moveTo(getPoint(0).x, getPoint(0).y);
+      ctx.lineTo(getPoint(1).x, getPoint(1).y);
+      ctx.lineTo(getPoint(2).x, getPoint(2).y);
       ctx.lineTo(getPoint(6).x, getPoint(6).y);
-      ctx.lineTo(getPoint(0).x, getPoint(0).y);
       ctx.closePath();
       ctx.fillStyle = '#2A2F30';
       ctx.fill();
       ctx.stroke();
     }
 
-    function makeColumn(x, y, height, size) {
-      makeCube(x, y, size);
-      for (var i=0; i<height-1; i++) {
-        y -= size;
-        makeCube(x, y, size);
+    function makeColumn(x, y, side, height, xi, yi) {
+      makeCube(x, y, side, height, xi, yi);
+    }
+
+    function makeRow(index, y, side) {
+      var stepX = tileInfo.step.x;
+      var start = index%2 ? stepX/2 : 0;
+      for (var j=0, x=start; j<heightMap[index].length; j++, x+=stepX) {
+        var h = heightMap[index][j];
+        makeColumn(x, y, side, h, j, index);
       }
     }
 
-    function makeRow(width, index, y, size) {
-      var stepX = 2 * pointMaker(0, 0, size)(2).x;
-      var start = index%2 ? stepX/2 : 0;
-      for (var x=start, last=stepX*width; x<last; x+=stepX) {
-        var height = Math.floor((Math.random()*3)) + 1;
-        heightMap[index].push(height);
-        makeColumn(x, y, height, size);
+    function makeGrid() {
+      for (var i=0, y=0; i<heightMap.length; i++, y += tileInfo.side/2) {
+        makeRow(i, y, tileInfo.side);
       }
+    }
+
+    var currentPanel, currentOffset;
+    function makeFloatPanels() {
+      var body = document.getElementsByTagName('body')[0];
+      var panels = document.getElementsByClassName('panel');
+      body.addEventListener('mousemove', function(evt) {
+        if (currentPanel) {
+          currentPanel.style.top = evt.clientY - currentOffset.y + 'px';
+          currentPanel.style.left = evt.clientX - currentOffset.x + 'px';
+        }
+      });
+      [].forEach.call(panels, function enablePanel(panel) {
+        var title = panel.getElementsByTagName('h2')[0];
+        var moving = false;
+        title.addEventListener('mousedown', function(evt) {
+          currentPanel = panel;
+          currentOffset = {
+            x: evt.clientX - panel.offsetLeft,
+            y: evt.clientY - panel.offsetTop,
+          };
+        });
+        title.addEventListener('mouseup', function() {
+          currentPanel = null;
+        });
+      });
+    }
+
+    function showCenter() {
+      ctx.save();
+      ctx.strokeStyle = 'red';
+      ctx.beginPath();
+      ctx.moveTo(0, -10);
+      ctx.lineTo(0, 10);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(-10, 0);
+      ctx.lineTo(10, 0);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function cls() {
+      ctx.clearRect(-1000, -1000, 3000, 3000);
+    }
+
+    var canvas, ctx, tileInfo = {};
+    function setup(side) {
+      tileInfo.side = side;
+      tileInfo.step = {
+        x: 2 * pointMaker(0, 0, side)(5).x,
+        y: side / 2
+      };
+      canvas = document.getElementById('background');
+      ctx = canvas.getContext('2d');
+      makeFloatPanels();
+    }
+
+    function getOrigin(gridPoint) {
+      var even = !(gridPoint.y % 2);
+      return {
+        x: (gridPoint.x + 0.5) * tileInfo.step.x,
+        y: (gridPoint.y + (even ? 1 : 0)) * tileInfo.step.y
+      };
+    }
+
+    function mod(v) {
+      return Math.sqrt(v.x*v.x + v.y*v.y);
+    }
+
+    var ANGLE_30 = Math.PI/6;
+    var ANGLE_150 = 5*ANGLE_30; 
+    function fixTile(pos, o, gridPoint) {
+      var even = !(gridPoint.y % 2);
+      var v = {
+        x: pos.x - o.x,
+        y: pos.y - o.y
+      };
+      var angle = Math.acos(v.x/mod(v));
+      var fix = { x: 0, y: 0 };
+      if (even) {
+        if (0 <= angle && angle < ANGLE_30) {
+          fix.x = 1; fix.y = 2;
+        } else if (angle < ANGLE_150) {
+          fix.y = 1;
+        } else {
+          fix.y = 2;
+        }
+      } else {
+        if (0 <= angle && angle < ANGLE_30) {
+          fix.x = fix.y = 1;
+        } else if (angle < ANGLE_150) {
+          fix.y = 2;
+        } else {
+          fix.y = 1;
+        }
+      }
+      return {
+        x: gridPoint.x + fix.x,
+        y: gridPoint.y + fix.y
+      };
+    }
+
+    function getCanvasPoint(evt) {
+      var rect = canvas.getBoundingClientRect();
+      return {
+        x: evt.clientX - rect.left,
+        y: evt.clientY - rect.top - canvas.height/2
+      };
+    }
+
+    function getTile(canvas, evt) {
+      var c = getCanvasPoint(evt);
+      var gridPoint = {
+        x: Math.floor(c.x/tileInfo.step.x),
+        y: Math.floor(c.y/tileInfo.step.y)
+      }
+      var o = getOrigin(gridPoint);
+      return fixTile(c, o, gridPoint);
+    }
+
+    var selectedTile = { x: 0, y: 0 };
+    function onMove(evt) {
+      var tile = getTile(canvas, evt);
+      console.log(tile);
+      if (!extrude.enabled) {
+        selectedTile = tile;
+      } else {
+        var c = getCanvasPoint(evt);
+        var h = Math.max(0, extrude.y - c.y);
+        heightMap[selectedTile.y][selectedTile.x] = h;
+      }
+      cls();
+      render();
+    }
+
+    var extrude = { enabled: false, x: 0, y: 0 };
+    function onMouseDown(evt) {
+      extrude.enabled = true;
+      var rect = canvas.getBoundingClientRect();
+      var c = {
+        x: evt.clientX - rect.left,
+        y: evt.clientY - rect.top - canvas.height/2
+      };
+      extrude.x = c.x;
+      extrude.y = c.y;
+    }
+
+    function onMouseUp(evt) {
+      extrude.enabled = false;
     }
 
     var heightMap = [];
-    function makeGrid(width, deep, size) {
-      for (var i=0, y=size/2; i<deep; i++) {
+    function setupGrid(width, deep) {
+      for (var y = 0; y < deep; y++) {
         heightMap.push([]);
-        y += size/2;
-        makeRow(width, i, y, size);
+        for (var x = 0; x < width; x++) {
+          heightMap[y].push(0);
+        }
       }
-      viewer.querySelector('pre').innerHTML = printMap();
     }
 
-    function printMap() {
-      var rep = '';
-      for (var r=0, rl=heightMap.length; r<rl; r++) {
-        var row = heightMap[r];
-        rep += (r%2? ' ' : '') + row.join(' ') + '\n';
+    function ortoGrid(width, height) {
+      ctx.save();
+      ctx.strokeStyle = 'green';
+      for (var x=0; x<width+1; x++) {
+        ctx.beginPath();
+        ctx.moveTo(x*tileInfo.step.x, -1000);
+        ctx.lineTo(x*tileInfo.step.x, +1000);
+        ctx.stroke();
       }
-      return rep;
-    }
 
-    var canvas, ctx, viewer;
-    function setup() {
-      canvas = document.getElementById('background');
-      viewer = document.getElementById('viewer');
-      ctx = canvas.getContext('2d');
+      for (var y=0; y<height*2; y++) {
+        ctx.beginPath();
+        ctx.moveTo(-1000, y*tileInfo.side/2);
+        ctx.lineTo(+1000, y*tileInfo.side/2);
+        ctx.stroke();
+      }
+      ctx.restore();
     }
   </script>
 </head>
 <body>
-  <canvas id="background" width="1000" height="650"></canvas>
-  <section id="viewer" class="panel">
-    <h2>Height map</h2>
-    <pre contenteditable>
-    </pre>
-    <a href="#gen">Generate</a>
-  </section>
+  <canvas id="background" width="1000" height="650" onmousemove="onMove(event)" onmouseup="onMouseUp(event)" onmousedown="onMouseDown(event)"></canvas>
   <script>
     'use strict';
-    setup();
-    makeGrid(10, 12, 50);
+    setup(50);
+    setupGrid(10, 10);
+    function render() {
+      ctx.setTransform(1, 0, 0, 1, 0, canvas.height/2);
+      makeGrid();
+//      showCenter();
+//      ortoGrid(10, 10);
+    }
+    render();
   </script>
 </body>
 </html>
+
