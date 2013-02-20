@@ -53,27 +53,38 @@
     }
   </style>
   <script>
+    var g = [[0,20,'grass']];
+    var S = [[0,20,'grass'], [20,110,'big-stone']];
+    var r = [[0,0,'river-bed'], [10,10,'river-surface']];
+    var s = [[0,20,'grass'], [20,40,'small-stone']];
+    var p = [[0,140]];
+    var d = [[0,20],[120, 140]];
+    var b = [[0,0,'river-bed'], [10,10,'river-surface'], [55,70,'bridge-left']];
+    var B = [[0,0,'river-bed'], [10,10,'river-surface'], [55,70,'bridge-right']];
+    var c = [[0,20]];
+    var e = [[0,40]];
+    var E = [[0,70]];
     var level = {
       name: 'testing map',
       tile_side: 40,
       base_level: 40,
       world: [
-        [[[0,20,'grass'], [20,110,'big-stone']], [[0,20,'grass']], [[0,20,'grass']], [[0,140]], [[0,20,'grass']], [[0,20,'grass']], [[0,20,'grass']], [[0,20,'grass']], [[0,20,'grass']], [[0,20,'grass']], [[0,20,'grass']], [[0,20,'grass']]],
-        [[[0,20,'grass']], [[0,20,'grass']], [[0,20,'grass']], [[0,20],[120, 140]], [[0,20,'grass']], [[0,20,'grass']], [[0,20,'grass']], [[0,20,'grass']], [[0,20,'grass']], [[0,20,'grass']], [[0,20,'grass']], [[0,20,'grass']]],
-        [[[0,20,'grass']], [[0,20,'grass']], [[0,20,'grass']], [[0,10]], [[0,140]], [[0,20,'grass']], [[0,20,'grass']], [[0,20,'grass']], [[0,20,'grass']], [[0,20,'grass']], [[0,20,'grass']], [[0,20,'grass']]],
-        [[[0,20,'grass']], [[0,20,'grass']], [[0,5]], [[0,20,'grass']], [[0,20,'grass'], [20,110,'big-stone']], [[0,20,'grass']], [[0,20,'grass']], [[0,20,'grass']], [[0,20,'grass']], [[0,20,'grass']], [[0,20,'grass']], [[0,20,'grass']]],
-        [[[0,20,'grass']], [[0,20,'grass']], [[0,5]], [[0,20,'grass']], [[0,20,'grass']], [[0,20,'grass']], [[0,20,'grass']], [[0,20,'grass']], [[0,20,'grass']], [[0,20,'grass']], [[0,20,'grass']], [[0,20,'grass']]],
-        [[[0,20,'grass']], [[0,20,'grass']], [[0,5]], [[0,20,'grass']], [[0,20,'grass']], [[0,20,'grass']], [[0,20,'grass']], [[0,20,'grass']], [[0,20,'grass']], [[0,20,'grass']], [[0,20,'grass']], [[0,20,'grass']]],
-        [[[0,20,'grass']], [[0,20,'grass']], [[0,0,'river-bed'], [10,10,'river-surface']], [[0,20,'grass'], [20,40,'small-stone']], [[0,20,'grass']], [[0,20,'grass']], [[0,20,'grass']], [[0,20,'grass']], [[0,20,'grass']], [[0,70]], [[0,20,'grass']], [[0,20,'grass']]],
-        [[[0,0,'river-bed'], [10,10,'river-surface']], [[0,0,'river-bed'], [10,10,'river-surface']], [[0,0,'river-bed'], [10,10,'river-surface']], [[0,0,'river-bed'], [10,10,'river-surface']], [[0,0,'river-bed'], [10,10,'river-surface']], [[0,0,'river-bed'], [10,10,'river-surface']], [[0,0,'river-bed'], [10,10,'river-surface']], [[0,0,'river-bed'], [10,10,'river-surface']], [[0,0,'river-bed'], [10,10,'river-surface'], [55,70,'bridge-left']], [[0,70]], [[0,0,'river-bed'], [10,10,'river-surface']], [[0,0,'river-bed'], [10,10,'river-surface']]],
-        [[[0,0,'river-bed'], [10,10,'river-surface']], [[0,0,'river-bed'], [10,10,'river-surface']], [[0,0,'river-bed'], [10,10,'river-surface']], [[0,0,'river-bed'], [10,10,'river-surface']], [[0,0,'river-bed'], [10,10,'river-surface']], [[0,0,'river-bed'], [10,10,'river-surface']], [[0,0,'river-bed'], [10,10,'river-surface']], [[0,0,'river-bed'], [10,10,'river-surface']], [[0,0,'river-bed'], [10,10,'river-surface'], [55,70,'bridge-left']], [[0,0,'river-bed'], [10,10,'river-surface'], [55,70,'bridge-right']], [[0,0,'river-bed'], [10,10,'river-surface']], [[0,0,'river-bed'], [10,10,'river-surface']]],
-        [[[0,0,'river-bed'], [10,10,'river-surface']], [[0,0,'river-bed'], [10,10,'river-surface']], [[0,0,'river-bed'], [10,10,'river-surface']], [[0,0,'river-bed'], [10,10,'river-surface']], [[0,0,'river-bed'], [10,10,'river-surface']], [[0,0,'river-bed'], [10,10,'river-surface']], [[0,0,'river-bed'], [10,10,'river-surface']], [[0,0,'river-bed'], [10,10,'river-surface'], [55,70,'bridge-left']], [[0,0,'river-bed'], [10,10,'river-surface'], [55,70,'bridge-right']], [[0,0,'river-bed'], [10,10,'river-surface']], [[0,0,'river-bed'], [10,10,'river-surface']], [[0,0,'river-bed'], [10,10,'river-surface']]],
-        [[[0,0,'river-bed'], [10,10,'river-surface']], [[0,0,'river-bed'], [10,10,'river-surface']], [[0,0,'river-bed'], [10,10,'river-surface']], [[0,0,'river-bed'], [10,10,'river-surface']], [[0,0,'river-bed'], [10,10,'river-surface']], [[0,0,'river-bed'], [10,10,'river-surface']], [[0,0,'river-bed'], [10,10,'river-surface']], [[0,0,'river-bed'], [10,10,'river-surface'], [55,70,'bridge-left']], [[0,0,'river-bed'], [10,10,'river-surface'], [55,70,'bridge-right']], [[0,0,'river-bed'], [10,10,'river-surface']], [[0,0,'river-bed'], [10,10,'river-surface']], [[0,0,'river-bed'], [10,10,'river-surface']]],
-        [[[0,0,'river-bed'], [10,10,'river-surface']], [[0,0,'river-bed'], [10,10,'river-surface']], [[0,0,'river-bed'], [10,10,'river-surface']], [[0,0,'river-bed'], [10,10,'river-surface']], [[0,0,'river-bed'], [10,10,'river-surface']], [[0,0,'river-bed'], [10,10,'river-surface']], [[0,70]], [[0,0,'river-bed'], [10,10,'river-surface'], [55,70,'bridge-right']], [[0,0,'river-bed'], [10,10,'river-surface']], [[0,0,'river-bed'], [10,10,'river-surface']], [[0,0,'river-bed'], [10,10,'river-surface']], [[0,0,'river-bed'], [10,10,'river-surface']]],
-        [[[0,20,'grass']], [[0,20,'grass']], [[0,20,'grass']], [[0,20,'grass']], [[0,20,'grass']], [[0,20,'grass']], [[0,40]], [[0,70]], [[0,20,'grass'], [20,40,'small-stone']], [[0,20,'grass']], [[0,20,'grass']], [[0,20,'grass']]],
-        [[[0,20,'grass']], [[0,20,'grass']], [[0,20,'grass']], [[0,20,'grass']], [[0,20,'grass']], [[0,20,'grass'], [20,110,'big-stone']], [[0,40]], [[0,20,'grass']], [[0,20,'grass']], [[0,20,'grass']], [[0,20,'grass']], [[0,20,'grass']]],
-        [[[0,20,'grass']], [[0,20,'grass']], [[0,20,'grass']], [[0,20,'grass']], [[0,20,'grass']], [[0,20,'grass']], [[0,20]], [[0,20,'grass']], [[0,20,'grass']], [[0,20,'grass']], [[0,20,'grass']], [[0,20,'grass']]],
-        [[[0,20,'grass']], [[0,20,'grass']], [[0,20,'grass']], [[0,20,'grass']], [[0,20,'grass']], [[0,20,'grass']], [[0,20]], [[0,20,'grass']], [[0,20,'grass']], [[0,20,'grass']], [[0,20,'grass']], [[0,20,'grass']]],
+        [S, g, g, p, g, g, g, g, g, g, g, g],
+        [g, g, g, d, g, g, g, g, g, g, g, g],
+        [g, g, g, [[0,15]], p, g, g, g, g, g, g, g],
+        [g, g, [[0,12]], g, S, g, r, g, g, g, g, g],
+        [g, g, [[0,11]], g, g, g, r, r, g, g, g, g],
+        [g, g, [[0,10]], g, g, r, r, r, g, g, g, g],
+        [g, g, r, s, g, r, r, r, r, E, g, g],
+        [g, g, r, r, r, r, r, r, b, E, g, g],
+        [g, g, r, r, r, r, r, r, b, B, g, g],
+        [g, g, r, r, r, r, r, b, B, r, g, g],
+        [g, g, g, r, r, r, S, b, B, r, r, g],
+        [g, g, r, r, r, g, E, B, r, r, r, g],
+        [g, g, r, r, r, g, e, E, r, r, r, r],
+        [g, r, r, r, g, c, e, g, r, r, r, r],
+        [g, r, r, r, g, g, c, g, g, r, r, r],
+        [r, r, r, g, g, g, c, g, g, r, r, r],
       ]
     }
   </script>
