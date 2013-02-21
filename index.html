@@ -55,36 +55,40 @@
   <script>
     var g = [[0,20,'grass']];
     var S = [[0,20,'grass'], [20,110,'big-stone']];
-    var r = [[0,0,'river-bed'], [10,10,'river-surface']];
-    var s = [[0,20,'grass'], [20,40,'small-stone']];
-    var p = [[0,140]];
-    var d = [[0,20],[120, 140]];
-    var b = [[0,0,'river-bed'], [10,10,'river-surface'], [55,70,'bridge-left']];
-    var B = [[0,0,'river-bed'], [10,10,'river-surface'], [55,70,'bridge-right']];
+    var r = [[0,10,'river-surface']];
+    var R = [[0,10,'river-ripple']];
+    var s = [[0,20,'small-stone']];
+    var p = [[0,115,'gate-left']];
+    var d = [[0,20],[96,115,'gate-top']];
+    var P = [[0,115,'gate-right']];
+    var b = [[0,10,'river-surface'], [55,70,'bridge-left']];
+    var B = [[0,10,'river-surface'], [55,70,'bridge-right']];
     var c = [[0,20]];
-    var e = [[0,40]];
-    var E = [[0,70]];
+    var e = [[0,20,'grass'], [20,35,'bridge-support-small-left']];
+    var E = [[0,20,'grass'], [20,35,'bridge-support-small-right']];
+    var f = [[0,20,'grass'], [20,80,'bridge-support-big-left']];
+    var F = [[0,20,'grass'], [20,80,'bridge-support-big-right']];
     var level = {
       name: 'testing map',
       tile_side: 40,
       base_level: 40,
       world: [
-        [S, g, g, p, g, g, g, g, g, g, g, g],
+        [S, g, s, p, g, g, g, g, g, g, g, g],
         [g, g, g, d, g, g, g, g, g, g, g, g],
-        [g, g, g, [[0,15]], p, g, g, g, g, g, g, g],
-        [g, g, [[0,12]], g, S, g, r, g, g, g, g, g],
+        [g, g, g, [[0,15]], P, g, g, g, g, g, g, g],
+        [g, g, [[0,12]], s, s, g, r, g, g, g, g, g],
         [g, g, [[0,11]], g, g, g, r, r, g, g, g, g],
-        [g, g, [[0,10]], g, g, r, r, r, g, g, g, g],
-        [g, g, r, s, g, r, r, r, r, E, g, g],
-        [g, g, r, r, r, r, r, r, b, E, g, g],
+        [g, g, [[0,10]], g, g, r, R, R, g, g, g, g],
+        [g, g, r, g, g, r, r, r, R, c, g, g],
+        [g, g, r, R, r, r, r, r, b, c, g, g],
         [g, g, r, r, r, r, r, r, b, B, g, g],
         [g, g, r, r, r, r, r, b, B, r, g, g],
-        [g, g, g, r, r, r, S, b, B, r, r, g],
-        [g, g, r, r, r, g, E, B, r, r, r, g],
-        [g, g, r, r, r, g, e, E, r, r, r, r],
-        [g, r, r, r, g, c, e, g, r, r, r, r],
-        [g, r, r, r, g, g, c, g, g, r, r, r],
-        [r, r, r, g, g, g, c, g, g, r, r, r],
+        [g, g, g, r, r, R, S, b, B, r, r, g],
+        [g, g, r, r, r, g, f, B, r, r, r, g],
+        [g, g, R, r, r, g, e, F, r, R, r, r],
+        [g, r, r, r, g, c, [[0,20,'grass'], [20,35,'bridge-support-small-right']], g, r, r, r, R],
+//        [g, r, r, r, g, g, c, g, g, r, r, r],
+//        [r, r, r, g, g, g, c, g, g, r, r, r],
       ]
     }
   </script>
@@ -237,7 +241,7 @@
       var refTile = { i: i, j: j };
 
       ctx.save();
-      ctx.globalAlpha = occluse(cursorTile, refTile) ? 0.3 : 1.0;
+      ctx.globalAlpha = 0.5;//occluse(cursorTile, refTile) ? 0.3 : 1.0;
       ctx.strokeStyle = 'black';
 
       if (cursorTile && sameTile(cursorTile, refTile)) {
@@ -284,26 +288,39 @@
     }
 
     function makeTile(i, j, h0, tileName) {
-      var fixing = 1.0075;
-      var center = pointMaker(i, j, h0, h0)(0);
+      var origin = pointMaker(i, j, h0, h0)(0);
       var img = tiles[tileName];
-      ctx.drawImage(img, Math.floor(center.x - (tileInfo.step.x / 2)),
-                         center.y - img.naturalHeight,
-                         tileInfo.step.x*fixing,
-                         img.naturalHeight);
+      if ('bridge-support-small-right'===tileName){
+        var origin = pointMaker(i, j, 20, h0)(0);
+        ctx.drawImage(img, origin.x - (img.naturalWidth/2),
+                           origin.y - img.naturalHeight)
+        return;
+      }
+      ctx.drawImage(img, origin.x - (img.naturalWidth / 2),
+                         origin.y - img.naturalHeight)
     }
 
+    var showLogicalWorld = false;
     function makeColumn(i, j) {
       var heights = heightMap[j][i];
       for (var h = 0, l = heights.length; h < l; h++) {
         var height = heights[h];
-        if (!height[2]) {
-          makeCube(i, j, height[0], height[1]);
-        } else {
+        if (height[2]) {
           makeTile(i, j, height[0], height[2]);
+        }
+
+        if (showLogicalWorld){
+          makeCube(i, j, height[0], height[1]);
         }
       }
     }
+    document.addEventListener('keypress', function (evt) {
+      if (evt.charCode === 'l'.charCodeAt(0)) {
+        showLogicalWorld = !showLogicalWorld;
+        cls();
+        render();
+      }
+    });
 
     function makeRow(j) {
       for (var i=0; i<heightMap[j].length; i++) {
@@ -547,13 +564,20 @@
 <body>
   <canvas id="background" width="1000" height="650" onmousemove="onMove(event)" onmouseup="onMouseUp(event)" onmousedown="onMouseDown(event)"></canvas>
   <p>
-    <img id="tile-grass" src="img/grass.png" alt="Grass tile"/>
-    <img id="tile-big-stone" src="img/big-stone.png" alt="Big stone tile"/>
-    <img id="tile-small-stone" src="img/small-stone.png" alt="Small stone tile"/>
-    <img id="tile-river-bed" src="img/river-bed.png" alt="River bed tile"/>
-    <img id="tile-river-surface" src="img/river-surface.png" alt="River surface stone tile"/>
+    <img id="tile-grass" src="img/grass.png" alt="Grass"/>
+    <img id="tile-big-stone" src="img/big-stone.png" alt="Big stone"/>
+    <img id="tile-small-stone" src="img/small-stone.png" alt="Small stone"/>
+    <img id="tile-river-surface" src="img/river-surface.png" alt="River surface"/>
+    <img id="tile-river-ripple" src="img/river-ripple.png" alt="River surface with ripples"/>
     <img id="tile-bridge-left" src="img/bridge-left.png" alt="Left part of the bridge"/>
-    <img id="tile-bridge-right" src="img/bridge-right.png" alt="Left part of the bridge"/>
+    <img id="tile-bridge-right" src="img/bridge-right.png" alt="Right part of the bridge"/>
+    <img id="tile-gate-left" src="img/gate-left.png" alt="Gate, left part"/>
+    <img id="tile-gate-right" src="img/gate-right.png" alt="Gate, right part"/>
+    <img id="tile-gate-top" src="img/gate-top.png" alt="Gate, top part"/>
+    <img id="tile-bridge-support-big-left" src="img/bridge-support-big-left.png" alt="Bridge big support left"/>
+    <img id="tile-bridge-support-big-right" src="img/bridge-support-big-right.png" alt="Bridge big support right"/>
+    <img id="tile-bridge-support-small-left" src="img/bridge-support-small-left.png" alt="Bridge small support left"/>
+    <img id="tile-bridge-support-small-right" src="img/bridge-support-small-right.png" alt="Bridge small support right"/>
   </p>
   <script>
     var tiles, cameraOffset, render;
@@ -564,10 +588,17 @@
         'grass': document.getElementById('tile-grass'),
         'big-stone': document.getElementById('tile-big-stone'),
         'small-stone': document.getElementById('tile-small-stone'),
-        'river-bed': document.getElementById('tile-river-bed'),
         'river-surface': document.getElementById('tile-river-surface'),
+        'river-ripple': document.getElementById('tile-river-ripple'),
         'bridge-left': document.getElementById('tile-bridge-left'),
-        'bridge-right': document.getElementById('tile-bridge-right')
+        'bridge-right': document.getElementById('tile-bridge-right'),
+        'gate-left': document.getElementById('tile-gate-left'),
+        'gate-right': document.getElementById('tile-gate-right'),
+        'gate-top': document.getElementById('tile-gate-top'),
+        'bridge-support-big-left': document.getElementById('tile-bridge-support-big-left'),
+        'bridge-support-big-right': document.getElementById('tile-bridge-support-big-right'),
+        'bridge-support-small-left': document.getElementById('tile-bridge-support-small-left'),
+        'bridge-support-small-right': document.getElementById('tile-bridge-support-small-right')
       };
 
       setup(70);
