@@ -53,8 +53,9 @@
     }
   </style>
   <script>
-    var g = [[0,20,'grass']];
-    var S = [[0,20,'grass'], [20,110,'big-stone']];
+    var g = [[0,20,'small-grass']];
+    var G = [[0,20,'big-grass']];
+    var S = [[0,20,'big-grass'], [20,20,'big-stone']];
     var r = [[0,10,'river-surface']];
     var R = [[0,10,'river-ripple']];
     var s = [[0,20,'small-stone']];
@@ -64,31 +65,39 @@
     var b = [[0,10,'river-surface'], [55,70,'bridge-left']];
     var B = [[0,10,'river-surface'], [55,70,'bridge-right']];
     var c = [[0,20]];
-    var e = [[0,20,'grass'], [20,35,'bridge-support-small-left']];
-    var E = [[0,20,'grass'], [20,35,'bridge-support-small-right']];
-    var f = [[0,20,'grass'], [20,80,'bridge-support-big-left']];
-    var F = [[0,20,'grass'], [20,80,'bridge-support-big-right']];
+    var e = [[0,20,'big-grass'], [20,35,'bridge-support-small-left']];
+    var E = [[0,20,'big-grass'], [20,35,'bridge-support-small-right']];
+    var f = [[0,20,'big-grass'], [20,70,'bridge-support-big-left']];
+    var F = [[0,20,'big-grass'], [20,70,'bridge-support-big-right']];
+    var h = [[0,20,'big-grass'], [20,35,'bridge2-support-small-left']];
+    var H = [[0,20,'big-grass'], [20,35,'bridge2-support-small-right']];
+    var i = [[0,20,'big-grass'], [20,70,'bridge2-support-big-left']];
+    var I = [[0,20,'big-grass'], [20,70,'bridge2-support-big-right']];
+    var w = [[0,15]];
+    var x = [[0,12]];
+    var y = [[0,11]];
+    var z = [[0,10]];
     var level = {
       name: 'testing map',
       tile_side: 40,
       base_level: 40,
       world: [
-        [S, g, s, p, g, g, g, g, g, g, g, g],
-        [g, g, g, d, g, g, g, g, g, g, g, g],
-        [g, g, g, [[0,15]], P, g, g, g, g, g, g, g],
-        [g, g, [[0,12]], s, s, g, r, g, g, g, g, g],
-        [g, g, [[0,11]], g, g, g, r, r, g, g, g, g],
-        [g, g, [[0,10]], g, g, r, R, R, g, g, g, g],
-        [g, g, r, g, g, r, r, r, R, c, g, g],
-        [g, g, r, R, r, r, r, r, b, c, g, g],
-        [g, g, r, r, r, r, r, r, b, B, g, g],
-        [g, g, r, r, r, r, r, b, B, r, g, g],
-        [g, g, g, r, r, R, S, b, B, r, r, g],
-        [g, g, r, r, r, g, f, B, r, r, r, g],
-        [g, g, R, r, r, g, e, F, r, R, r, r],
-        [g, r, r, r, g, c, E, g, r, r, r, R],
-        [g, r, r, r, g, g, c, g, g, r, r, r],
-        [r, r, r, g, g, g, c, g, g, r, r, r],
+        [S, G, s, p, w, G, G, G, G, G, G, G],
+        [ G, G, g, d, G, G, g, G, G, G, G, G],
+        [g, g, g, w, P, G, g, g, g, G, s, G],
+        [ g, g, x, s, s, g, r, g, g, G, G, g],
+        [g, g, y, g, G, g, r, r, g, g, G, g],
+        [ g, g, z, g, g, r, R, R, g, h, g, g],
+        [g, g, r, g, g, r, r, r, R, i, H, g],
+        [ g, g, r, R, r, r, r, r, b, I, g, g],
+        [G, g, r, r, r, r, r, r, b, B, g, g],
+        [ G, g, r, r, r, r, r, b, B, r, g, g],
+        [G, G, g, r, r, R, S, b, B, r, r, g],
+        [ G, g, r, r, r, G, f, B, r, r, r, g],
+        [G, g, R, r, r, s, e, F, r, R, r, r],
+        [ g, r, r, r, G, c, E, s, r, r, r, R],
+        [g, r, r, r, G, g, c, g, g, r, r, r],
+        [ r, r, r, S, g, g, c, g, g, r, r, r],
       ]
     }
   </script>
@@ -290,12 +299,6 @@
     function makeTile(i, j, h0, tileName) {
       var origin = pointMaker(i, j, h0, h0)(0);
       var img = tiles[tileName];
-      if ('bridge-support-small-right'===tileName){
-        var origin = pointMaker(i, j, 20, h0)(0);
-        ctx.drawImage(img, origin.x - (img.naturalWidth/2),
-                           origin.y - img.naturalHeight)
-        return;
-      }
       ctx.drawImage(img, origin.x - (img.naturalWidth / 2),
                          origin.y - img.naturalHeight)
     }
@@ -335,56 +338,14 @@
     }
 
     var currentPanel, currentOffset;
-    function makeFloatPanels() {
-      var body = document.getElementsByTagName('body')[0];
-      var panels = document.getElementsByClassName('panel');
-      body.addEventListener('dragover', function(evt) {
-        evt.preventDefault();
-        return false;
-      });
-      body.addEventListener('drop', function(evt) {
-        var data = evt.dataTransfer.getData('text/plain').split(',');
-        var panel = document.getElementById(data[2]);
-        panel.style.left = (event.clientX + parseInt(data[0], 10)) + 'px';
-        panel.style.top = (event.clientY + parseInt(data[1], 10)) + 'px';
-        evt.preventDefault();
-        return false;
-      });
-      [].forEach.call(panels, function enablePanel(panel, index) {
-        panel.setAttribute('draggable', true);
-        if (!panel.id) {
-          panel.id = 'panel-' + index;
-        }
-        panel.addEventListener('dragstart', function (evt) {
-          var style = window.getComputedStyle(evt.target, null);
-          evt.dataTransfer.setData('text/plain',
-            (parseInt(style.left, 10) - evt.clientX) + ',' +
-            (parseInt(style.top, 10) - evt.clientY) + ',' + panel.id);
-        });
-      });
-    }
-
-    function showCenter() {
-      ctx.save();
-      ctx.strokeStyle = 'red';
-      ctx.beginPath();
-      ctx.moveTo(0, -10);
-      ctx.lineTo(0, 10);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(-10, 0);
-      ctx.lineTo(10, 0);
-      ctx.stroke();
-      ctx.restore();
-    }
 
     function cls() {
       ctx.clearRect(-1000, -1000, 3000, 3000);
     }
 
-    var canvas, ctx, tileInfo = {};
+    var movingCamera = false, origin, canvas, ctx, tileInfo = {};
     function setup(width) {
-      var side = (width/2.0)/Math.cos(Math.PI/6.0);
+      var side = Math.floor((width/2)/Math.cos(Math.PI/6));
       tileInfo.side = side;
       tileInfo.step = {
         x: width,
@@ -392,7 +353,35 @@
       };
       canvas = document.getElementById('background');
       ctx = canvas.getContext('2d');
-      makeFloatPanels();
+
+      // Camera
+      canvas.addEventListener('mousedown', function(evt) {
+        evt.preventDefault();
+
+        movingCamera = true;
+        canvas.style.cursor = 'move';
+        origin = getCanvasPoint(evt);
+      });
+      canvas.addEventListener('mouseup', function(evt) {
+        canvas.style.cursor = '';
+        movingCamera = false;
+      });
+      canvas.addEventListener('mousemove', function(evt) {
+        if (movingCamera) {
+          var current = getCanvasPoint(evt);
+          var displacement = {
+            x: current.x - origin.x,
+            y: current.y - origin.y
+          }
+          cameraOffset = {
+            x: cameraOffset.x + displacement.x,
+            y: cameraOffset.y + displacement.y,
+          };
+          
+        }
+        cls();
+        render();
+      });
     }
 
     function getOrigin(gridPoint) {
@@ -440,7 +429,7 @@
     function getCanvasPoint(evt) {
       var rect = canvas.getBoundingClientRect();
       return {
-        x: evt.clientX - rect.left,
+        x: evt.clientX - rect.left - cameraOffset.x,
         y: evt.clientY - rect.top - cameraOffset.y
       };
     }
@@ -478,67 +467,10 @@
       return t1 === t2 || (t1.i === t2.i && t1.j === t2.j);
     }
 
-    function onMouseDown(evt) {
-      getEnabledTool();
-      switch (currentTool.id) {
-        case 'select':
-          var tile = getTile(evt);
-          if (selectedTile && sameTile(selectedTile, tile)) {
-            selectedTile = null;
-          } else {
-            selectedTile = tile;
-          }
-          break;
-        case 'extrude':
-          currentTool.data.enabled = true;
-          currentTool.data.start = getCanvasPoint(evt);
-          currentTool.data.tile = selectedTile;
-          break;
-      }
-    }
-
-    function onMouseUp(evt) {
-      getEnabledTool();
-      switch (currentTool.id) {
-        case 'extrude':
-          currentTool.data.enabled = false;
-          break;
-      }
-    }
-
     var cursorTile = null;
     var selectedTile = null;
-    function onMove(evt) {
-      getEnabledTool();
-      switch (currentTool.id) {
-        case 'select':
-          cursorTile = getTile(evt);
-          break;
-        case 'extrude':
-          if (selectedTile && currentTool.data.enabled) {
-            var pos = getCanvasPoint(evt);
-            var tile = currentTool.data.tile;
-            var getPoint = pointMaker(tile.i, tile.j, 0, 0);
-            var s = Math.max(0, getPoint(0).y - currentTool.data.start.y);
-            var h = s + Math.max(0, currentTool.data.start.y - pos.y);
-            heightMap[tile.j][tile.i][0] = [s, h];
-          }
-          break;
-      }
-      cls();
-      render();
-    }
 
     var heightMap = level.world;
-    /*function setupGrid(width, deep) {
-      for (var y = 0; y < deep; y++) {
-        heightMap.push([]);
-        for (var x = 0; x < width; x++) {
-          heightMap[y].push([]);
-          heightMap[y][x].push([0, level.world]);
-        }
-      }
-    }*/
 
     function ortoGrid(width, height) {
       return;
@@ -562,48 +494,57 @@
   </script>
 </head>
 <body>
-  <canvas id="background" width="1000" height="650" onmousemove="onMove(event)" onmouseup="onMouseUp(event)" onmousedown="onMouseDown(event)"></canvas>
-  <p>
-    <img id="tile-grass" src="img/grass.png" alt="Grass"/>
-    <img id="tile-big-stone" src="img/big-stone.png" alt="Big stone"/>
-    <img id="tile-small-stone" src="img/small-stone.png" alt="Small stone"/>
-    <img id="tile-river-surface" src="img/river-surface.png" alt="River surface"/>
-    <img id="tile-river-ripple" src="img/river-ripple.png" alt="River surface with ripples"/>
-    <img id="tile-bridge-left" src="img/bridge-left.png" alt="Left part of the bridge"/>
-    <img id="tile-bridge-right" src="img/bridge-right.png" alt="Right part of the bridge"/>
-    <img id="tile-gate-left" src="img/gate-left.png" alt="Gate, left part"/>
-    <img id="tile-gate-right" src="img/gate-right.png" alt="Gate, right part"/>
-    <img id="tile-gate-top" src="img/gate-top.png" alt="Gate, top part"/>
-    <img id="tile-bridge-support-big-left" src="img/bridge-support-big-left.png" alt="Bridge big support left"/>
-    <img id="tile-bridge-support-big-right" src="img/bridge-support-big-right.png" alt="Bridge big support right"/>
-    <img id="tile-bridge-support-small-left" src="img/bridge-support-small-left.png" alt="Bridge small support left"/>
-    <img id="tile-bridge-support-small-right" src="img/bridge-support-small-right.png" alt="Bridge small support right"/>
+  <canvas id="background" width="1000" height="650"></canvas>
+  <p id="palette">
   </p>
   <script>
     var tiles, cameraOffset, render;
     setTimeout(function () {
       'use strict';
 
+      tiles = {};
       tiles = {
-        'grass': document.getElementById('tile-grass'),
-        'big-stone': document.getElementById('tile-big-stone'),
-        'small-stone': document.getElementById('tile-small-stone'),
-        'river-surface': document.getElementById('tile-river-surface'),
-        'river-ripple': document.getElementById('tile-river-ripple'),
-        'bridge-left': document.getElementById('tile-bridge-left'),
-        'bridge-right': document.getElementById('tile-bridge-right'),
-        'gate-left': document.getElementById('tile-gate-left'),
-        'gate-right': document.getElementById('tile-gate-right'),
-        'gate-top': document.getElementById('tile-gate-top'),
-        'bridge-support-big-left': document.getElementById('tile-bridge-support-big-left'),
-        'bridge-support-big-right': document.getElementById('tile-bridge-support-big-right'),
-        'bridge-support-small-left': document.getElementById('tile-bridge-support-small-left'),
-        'bridge-support-small-right': document.getElementById('tile-bridge-support-small-right')
-      };
 
+      };
+      function addTile() {
+        for (var i=0; i<arguments.length; i++) {
+          var name = arguments[i];
+          if (name in tiles) {
+            return;
+          }
+
+          var img = document.createElement('IMG');
+          img.src = 'img/' + name + '.png';
+          img.id = 'tile-' + name;
+          document.getElementById('palette').appendChild(img);
+          tiles[name] = img;
+        }
+      }
+      addTile(
+        'big-grass',
+        'small-grass',
+        'big-stone',
+        'small-stone',
+        'river-surface',
+        'river-ripple',
+        'bridge-left',
+        'bridge-right',
+        'gate-left',
+        'gate-right',
+        'gate-top',
+        'bridge-support-big-left',
+        'bridge-support-big-right',
+        'bridge-support-small-left',
+        'bridge-support-small-right',
+        'bridge2-support-big-left',
+        'bridge2-support-big-right',
+        'bridge2-support-small-left',
+        'bridge2-support-small-right'
+      );
+
+      cameraOffset = { x: 0, y: 0};
       setup(70);
   //    setupGrid(15, 15);
-      cameraOffset = { x: 0, y: canvas.height/2};
       render = function () {
         ctx.setTransform(1, 0, 0, 1, cameraOffset.x, cameraOffset.y);
         makeGrid();
