@@ -55,12 +55,13 @@
   <script>
     var g = [[0,20,'small-grass']];
     var G = [[0,20,'big-grass']];
-    var S = [[0,20,'big-grass'], [20,20,'big-stone']];
     var r = [[0,10,'river-surface']];
-    var R = [[0,10,'river-ripple']];
+    var R = [[0,20,'river-surface']];
+    var W = [[0,10,'river-ripple']];
     var s = [[0,20,'small-stone']];
+    var S = [[0,20,'big-grass'], [20,85,'big-stone']];
+    var d = [[0,20,'river-surface'],[96,115,'gate-top']];
     var p = [[0,115,'gate-left']];
-    var d = [[0,20],[96,115,'gate-top']];
     var P = [[0,115,'gate-right']];
     var b = [[0,10,'river-surface'], [55,70,'bridge-left']];
     var B = [[0,10,'river-surface'], [55,70,'bridge-right']];
@@ -73,32 +74,58 @@
     var H = [[0,20,'big-grass'], [20,35,'bridge2-support-small-right']];
     var i = [[0,20,'big-grass'], [20,70,'bridge2-support-big-left']];
     var I = [[0,20,'big-grass'], [20,70,'bridge2-support-big-right']];
-    var w = [[0,15]];
-    var x = [[0,12]];
-    var y = [[0,11]];
-    var z = [[0,10]];
+    var w = r;//[[0,15]];
+    var x = r;//[[0,12]];
+    var y = r;//[[0,11]];
+    var z = r;//[[0,10]];
+    var t = g;//[[0,20]];
+    var _ = null;
     var level = {
       name: 'testing map',
-      tile_side: 40,
-      base_level: 40,
       world: [
-        [S, G, s, p, w, G, G, G, G, G, G, G],
-        [ G, G, g, d, G, G, g, G, G, G, G, G],
-        [g, g, g, w, P, G, g, g, g, G, s, G],
-        [ g, g, x, s, s, g, r, g, g, G, G, g],
-        [g, g, y, g, G, g, r, r, g, g, G, g],
-        [ g, g, z, g, g, r, R, R, g, h, g, g],
-        [g, g, r, g, g, r, r, r, R, i, H, g],
-        [ g, g, r, R, r, r, r, r, b, I, g, g],
+        [_, _, _, _, _, _, _, _, _, _, _, _],
+        [ _, _, _, _, _, G, _, _, _, _, _, _],
+        [_, _, _, _, _, G, g, _, _, _, _, _],
+        [ _, _, _, _, g, g, r, _, _, _, _, _],
+        [_, _, _, _, G, g, r, r, _, _, _, _],
+        [ _, _, _, G, g, r, r, G, _, _, _, _],
+        [_, _, _, G, g, r, g, r, G, _, _, _],
+        [ _, _, G, G, g, r, r, G, G, _, _, _],
+        [_, _, G, G, G, r, r, g, G, G, _, _],
+        [ _, G, G, G, r, r, r, g, s, G, _, _],
+        [_, G, G, G, r, r, r, G, g, g, G, _],
+        [ G, G, G, S, r, G, G, g, g, g, G, _],
+
+        [S, G, s, p, r, G, G, g, g, G, G, G],
+        [ G, G, g, d, G, G, g, g, g, G, G, G],
+        [g, g, g, w, P, G, g, g, g, g, s, G],
+        [ g, g, x, s, s, g, r, g, g, g, G, g],
+        [g, g, y, g, G, g, r, r, g, g, g, g],
+        [ g, g, z, g, g, r, W, W, S, h, g, g],
+        [g, g, r, g, g, r, r, r, W, i, H, g],
+        [ g, g, r, W, r, r, r, r, b, I, g, g],
         [G, g, r, r, r, r, r, r, b, B, g, g],
         [ G, g, r, r, r, r, r, b, B, r, g, g],
-        [G, G, g, r, r, R, S, b, B, r, r, g],
+        [G, G, g, r, r, W, S, b, B, r, r, g],
         [ G, g, r, r, r, G, f, B, r, r, r, g],
-        [G, g, R, r, r, s, e, F, r, R, r, r],
-        [ g, r, r, r, G, c, E, s, r, r, r, R],
-        [g, r, r, r, G, g, c, g, g, r, r, r],
-        [ r, r, r, S, g, g, c, g, g, r, r, r],
-      ]
+        [G, g, W, r, r, s, e, F, r, r, r, r],
+        [ g, r, r, r, G, t, E, g, r, r, r, W],
+        [g, r, r, r, G, g, t, g, g, r, r, r],
+        [ r, r, r, G, g, g, t, g, g, r, r, r],
+
+        [_, S, G, G, g, g, g, g, g, g, r, r],
+        [ _, G, G, g, g, g, g, g, g, g, r, _],
+        [_, _, G, g, g, g, g, g, g, g, g, _],
+        [ _, _, g, g, g, g, s, g, g, g, _, _],
+        [_, _, _, g, g, g, s, s, g, g, _, _],
+        [ _, _, _, g, g, s, W, s, g, _, _, _],
+        [_, _, _, _, g, g, s, s, g, _, _, _],
+        [ _, _, _, _, g, g, s, g, _, _, _, _],
+        [_, _, _, _, _, g, g, g, _, _, _, _],
+        [ _, _, _, _, _, g, g, _, _, _, _, _],
+        [_, _, _, _, _, _, g, _, _, _, _, _],
+        [ _, _, _, _, _, _, _, _, _, _, _, _],
+      ],
     }
   </script>
   <script>
@@ -306,6 +333,10 @@
     var showLogicalWorld = false;
     function makeColumn(i, j) {
       var heights = heightMap[j][i];
+      if (!heights) {
+        return;
+      }
+
       for (var h = 0, l = heights.length; h < l; h++) {
         var height = heights[h];
         if (height[2]) {
