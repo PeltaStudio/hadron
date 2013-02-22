@@ -55,16 +55,18 @@
   <script>
     var g = [[0,20,'small-grass']];
     var G = [[0,20,'big-grass']];
+    var q = [[0,10,'river-shore-nw']];
+    var Q = [[0,10,'river-shore-ne']];
     var r = [[0,10,'river-surface']];
     var R = [[0,20,'river-surface']];
     var W = [[0,10,'river-ripple']];
     var s = [[0,20,'small-stone']];
-    var S = [[0,20,'big-grass'], [20,85,'big-stone']];
-    var d = [[0,20,'river-surface'],[96,115,'gate-top']];
+    var S = [[0,20,'shore'], [20,125,'big-stone']];
+    var d = [[0,20,'river-shore-nw'],[96,115,'gate-top']];
     var p = [[0,115,'gate-left']];
     var P = [[0,115,'gate-right']];
-    var b = [[0,10,'river-surface'], [55,70,'bridge-left']];
-    var B = [[0,10,'river-surface'], [55,70,'bridge-right']];
+    var b = [[0,10,'river-ripple'], [55,70,'bridge-left']];
+    var B = [[0,10,'river-ripple'], [55,70,'bridge-right']];
     var c = [[0,20]];
     var e = [[0,20,'big-grass'], [20,35,'bridge-support-small-left']];
     var E = [[0,20,'big-grass'], [20,35,'bridge-support-small-right']];
@@ -72,8 +74,10 @@
     var F = [[0,20,'big-grass'], [20,70,'bridge-support-big-right']];
     var h = [[0,20,'big-grass'], [20,35,'bridge2-support-small-left']];
     var H = [[0,20,'big-grass'], [20,35,'bridge2-support-small-right']];
-    var i = [[0,20,'big-grass'], [20,70,'bridge2-support-big-left']];
-    var I = [[0,20,'big-grass'], [20,70,'bridge2-support-big-right']];
+    var i = [[0,20,'shore'], [20,70,'bridge2-support-big-left']];
+    var I = [[0,20,'shore'], [20,70,'bridge2-support-big-right']];
+    var k = [[0,20,'shore']];
+    var K = [[0,20,'shore-corner']];
     var w = r;//[[0,15]];
     var x = r;//[[0,12]];
     var y = r;//[[0,11]];
@@ -85,40 +89,40 @@
       world: [
         [_, _, _, _, _, _, _, _, _, _, _, _],
         [ _, _, _, _, _, G, _, _, _, _, _, _],
-        [_, _, _, _, _, G, g, _, _, _, _, _],
-        [ _, _, _, _, g, g, r, _, _, _, _, _],
-        [_, _, _, _, G, g, r, r, _, _, _, _],
-        [ _, _, _, G, g, r, r, G, _, _, _, _],
-        [_, _, _, G, g, r, g, r, G, _, _, _],
-        [ _, _, G, G, g, r, r, G, G, _, _, _],
-        [_, _, G, G, G, r, r, g, G, G, _, _],
-        [ _, G, G, G, r, r, r, g, s, G, _, _],
-        [_, G, G, G, r, r, r, G, g, g, G, _],
-        [ G, G, G, S, r, G, G, g, g, g, G, _],
+        [_, _, _, _, _, G, k, _, _, _, _, _],
+        [ _, _, _, _, g, k, q, _, _, _, _, _],
+        [_, _, _, _, G, k, q, r, _, _, _, _],
+        [ _, _, _, G, k, q, r, k, _, _, _, _],
+        [_, _, _, G, g, q, k, Q, G, _, _, _],
+        [ _, _, G, G, k, Q, q, k, G, _, _, _],
+        [_, _, G, G, k, q, r, k, G, G, _, _],
+        [ _, G, G, k, q, r, Q, g, s, G, _, _],
+        [_, G, G, k, q, r, r, G, g, g, G, _],
+        [ G, G, k, S, r, G, G, g, g, g, G, _],
 
-        [S, G, s, p, r, G, G, g, g, G, G, G],
-        [ G, G, g, d, G, G, g, g, g, G, G, G],
-        [g, g, g, w, P, G, g, g, g, g, s, G],
-        [ g, g, x, s, s, g, r, g, g, g, G, g],
-        [g, g, y, g, G, g, r, r, g, g, g, g],
-        [ g, g, z, g, g, r, W, W, S, h, g, g],
-        [g, g, r, g, g, r, r, r, W, i, H, g],
-        [ g, g, r, W, r, r, r, r, b, I, g, g],
-        [G, g, r, r, r, r, r, r, b, B, g, g],
-        [ G, g, r, r, r, r, r, b, B, r, g, g],
-        [G, G, g, r, r, W, S, b, B, r, r, g],
-        [ G, g, r, r, r, G, f, B, r, r, r, g],
-        [G, g, W, r, r, s, e, F, r, r, r, r],
-        [ g, r, r, r, G, t, E, g, r, r, r, W],
-        [g, r, r, r, G, g, t, g, g, r, r, r],
-        [ r, r, r, G, g, g, t, g, g, r, r, r],
+        [S, G, s, p, q, G, G, g, g, G, G, G],
+        [ G, G, k, d, G, G, g, g, g, G, G, G],
+        [g, g, k, q, P, G, k, k, g, g, s, G],
+        [ g, k, q, s, s, k, K, k, g, g, G, g],
+        [g, k, q, k, G, k, q, Q, k, g, g, g],
+        [ g, k, Q, g, k, q, r, Q, S, h, g, g],
+        [g, k, q, k, k, q, r, r, Q, i, H, g],
+        [ g, k, Q, K, q, r, r, r, b, I, g, g],
+        [G, g, q, r, r, r, r, r, b, B, k, g],
+        [ G, g, r, r, r, r, r, b, B, Q, k, g],
+        [G, G, k, r, r, W, S, b, B, r, Q, k],
+        [ G, k, q, r, r, G, f, B, r, r, Q, k],
+        [G, k, q, r, r, s, e, F, r, r, r, Q],
+        [ k, q, r, r, G, t, E, g, r, r, r, W],
+        [k, q, r, r, G, g, t, g, g, r, r, r],
+        [ q, r, r, G, g, g, t, g, g, r, r, r],
 
         [_, S, G, G, g, g, g, g, g, g, r, r],
         [ _, G, G, g, g, g, g, g, g, g, r, _],
         [_, _, G, g, g, g, g, g, g, g, g, _],
         [ _, _, g, g, g, g, s, g, g, g, _, _],
         [_, _, _, g, g, g, s, s, g, g, _, _],
-        [ _, _, _, g, g, s, W, s, g, _, _, _],
+        [ _, _, _, g, g, G, W, G, g, _, _, _],
         [_, _, _, _, g, g, s, s, g, _, _, _],
         [ _, _, _, _, g, g, s, g, _, _, _, _],
         [_, _, _, _, _, g, g, g, _, _, _, _],
@@ -145,51 +149,42 @@
     Math.sin = memoize(Math.sin);
     Math.cos = memoize(Math.cos);
 
-    function occluse(reference, target) {
-      return false;
+    function occluses(reference, target) {
       if (!reference) {
         return false;
       }
       var i = target.i,
           j = target.j,
+          h = target.h,
           ri = reference.i,
-          rj = reference.j;
+          rj = reference.j,
+          rh = reference.h;
 
       if (!heightMap[rj] || !heightMap[rj][ri]) {
         return false;
       }
 
-/*      if (!(rj % 2)) {
-        if (!(j > rj && i === ri))
-          return false;
-//               j > rj && j % 2 === 0 && i === ri + 1;
+      var getRefPoint = pointMaker(ri, rj, rh[0], rh[1]);
+      var getTarPoint = pointMaker(i, j, h[0], h[1]);
+
+      rh =  [getRefPoint(0).y, getRefPoint(3).y];
+      h = [getTarPoint(0).y, getTarPoint(3).y]
+
+      if (!(rj % 2)) {
+        if (j >= rj && i === ri ||
+            j >= rj && j % 2 === 1 && i === ri - 1) {
+
+          return !(h[1] >= rh[0] || rh[1] >= h[0]);
+        }
       } else {
-        return j > rj && i === ri ||
-               j > rj && j % 2 === 1 && i === ri - 1;
-      }
-*/
-      var current = heightMap[j][i].map(function (height) {
-        var getPoint = pointMaker(i, j, height[0], height[1]);
-        return [getPoint(0).y, getPoint(3).y];
-      });
+        if (j >= rj && i === ri ||
+            j >= rj && j % 2 === 0 && i === ri + 1) {
 
-      var selected = heightMap[rj][ri].map(function (height) {
-        var getPoint = pointMaker(ri, rj, height[0], height[1]);
-        return [getPoint(0).y, getPoint(3).y];
-      });
-
-      var overlaps = false;
-      var l = Math.min(current.length, selected.length);
-      for (var i = 0; i < l && !overlaps; i++) {
-        var rA = current[i],
-            rB = selected[i];
-        overlaps = !(rA[1] >= rB[0] || rB[1] >= rA[0]);
-      }
-      if (!overlaps) {
-        return false;
+          return !(h[1] >= rh[0] || rh[1] >= h[0]);
+        }
       }
 
-      return true;
+      return false;
     }
 
     var arc = 2*Math.PI/6;
@@ -228,56 +223,11 @@
       });
     }
 
-    var character = null;
-    function makeCharacter() {
-      if (!character) {
-        return;
-      }
-
-      var getPoint = pointMaker(character.i, character.j, 0, 80);
-      ctx.save();
-      ctx.globalAlpha = 1.0;
-
-      // top face
-      ctx.beginPath();
-      ctx.moveTo(getPoint(3).x, getPoint(3).y);
-      ctx.lineTo(getPoint(4).x, getPoint(4).y);
-      ctx.lineTo(getPoint(6).x, getPoint(6).y);
-      ctx.lineTo(getPoint(2).x, getPoint(2).y);
-      ctx.closePath();
-      ctx.fillStyle = 'red';
-      ctx.fill();
-
-      // rigth face
-      ctx.beginPath();
-      ctx.moveTo(getPoint(4).x, getPoint(4).y);
-      ctx.lineTo(getPoint(5).x, getPoint(5).y);
-      ctx.lineTo(getPoint(0).x, getPoint(0).y);
-      ctx.lineTo(getPoint(6).x, getPoint(6).y);
-      ctx.closePath();
-      ctx.fillStyle = '#FF3737';
-      ctx.fill();
-      ctx.stroke();
-
-      // left face
-      ctx.beginPath();
-      ctx.moveTo(getPoint(0).x, getPoint(0).y);
-      ctx.lineTo(getPoint(1).x, getPoint(1).y);
-      ctx.lineTo(getPoint(2).x, getPoint(2).y);
-      ctx.lineTo(getPoint(6).x, getPoint(6).y);
-      ctx.closePath();
-      ctx.fillStyle = '#AA0000';
-      ctx.fill();
-
-      ctx.restore();
-    }
-
     function makeCube(i, j, h0, h1) {
       var getPoint = pointMaker(i, j, h0, h1);
       var refTile = { i: i, j: j };
 
       ctx.save();
-      ctx.globalAlpha = 0.5;//occluse(cursorTile, refTile) ? 0.3 : 1.0;
       ctx.strokeStyle = 'black';
 
       if (cursorTile && sameTile(cursorTile, refTile)) {
@@ -286,6 +236,16 @@
       else if (selectedTile && sameTile(selectedTile, refTile)) {
         ctx.strokeStyle = 'red';
       }
+
+      // label
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(
+        '(' + i + ', ' + j + ', ' + h1 + ')',
+        getPoint(6).x, getPoint(6).y - tileInfo.side/2
+      );
+
+      ctx.globalAlpha = 0.5;//occluses(cursorTile, refTile) ? 0.3 : 1.0;
 
       // top face
       ctx.beginPath();
@@ -323,11 +283,38 @@
       ctx.restore();
     }
 
-    function makeTile(i, j, h0, tileName) {
+    function makeTile(i, j, h0, h1, tileName, opaque) {
+      ctx.save();
+      var ref = {
+        i: character.position.i,
+        j: character.position.j,
+        h: [character.baseHeight, character.baseHeight + character.height]
+      };
+      ctx.globalAlpha = !computeOcclusion ||
+                        opaque ||
+                        !occluses(ref, {i:i, j:j, h:[h0, h1]}) ? 1.0 : 0.3;
       var origin = pointMaker(i, j, h0, h0)(0);
       var img = tiles[tileName];
-      ctx.drawImage(img, origin.x - (img.naturalWidth / 2),
-                         origin.y - img.naturalHeight)
+      ctx.drawImage(img, origin.x - (img.width / 2),
+                         origin.y - img.height)
+      ctx.restore();
+    }
+
+    var character = {
+      position: { i: 6, j: 6 },
+      baseHeight: 20,
+      height: 50,
+      tile: 'nutria-piloto'
+    }
+    function makeCharacter() {
+      makeTile(character.position.i, character.position.j,
+               character.baseHeight, character.baseHeight + character.height,
+               character.tile, true);
+
+      if (showLogicalWorld){
+        makeCube(character.position.i, character.position.j,
+                 character.baseHeight, character.baseHeight + character.height);
+      }
     }
 
     var showLogicalWorld = false;
@@ -337,29 +324,162 @@
         return;
       }
 
+      character.drawn = false;
       for (var h = 0, l = heights.length; h < l; h++) {
         var height = heights[h];
+
+        // Paint the character in the proper height
+        if (!character.drawn &&
+            sameTile(character.position, { i:i, j:j }) &&
+            character.baseHeight < height[0]) {
+
+          makeCharacter();
+          character.drawn = true;
+        }
+
         if (height[2]) {
-          makeTile(i, j, height[0], height[2]);
+          makeTile(i, j, height[0], height[1], height[2]);
         }
 
         if (showLogicalWorld){
           makeCube(i, j, height[0], height[1]);
         }
       }
+
+      if (!character.drawn && sameTile(character.position, { i:i, j:j })) {
+        makeCharacter();
+        character.drawn = true;
+      }
     }
+    var computeOcclusion = false;
+    var backgroundEnabled = true;
     document.addEventListener('keypress', function (evt) {
-      if (evt.charCode === 'l'.charCodeAt(0)) {
-        showLogicalWorld = !showLogicalWorld;
-        cls();
-        render();
+      switch (evt.charCode) {
+        case 's'.charCodeAt(0):
+          var dataUrl = canvas.toDataURL();
+          window.open(dataUrl, "toDataURL() image", "width=600, height=200");
+          break;
+        case 'l'.charCodeAt(0):
+          showLogicalWorld = !showLogicalWorld;
+          cls();
+          render();
+          break;
+        case 'b'.charCodeAt(0):
+          backgroundEnabled = !backgroundEnabled;
+          cls();
+          render();
+          break;
+        case 'o'.charCodeAt(0):
+          computeOcclusion = !computeOcclusion;
+          cls();
+          render();
+          break;
+        case 'w'.charCodeAt(0):
+          moveCharacterTo('n');
+          break;
+        case 'e'.charCodeAt(0):
+          moveCharacterTo('ne');
+          break;
+        case 'd'.charCodeAt(0):
+          moveCharacterTo('e');
+          break;
+        case 'c'.charCodeAt(0):
+          moveCharacterTo('se');
+          break;
+        case 'x'.charCodeAt(0):
+          moveCharacterTo('s');
+          break;
+        case 'z'.charCodeAt(0):
+          moveCharacterTo('sw');
+          break;
+        case 'a'.charCodeAt(0):
+          moveCharacterTo('w');
+          break;
+        case 'q'.charCodeAt(0):
+          moveCharacterTo('nw');
+          break;
       }
     });
+
+    function moveCharacterTo(d) {
+      // Transform into world displacements
+      var di, dj;
+      di = dj = 0;
+      switch (d) {
+        case 'n':
+          dj = -2;
+          break;
+        case 'ne':
+          dj = -1;
+          if (character.position.j % 2 === 1) di = 1;
+          break;
+        case 'e':
+          di = 1;
+          break;
+        case 'se':
+          dj = 1;
+          if (character.position.j % 2 === 1) di = 1;
+          break;
+        case 's':
+          dj = 2;
+          break;
+        case 'sw':
+          dj = 1;
+          if (character.position.j % 2 === 0) di = -1;
+          break;
+        case 'w':
+          di = -1;
+          break;
+        case 'nw':
+          dj = -1;
+          if (character.position.j % 2 === 0) di = -1;
+          break;
+      }
+      var dst = {
+        i: character.position.i + di,
+        j: character.position.j + dj
+      };
+      if (!heightMap[dst.j] || !heightMap[dst.j][dst.i]) {
+        return;
+      }
+
+      var delta = null, fits = false;
+      var heights = heightMap[dst.j][dst.i];
+      for (var i=0, l=heights.length; i<l; i++) {
+        var height = heights[i];
+
+        // Nearest surface
+        var delta = Math.abs(height[1] - character.baseHeight);
+        if (delta >= 40) {
+          continue;
+        }
+
+        // Check if fits
+        if (i < l-1) {
+          var ceil = heights[i+1][0];
+          fits = (ceil > (height[0] + character.height));
+        } else {
+          fits = true;
+        }
+
+        if (fits) {
+          character.position = dst;
+          character.baseHeight = height[1];
+          cls();
+          render();
+          return;
+        }
+      }
+    }
 
     function makeRow(j) {
       for (var i=0; i<heightMap[j].length; i++) {
         makeColumn(i, j);
       }
+    }
+
+    function decorate() {
+      ctx.drawImage(tiles['environment'], -106, -103);
     }
 
     function makeGrid() {
@@ -405,10 +525,10 @@
             y: current.y - origin.y
           }
           cameraOffset = {
-            x: cameraOffset.x + displacement.x,
-            y: cameraOffset.y + displacement.y,
+            x: Math.max(-94, Math.min(cameraOffset.x + displacement.x, 106)),
+            y: Math.max(-296,Math.min(cameraOffset.y + displacement.y, 103)),
           };
-          
+          console.log(cameraOffset);
         }
         cls();
         render();
@@ -503,6 +623,15 @@
 
     var heightMap = level.world;
 
+    function correctCamera() {
+      var o = pointMaker(character.position.i, character.position.j,
+                         character.baseHeight)(0);
+      if (!(-cameraOffset.x < o.x && o.x < -cameraOffset.x + 800 &&
+          -cameraOffset.y < o.y && o.y < -cameraOffset.y + 600)) {
+        console.log('Esta fuera');
+      }
+    }
+
     function ortoGrid(width, height) {
       return;
       ctx.save();
@@ -523,14 +652,9 @@
       ctx.restore();
     }
   </script>
-</head>
-<body>
-  <canvas id="background" width="1000" height="650"></canvas>
-  <p id="palette">
-  </p>
   <script>
     var tiles, cameraOffset, render;
-    setTimeout(function () {
+    window.addEventListener('load', function () {
       'use strict';
 
       tiles = {};
@@ -545,6 +669,7 @@
           }
 
           var img = document.createElement('IMG');
+          img.width = '70';
           img.src = 'img/' + name + '.png';
           img.id = 'tile-' + name;
           document.getElementById('palette').appendChild(img);
@@ -570,21 +695,37 @@
         'bridge2-support-big-left',
         'bridge2-support-big-right',
         'bridge2-support-small-left',
-        'bridge2-support-small-right'
+        'bridge2-support-small-right',
+        'shore',
+        'shore-corner',
+        'river-shore-nw',
+        'river-shore-ne',
+        'nutria-piloto',
+        'nutria-piloto-sombra',
+        'environment'
       );
 
       cameraOffset = { x: 0, y: 0};
       setup(70);
   //    setupGrid(15, 15);
       render = function () {
+        correctCamera();
         ctx.setTransform(1, 0, 0, 1, cameraOffset.x, cameraOffset.y);
         makeGrid();
   //      showCenter();
         ortoGrid(10, 10);
+        if (backgroundEnabled) {
+          decorate();
+        }
       };
       render();
-    }, 1000);
+    });
   </script>
+</head>
+<body>
+  <canvas id="background" width="800" height="600"></canvas>
+  <p id="palette">
+  </p>
 </body>
 </html>
 
