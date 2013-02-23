@@ -361,18 +361,12 @@
           break;
         case 'l'.charCodeAt(0):
           showLogicalWorld = !showLogicalWorld;
-          cls();
-          render();
           break;
         case 'b'.charCodeAt(0):
           backgroundEnabled = !backgroundEnabled;
-          cls();
-          render();
           break;
         case 'o'.charCodeAt(0):
           computeOcclusion = !computeOcclusion;
-          cls();
-          render();
           break;
         case 'w'.charCodeAt(0):
           moveCharacterTo('n');
@@ -465,8 +459,6 @@
         if (fits) {
           character.position = dst;
           character.baseHeight = height[1];
-          cls();
-          render();
           return;
         }
       }
@@ -525,13 +517,11 @@
             y: current.y - origin.y
           }
           cameraOffset = {
-            x: Math.max(-94, Math.min(cameraOffset.x + displacement.x, 106)),
-            y: Math.max(-296,Math.min(cameraOffset.y + displacement.y, 103)),
+            x: cameraOffset.x + displacement.x,
+            y: cameraOffset.y + displacement.y,
           };
           console.log(cameraOffset);
         }
-        cls();
-        render();
       });
     }
 
@@ -623,12 +613,40 @@
 
     var heightMap = level.world;
 
-    function correctCamera() {
-      var o = pointMaker(character.position.i, character.position.j,
-                         character.baseHeight)(0);
-      if (!(-cameraOffset.x < o.x && o.x < -cameraOffset.x + 800 &&
-          -cameraOffset.y < o.y && o.y < -cameraOffset.y + 600)) {
-        console.log('Esta fuera');
+    function correctCamera(o) {
+      if (-cameraOffset.x + 300 < o.x) {
+        cameraOffset.x -= 4;
+      }
+      if (-cameraOffset.x + 600 > o.x) {
+        cameraOffset.x += 4;
+      }
+      if (-cameraOffset.y + 200 < o.y) {
+        cameraOffset.y -= 4;
+      }
+      if (-cameraOffset.y + 400 > o.y) {
+        cameraOffset.y += 4;
+      }
+    }
+
+    var correctionAnimation;
+    function checkCamera() {
+      cameraOffset = {
+        x: Math.max(-94, Math.min(cameraOffset.x, 106)),
+        y: Math.max(-296,Math.min(cameraOffset.y, 103)),
+      };
+
+      var getPoint = pointMaker(character.position.i, character.position.j,
+                                character.baseHeight);
+      var o = getPoint(0);
+      if (!movingCamera &&
+          !(-cameraOffset.x + 300 < o.x && o.x < -cameraOffset.x + 600 &&
+            -cameraOffset.y + 200 < o.y && o.y < -cameraOffset.y + 400)) {
+        console.log('Está fuera');
+        correctionAnimation = setTimeout(function () {
+          correctCamera(o);
+        }, 333);
+      } else {
+        clearTimeout(correctionAnimation);
       }
     }
 
@@ -709,7 +727,7 @@
       setup(70);
   //    setupGrid(15, 15);
       render = function () {
-        correctCamera();
+        checkCamera();
         ctx.setTransform(1, 0, 0, 1, cameraOffset.x, cameraOffset.y);
         makeGrid();
   //      showCenter();
@@ -718,7 +736,10 @@
           decorate();
         }
       };
-      render();
+      setInterval(function () {
+        cls();
+        render();
+      }, 1000/30);
     });
   </script>
 </head>
