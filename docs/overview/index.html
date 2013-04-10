@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+
+  <title>Hadron</title>
+
+  <meta name="description" content="Informal introduction to architecture">
+  <meta name="author" content="Salvador de la Puente González">
+
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+  <link rel="stylesheet" href="css/reveal.min.css">
+  <link rel="stylesheet" href="css/theme/default.css" id="theme">
+  <link rel="stylesheet" href="css/custom.css">
+
+  <!-- For syntax highlighting -->
+  <link rel="stylesheet" href="lib/css/zenburn.css">
+
+  <!-- If the query includes 'print-pdf', use the PDF print sheet -->
+  <script>
+    document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+  </script>
+
+  <!--[if lt IE 9]>
+  <script src="lib/js/html5shiv.js"></script>
+  <![endif]-->
+</head>
+<body>
+
+  <div class="reveal linear">
+    <!-- Any section element inside of this container is displayed as a slide -->
+    <div class="slides">
+      <section>
+        <header>
+        <h1>Hadron</h1>
+        <h2>Knights of Hadronia Game Engine</h2>
+        </header>
+      </section>
+
+      <section>
+        <section>
+          <h3>What is a game engine?</h3>
+          <ul>
+            <li class="fragment">It's a <strong>runtime environment</strong> focused on games</li>
+            <li class="fragment">It's <strong>NOT</strong> the graphic engine…</li>
+            <li class="fragment">…but contains the graphic engine and other renders</li>
+          </ul>
+        </section>
+        <section>
+          <p>Let's define our games as simulations…</p>
+          <p class="fragment">Thus, the <strong>game engine runs a simulation</strong></p>
+        </section>
+        <section>
+          <p><strong>A game is an instance of a game engine!</strong></p>
+        </section>
+        <section>
+          <h3>Game engine subsystems</h3>
+          <ul>
+            <li class="fragment"><strong>Model</strong>: capture the representation in data structures</li>
+            <li class="fragment"><strong>Control</strong>: applies the laws of the simulation</li>
+            <li class="fragment"><strong>Render</strong>: represents the simulation</li>
+            <li class="fragment"><strong>Input</strong>: capture user events</li>
+          </ul>
+        </section>
+        <section>
+          <h3>Example:</h3>
+          <canvas style="border: 1px solid black; background-color: white; box-shadow: black 10px 10px 10px;"></canvas>
+          <p>Press <strong>ctrl+u</strong> to see the sources!</p>
+          <script src="game/Utils.js"></script>
+          <script src="game/Model.js"></script>
+          <script src="game/Control.js"></script>
+          <script src="game/Render.js"></script>
+          <script src="game/Input.js"></script>
+          <script src="game/GameEngine.js"></script>
+          <script>
+            var model, canvas, input, game;
+
+            model = new Model([
+              [0,1,1,0,0,1,1,0],
+              [0,1,1,0,0,1,1,0],
+              [0,0,1,1,1,1,0,0],
+              [0,0,0,1,1,0,0,0]
+            ]);
+
+            canvas = document.getElementsByTagName('canvas')[0];
+            input = new Input();
+            game = new GameEngine(
+              model, canvas,
+              input, Control, Render
+            );
+            game.start();
+          </script>
+        </section>
+      </section>
+
+      <section>
+        <section>
+          <h3>Project's overview</h3>
+          <ul>
+            <li class="fragment">Game engine Hadron</li>
+            <li class="fragment">Subsystems of the engine</li>
+            <li class="fragment">Modeling tools</li>
+          </ul>
+        </section>
+        <section>
+          <img src="imgs/project-overview.png" style="width:500px; padding:1em;"/>
+        </section>
+      </section>
+
+      <section>
+        <section>
+          <h3>Hadron architecture abstract</h3>
+        </section>
+        <section>
+          <p>Keep <strong>focus</strong>!</p>
+          <ul>
+            <li class="fragment">We are not programming another Unity / Unreal Engine</li>
+            <li class="fragment">Our target games are <strong>old-style isometric games</strong></li>
+          </ul>
+        </section>
+        <section>
+          <h4>IO subsystem</h4>
+          <p>Captures user's input translating it into <strong>game events</strong> and provides feedback from game.</p>
+        </section>
+        <section>
+          <h4>Model subsystem</h4>
+          <ul>
+            <li>Capture world details as a hierarchy of nodes</li>
+            <li>It's focused on representing multi-hight isometric worlds</li>
+            <li>But it includes an extensible framework to model characters, objects, enemies…</li>
+            <li>User interfaces, sounds, dialogues, conversations…<br/><strong>They are all models too!</strong></li>
+          </ul>
+        </section>
+        <section>
+          <h4>Control subsystem</h4>
+          <ul>
+            <li>Listen for game events</li>
+            <li><strong>Modifies the Model</strong> consequently</li>
+            <li>This includes starting animations, updating positions, changing states, playing sounds…</li>
+            <li>It encloses an AI framework, physics, scripting DSLs and extensible baseclasses to model behaviours.</li>
+          </ul>
+        </section>
+        <section>
+          <h4>Render subsystem</h4>
+          <ul>
+            <li><strong>Interprets the model providing </strong></li>
+            <li>Two main renders:</li>
+            <ul>
+              <li>Graphic render is in charge of <strong>painting</strong> the model</li>
+              <li>Sound render is in charge of <strong>synthesizing</strong> sounds</li>
+            </ul>
+          </ul>
+        </section>
+        <section>
+          <p><strong>Knights of Hadronia</strong> is the ultimate goal…</p>
+          <p class="fragment">…but if well designed, KofH is no more than another<br/><strong>Hadron instance</strong>.</p>
+        </section>
+      </section>
+
+      <section>
+        <section>
+          <h3>Interaction examples</h3>
+          <p class="fragment"><strong>Verbalization</strong> of some representative situations.</p>
+        </section>
+        <section>
+          <h4>Rendering</h4>
+          <p>
+          When the engine is started, renders receive a <em>Render</em> event at FPS rate. At each <em>Render</em> event,
+          renders read <strong>Model</strong> and paint / play models.
+          </p>
+        </section>
+        <section>
+          <h4>Move to position</h4>
+          <p>
+          <strong>IO</strong> receives an input event. It checks <strong>Model</strong> to see what are the world coordinates where the user
+          intend to click. It realizes the click was on terrain and generate a game event <em>WalkTo(position)</em>.
+          <strong>Control</strong> receives the <em>WalkTo</em> event and query <strong>Model</strong> to calculate the path to the goal tile. Then
+          it triggers a serie of <em>MoveTo(direction)</em> events, each one is in charge of update the position and
+          sprites for the involved models. <strong>Control</strong> commands <strong>IO</strong> to vibrate after the action.
+          </p>
+        </section>
+        <section>
+          <h4>Update guard tour</h4>
+          <p>
+          Once per <em>Render</em> event, there is a <em>Sync</em> event sent to <strong>Control</strong>. It goes through alive controllers, such as a
+          <em>GuardTour</em> object, asking them to update. The <em>GuardTour</em> controller checks its current state (i.e. chackpoint P reached).
+          Then updates the controller state (i.e. walking to checkpoint Q) at the same time it modifies related <strong>Model</strong> properties (i.e. characters involved in
+          the guard). Each state produces different properties updates.
+          </p>
+        </section>
+        <section>
+          <h4>Go underground</h4>
+          <p>
+          At the <em>Sync</em> event <strong>Control</strong> checks for current position with <strong>Model</strong>. If <em>WorldModel</em> reveals
+          we are underground then <strong>Control</strong> update sound properties such as echo and reverb. Eventually, the <strong>Sound</strong> render
+          add the modifiers to the sound and continue playing.
+          </p>
+        </section>
+      </section>
+
+      <section>
+        <section>
+          <h3>Hadron Game Development</h3>
+        </section>
+        <section>
+          <h3>English</h3>
+          <ul>
+            <li class="fragment">Ok, it's not English but Engrish</li>
+            <li class="fragment">Important for being international</li>
+            <li class="fragment">But do not worry, let's use Spanish from face to face comms</li>
+          </ul>
+        </section>
+        <section>
+          <h3>JavaScript</h3>
+          <ul>
+            <li class="fragment">It's dynamic, weak typing, interpreted OOP</li>
+            <li class="fragment">Being JIT-compiler-friendly, can be very fast</li>
+            <li class="fragment">Prepare for asynchronous programming</li>
+          </ul>
+        </section>
+        <section>
+          <h3>Browser debugging</h3>
+          <ul>
+            <li class="fragment">Focus on <strong>Webkit</strong> (Chrome, Chromium, Safari, Luakit…)</li>
+            <li class="fragment">Use built-in debugger or Firebug</li>
+          </ul>
+        </section>
+        <section>
+          <h3>HTML 5 + CSS3</h3>
+          <ul>
+            <li class="fragment">Not for the main development…</li>
+            <li class="fragment">…but <strong>necessary</strong> for tools</li>
+          </ul>
+        </section>
+        <section>
+          <h3>Git + GitHub</h3>
+          <ul>
+            <li class="fragment">Popular code repository tool (used in Linux kernel)</li>
+            <li class="fragment">Decentralized, each one works in his own branch…</li>
+            <li class="fragment">…then merge via <strong>pull-requests</strong></li>
+            <li class="fragment">GitHub offers <strong>social coding</strong></li>
+            <li class="fragment">It allows hooks to sync with external tools like <strong>Trello</strong></li>
+          </ul>
+        </section>
+        <section>
+          <h3>Tools</h3>
+          <ul>
+            <li>What do you, desginers, artists, expect from us?</li>
+            <li>What kind of tools would be perfect for you?</li>
+          </ul>
+        </section>
+        <section>
+          <p>Examples…</p>
+          <ul class="fragment">
+            <li>Could be great if I can group tiles by family</li>
+            <li>Would be nice to have a multi-track synthetiser! <strong class="fragment">¬¬U</strong></li>
+            <li>Different classes of terrains should have different colours. I want to choose my colours!</li>
+          </ul>
+          <p class="fragment">Please, <strong>think about</strong> and we'll see…</p>
+        </section>
+      </section>
+    </div>
+  </div>
+
+
+  <script src="lib/js/head.min.js"></script>
+  <script src="js/reveal.min.js"></script>
+
+  <script>
+
+    // Full list of configuration options available here:
+    // https://github.com/hakimel/reveal.js#configuration
+    Reveal.initialize({
+      controls: true,
+      progress: true,
+      history: true,
+      center: true,
+
+      theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+      transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/none
+
+      // Optional libraries used to extend on reveal.js
+      dependencies: [
+        { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+        { src: 'plugin/markdown/showdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+        { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+        { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+        { src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+        { src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+        // { src: 'plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+      ]
+    });
+
+  </script>
+
+</body>
+</html>
