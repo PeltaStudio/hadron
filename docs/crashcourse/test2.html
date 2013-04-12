@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Awesomenoid</title>
+  </head>
+  <body>
+    <canvas style="border: 1px solid black;"></canvas>
+    <pre id="info"></pre>
+    <script src="game/Utils.js"></script>
+    <script src="game/Model.js"></script>
+    <script src="game/Render.js"></script>
+    <script src="game/Input.js"></script>
+    <script src="game/ControlWrong.js"></script>
+    <script>
+        'use strict';
+        var canvas = document.getElementsByTagName('canvas')[0];
+        var theModel = new Model();
+        var theRender = new Render(theModel, canvas);
+        var theInput = new Input();
+        var theControl = new Control(theModel);
+
+        function gameLoop() {
+          theControl.simulate();
+          theRender.clear();
+          theRender.render();
+        }
+
+        var fps = 60;
+        var simulation = setInterval(gameLoop, 1000/fps);
+
+        // DEBUG
+        window.addEventListener('keypress', function (evt) {
+          var code = evt.keyCode || evt.charCode;
+          // pause / resume the game
+          if ('P'.charCodeAt(0) === code) {
+            if (simulation) {
+              clearInterval(simulation);
+              simulation = 0;
+            } else {
+              simulation = setInterval(gameLoop, 1000/fps);
+            }
+          }
+          // step by step
+          else if ('+'.charCodeAt(0) === code && !simulation) {
+            gameLoop();
+          }
+        });
+    </script>
+  </body>
+</html>

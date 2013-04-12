@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Awesomenoid</title>
+  </head>
+  <body>
+    <canvas style="border: 1px solid black;"></canvas>
+    <pre id="info"></pre>
+    <script src="game/Utils.js"></script>
+    <script src="game/Model.js"></script>
+    <script src="game/Render.js"></script>
+    <script>
+      'use strict';
+      var canvas = document.getElementsByTagName('canvas')[0];
+      var theModel = new Model();
+      var theRender = new Render(theModel, canvas);
+      theRender.render();
+    </script>
+  </body>
+</html>

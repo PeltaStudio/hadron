@@ -12,22 +12,14 @@ function Render(model, canvas) {
 }
 
 Render.prototype.clear = function () {
-  'use strict';
-
-  // Altering canvas size forces clear
-  var w = this.canvas.width;
-  if (typeof w !== 'undefined') {
-    this.canvas.width = w;
-  }
-}
+  this.canvas.width = this.canvas.width;
+};
 
 Render.prototype.render = function () {
-  'use strict';
-
   var m = this.model,
       ctx = this.ctx;
 
-  function paintPad() {
+  function drawPad() {
     var topLeft = [
       m.pad.position[X] - (m.pad.width / 2),
       m.pad.position[Y] - (m.pad.height / 2)
@@ -42,23 +34,24 @@ Render.prototype.render = function () {
     ctx.restore();
   }
 
-  function paintBall() {
+  function drawBall() {
     ctx.save();
     ctx.beginPath();
     ctx.arc(
       m.ball.position[X], m.ball.position[Y], m.ball.radius,
-      0, 2*Math.PI
+      0, 2*Math.PI // this is a library (libraries are objects)
     );
+    ctx.fillStyle = 'grey';
+    ctx.fill();
     ctx.strokeStyle = 'black';
     ctx.stroke();
     ctx.restore();
   }
 
-  function paintBlocks() {
+  function drawBlocks() {
     var blocks = m.scenario.blocks,
-        blockWidth = Math.floor(m.scenario.width / blocks[0].length),
+        blockWidth = m.scenario.width / blocks[0].length,
         blockHeight = m.pad.height,
-
         block, topLeft;
 
     ctx.save();
@@ -78,12 +71,14 @@ Render.prototype.render = function () {
         }
       }
     }
-    ctx.strokeStyle = 'black';
+    ctx.fillStyle = 'black';
+    ctx.fill();
+    ctx.strokeStyle = 'grey';
     ctx.stroke();
     ctx.restore();
   }
 
-  paintBlocks();
-  paintPad();
-  paintBall();
+  drawBlocks();
+  drawPad();
+  drawBall();
 };

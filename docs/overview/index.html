@@ -59,9 +59,9 @@
         <section>
           <h3>Game engine subsystems</h3>
           <ul>
-            <li class="fragment"><strong>Model</strong>: capture the representation in data structures</li>
+            <li class="fragment"><strong>Model</strong>: capture the game reality in data structures</li>
             <li class="fragment"><strong>Control</strong>: applies the laws of the simulation</li>
-            <li class="fragment"><strong>Render</strong>: represents the simulation</li>
+            <li class="fragment"><strong>Render</strong>: represents the model</li>
             <li class="fragment"><strong>Input</strong>: capture user events</li>
           </ul>
         </section>
@@ -69,12 +69,12 @@
           <h3>Example:</h3>
           <canvas style="border: 1px solid black; background-color: white; box-shadow: black 10px 10px 10px;"></canvas>
           <p>Press <strong>ctrl+u</strong> to see the sources!</p>
-          <script src="game/Utils.js"></script>
-          <script src="game/Model.js"></script>
-          <script src="game/Control.js"></script>
-          <script src="game/Render.js"></script>
-          <script src="game/Input.js"></script>
-          <script src="game/GameEngine.js"></script>
+          <script src="../crashcourse/game/Utils.js"></script>
+          <script src="../crashcourse/game/Model.js"></script>
+          <script src="../crashcourse/game/Control.js"></script>
+          <script src="../crashcourse/game/Render.js"></script>
+          <script src="../crashcourse/game/Input.js"></script>
+          <script src="../crashcourse/game/GameEngine.js"></script>
           <script>
             var model, canvas, input, game;
 

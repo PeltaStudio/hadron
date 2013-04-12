@@ -1,25 +1,29 @@
-function GameEngine(model, target, input, controlClass, renderClass, config) {
-  'use strict'
+'use strict';
 
+function GameEngine(model, target, input, controlClass, renderClass, config) {
   var self = this;
 
   config = config || {};
 
   this.debug = config.debug;
   this.debugLog = config.debugLog;
+  this.debugControl = {
+    pause: config.pause || 'p',
+    step: config.step || '+'
+  };
 
   this.input = input;
 
   this.control = new controlClass(model);
-  this.control.installListeners();
 
   window.addEventListener('keypress', function (evt) {
     var code = evt.keyCode || evt.charCode,
         event;
-    if (code === 32) {
+    if (self.debugControl.pause.charCodeAt(0) === code) {
       self.pause();
     }
-    else if (code === 43 && !self.execution) {
+    else if (!self.execution &&
+             self.debugControl.step.charCodeAt(0) === code ) {
       self.step();
     }
   });
@@ -33,12 +37,12 @@ function GameEngine(model, target, input, controlClass, renderClass, config) {
 
   this.gameLoop = function () {
     self.lastFrameTime = Date.now();
-    self.control.update();
+    self.control.simulate();
     self.render.clear();
     self.render.render();
     self.timeFrame = Date.now() - self.lastFrameTime;
 
-    if (self.debug) {
+    if (self.debug && self.debugLog) {
       self.debugLog.innerHTML = 'fps: ' + Math.floor(1000/self.timeFrame);
     }
   };
@@ -46,15 +50,11 @@ function GameEngine(model, target, input, controlClass, renderClass, config) {
 }
 
 GameEngine.prototype.start = function() {
-  'use strict'
-
   clearInterval(this.execution);
   this.execution = setInterval(this.gameLoop, this.period);
 };
 
 GameEngine.prototype.pause = function() {
-  'use strict'
-
   if (this.execution) {
     clearInterval(this.execution);
     this.execution = 0;
@@ -65,7 +65,5 @@ GameEngine.prototype.pause = function() {
 }
 
 GameEngine.prototype.step = function() {
-  'use strict'
-
   this.gameLoop();
 }

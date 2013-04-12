@@ -1,0 +1,1233 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+
+  <title>Hadron - JavaScript & Gaming Crash Course</title>
+
+  <meta name="description" content="Informal introduction to architecture">
+  <meta name="author" content="Salvador de la Puente González">
+
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+  <link rel="stylesheet" href="css/reveal.min.css">
+  <link rel="stylesheet" href="css/theme/default.css" id="theme">
+  <link rel="stylesheet" href="css/custom.css">
+
+  <!-- For syntax highlighting -->
+  <link rel="stylesheet" href="lib/css/zenburn.css">
+
+  <!-- If the query includes 'print-pdf', use the PDF print sheet -->
+  <script>
+    document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+  </script>
+
+  <!--[if lt IE 9]>
+  <script src="lib/js/html5shiv.js"></script>
+  <![endif]-->
+</head>
+<body>
+
+  <div class="reveal linear">
+    <!-- Any section element inside of this container is displayed as a slide -->
+    <div class="slides">
+      <section>
+        <header>
+        <h1>Hadron</h1>
+        <h2>JavaScript & Gaming Crash Course</h2>
+        </header>
+      </section>
+
+      <section>
+        <section>
+          <p>Awesome<strong>noid</strong>!</p>
+        </section>
+        <section>
+          <aside class="notes">
+            Use a and d to move the pad.<br/>
+            Use P and + to pause / resume the simulation and go step by step.
+          </aside>
+          <canvas style="border: 1px solid black; background-color: white; box-shadow: black 10px 10px 10px;"></canvas>
+          <p>Press <strong>ctrl+u</strong> to see the sources!</p>
+          <script src="game/Utils.js"></script>
+          <script src="game/Model.js"></script>
+          <script src="game/Control.js"></script>
+          <script src="game/THREE.js"></script>
+          <script src="game/Render3D.js"></script>
+          <script src="game/Render.js"></script>
+          <script src="game/Input.js"></script>
+          <script src="game/GameEngine.js"></script>
+          <script>
+            var model, canvas, input, game;
+
+            model = new Model([
+              [0,0,1,0,0,0,0,0,1,0,0],
+              [0,0,0,1,0,0,0,1,0,0,0],
+              [0,0,1,1,1,1,1,1,1,0,0],
+              [0,1,1,0,1,1,1,0,1,1,0],
+              [1,1,1,1,1,1,1,1,1,1,1],
+              [1,0,1,0,0,0,0,0,1,0,1],
+              [1,0,1,0,0,0,0,0,1,0,1],
+              [0,0,0,1,1,0,1,1,0,0,0],
+            ]);
+
+            canvas = document.getElementsByTagName('canvas')[0];
+            input = new Input();
+            game = new GameEngine(
+              model, canvas,
+              input, Control, Render,
+              { debug: true, pause: 'P' }
+            );
+            game.start();
+          </script>
+        </section>
+      </section>
+
+      <section>
+        <section>
+          <h2>Hands on!</h2>
+          <img class="deco" src="imgs/demon-blood.png" />
+        </section>
+        <section>
+          <p>Open <strong>Chrome</strong>!</p>
+          <ul>
+            <li class="fragment">Press <strong>ctr+shift+j</strong></li>
+            <li class="fragment">In console, use:
+              <ul>
+                <li><strong>shift+enter</strong> to change the line</li>
+                <li>Only <strong>enter</strong> to execute code</li>
+              </ul>
+            </li>
+          </ul>
+        </section>
+        <section>
+          <h3>Variables</h3>
+          <ul>
+            <li class="fragment">There are <strong>no constants</strong></li>
+            <li class="fragment">Use <code>var</code> to declare a name</li>
+            <li class="fragment">Names (identifiers or ids) are in the form:<br/><strong>[a..zA..Z_$][a..zA..Z_$0..9]*</strong></li>
+          </ul>
+          <pre class="fragment"><code class="javascript">
+  var X;
+  var Y;
+  X=0;
+  Y=1;
+          </code></pre>
+          <pre class="fragment"><code class="javascript">
+  var X=0, Y=1;
+          </code></pre>
+        </section>
+        <section>
+          <p>What can I assign to variables?</p>
+          <pre class="fragment"><code class="javascript">
+  // Simple types
+  var number = 5;
+  var text = "Some text";
+  var moreText = 'More text';
+  var code = function answerToLife() { return 42; };
+  var boolean = true;
+
+  // Complex types: their values can be any type
+  var object = { aNumber: number, 'answer to life': code }; 
+  var list = [number, text, object];
+
+  // Special types
+  var noDefined = undefined;
+  var neitherDefined = void 0; // prefered!
+  var yetNoDefined;
+          </code></pre>
+        </section>
+        <section>
+          <h3>Explore</h3>
+          <ul>
+            <li class="fragment">Write an expression and press enter</li>
+            <li class="fragment">Use <code>console.log(expression)</code></li>
+            <li class="fragment">Use <code>alert(expression)</code></li>
+          </ul>
+          <pre class="fragment"><code class="javascript">
+  X;
+          </code></pre>
+          <pre class="fragment"><code class="javascript">
+  console.log(X);
+          </code></pre>
+          <pre class="fragment"><code class="javascript">
+  alert(X);
+          </code></pre>
+        </section>
+        <section>
+          <h3>Functions</h3>
+          <ul>
+            <li class="fragment">Use <code>function</code> to create a function</li>
+          </ul>
+          <pre class="fragment"><code class="javascript">
+  function distance(a, b) {
+    var diff = [
+      b[X] - a[X],
+      b[Y] - a[Y]
+    ];
+    return Math.sqrt(diff[X]*diff[X] + diff[Y]*diff[Y]);
+  }
+          </code></pre>
+          <pre class="fragment"><code class="javascript">
+  function equal(a, b, threshold) {
+    threshold = threshold || 0.000001; // default parameter
+    return (b &lt; a) ?                // test
+           (a - b &lt; threshold) :    // test is true
+           (b - a &lt; threshold);     // test is false
+  }
+          </code></pre>
+        </section>
+      </section>
+
+      <section>
+        <section>
+          <h2>In a webpage</h2>
+          <img class="deco" src="imgs/paper.png" />
+        </section>
+        <section>
+          <p>Here you have a HTML5 template:</p>
+          <pre><code class="html">
+  &lt;!DOCTYPE html&gt;
+  &lt;html&gt;
+    &lt;head&gt;
+      &lt;meta charset="utf-8"&gt;
+      &lt;title&gt;A title for this webpage&lt;/title&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+      &lt;canvas style="border: 1px solid black;"&gt;&lt;/canvas&gt;
+      &lt;pre id="info"&gt;&lt;/pre&gt;
+      &lt;script&gt;
+        'use strict';
+        // Your code goes here!
+      &lt;/script&gt;
+    &lt;/body&gt;
+  &lt;/html&gt;
+          </code></pre>
+        </section>
+        <section>
+          <p>You can embed code inside <code>script</code> tags</p>
+          <pre><code class="html">
+  &lt;script&gt;
+    'use strict';
+
+    var X=0, Y=1;
+
+    function distance(a, b) {
+      var diff = [
+        b[X] - a[X],
+        b[Y] - a[Y]
+      ];
+      return Math.sqrt(diff[X]*diff[X] + diff[Y]*diff[Y]);
+    }
+
+    function equal(a, b, threshold) {
+      threshold = threshold || 0.000001; // default parameter
+      return (b &lt; a) ?                // test
+             (a - b &lt; threshold) :    // test is true
+             (b - a &lt; threshold);     // test is false
+    }
+  &lt;/script&gt;
+          </code></pre>
+        </section>
+        <section>
+          <p>Always use the JavaScript's good parts!</p>
+          <pre><code class="javascript">
+  'use strict' // &lt;-- Put at the beginnig, very important!!
+
+  // Your code goes here
+          </code></pre>
+        </section>
+        <section>
+          <p>Or you can put it into a separate file, then <strong>link</strong></p>
+          <pre><code class="html">
+  &lt;script src="game/Utils.js"&gt;&lt;/script&gt;
+          </code></pre>
+          <p class="fragment"><strong>This is preferred</strong></p>
+        </section>
+      </section>
+
+      <section>
+        <section>
+          <h2>Objects & the Model</h2>
+          <img class="deco" src="imgs/model.png" />
+        </section>
+        <section>
+          <h3>The model</h3>
+          <p>Capture the game reality in data structures</p>
+          <ul>
+            <li class="fragment">A pad</li>
+            <li class="fragment">A ball</li>
+            <li class="fragment">A scenario</li>
+          </ul>
+        </section>
+        <section>
+          <h3>Objects</h3>
+          <ul>
+            <li class="fragment">Use <code>{ key: value }</code> syntax</li>
+          </ul>
+          <pre class="fragment"><code class="javascript">
+  'use strict';
+
+  var model = {
+    scenario: {
+      width: 500,
+      height: 400,
+      blocks: [
+        [0,1,1,0,0,1,1,0],
+        [0,1,1,0,0,1,1,0],
+        [0,0,1,1,1,1,0,0],
+        [0,0,0,1,1,0,0,0]
+      ]
+    }
+  };
+          </code></pre>
+        </section>
+        <section>
+          <h3>Accessing object's properties</h3>
+          <ul>
+            <li class="fragment">Use dot notation: <code class="fragment">object.propertyName</code></li>
+            <li class="fragment">Use index notation: <code class="fragment">object['propertyName']</code></li>
+          </ul>
+          <p class="fragment">Use second when retrieving <strong>computed properties</strong>…</p>
+          <p class="fragment">…or accessing properties whose names are not<br/><strong>valid identifiers</strong>.</p>
+        </section>
+
+        <section>
+          <p><strong>Add</strong> to <code>game/Model.js</code>:</p>
+          <pre><code class="javascript">
+  'use strict';
+
+  var PAD_HEIGHT = 20;
+  var PAD_WIDTH = 70;
+  var PAD_MARGIN = 5;
+
+  var SCENARIO_WIDTH = 500;
+  var SCENARIO_HEIGHT = 400;
+
+  var model = {
+    pad: {
+      width: PAD_WIDTH,
+      height: PAD_HEIGHT,
+      position: [
+        SCENARIO_WIDTH / 2,
+        SCENARIO_HEIGHT - (PAD_HEIGHT / 2) - PAD_MARGIN
+      ]
+    },
+
+    ball: {
+      radius: 8,
+      position: [
+        Math.floor(SCENARIO_WIDTH / 2),
+        Math.floor(SCENARIO_HEIGHT / 2),
+      ],
+      velocity: [2.5, 2.5]
+    },
+
+    scenario: {
+      width: SCENARIO_WIDTH,
+      height: SCENARIO_HEIGHT,
+      blocks: [
+        [0,1,1,0,0,1,1,0],
+        [0,1,1,0,0,1,1,0],
+        [0,0,1,1,1,1,0,0],
+        [0,0,0,1,1,0,0,0]
+      ]
+    }
+  };
+          </code></pre>
+        </section>
+        <section>
+          <h3>Constructors</h3>
+          <ul>
+            <li class="fragment">Use <strong>functions</strong> to construct objects / instances</li>
+            <li class="fragment">Use <code>this</code> to populate the new object</li>
+            <li class="fragment">To create an instance use <code>var o = new Constructor();</code></li>
+          </ul>
+          <div class="fragment">
+            <pre><code class="javascript">
+  function Scenario(blocks, scenarioWidth, scenarioHeight) {
+    this.scenario = {
+      width: scenarioWidth,
+      height: scenarioHeight,
+      blocks: blocks // blocks before : is a name
+                     // blocks after : refer to the parameter
+    };
+  }
+  var myScenario = new Scenario([
+    [0,1,1,0],
+    [1,1,1,1],
+    [1,1,1,1],
+    [0,1,1,0]
+  ]);
+            </code></pre>
+          </div>
+        </section>
+        <section>
+          <p><strong>Replace</strong> <code>game/Model.js</code>:</p>
+          <pre><code class="javascript">
+  'use strict';
+
+  function Model(blocks, scenarioWidth, scenarioHeight) {
+
+    // Default block configuration
+    //
+    // Blocks will have a implicit width equal to:
+    //  scenario.width / how many blocks in blocks[0]
+    //
+    // Blocks will have a implicit height equal to:
+    //  pad.height
+    blocks = blocks || [
+      [0,1,1,0,0,1,1,0],
+      [0,1,1,0,0,1,1,0],
+      [0,0,1,1,1,1,0,0],
+      [0,0,0,1,1,0,0,0]
+    ];
+
+    scenarioWidth = scenarioWidth || 500;
+    scenarioHeight = scenarioHeight || 400;
+
+    var PAD_HEIGHT = 20;
+    var PAD_WIDTH = 70;
+    var PAD_MARGIN = 5;
+
+    this.pad = {
+      width: PAD_WIDTH,
+      height: PAD_HEIGHT,
+      position: [
+        scenarioWidth / 2,
+        scenarioHeight - (PAD_HEIGHT / 2) - PAD_MARGIN
+      ]
+    };
+
+    this.ball = {
+      radius: 8,
+      position: [
+        Math.floor(scenarioWidth / 2),
+        Math.floor(scenarioHeight / 2),
+      ],
+      velocity: [2.5, 2.5]
+    };
+
+    this.scenario = {
+      width: scenarioWidth,
+      height: scenarioHeight,
+      blocks: blocks // blocks before : is a name
+                     // blocks after : refer to the parameter
+    };
+  }
+          </code></pre>
+        </section>
+      </section>
+
+      <section>
+        <section>
+          <h2>The Prototype Chain & the Render</h2>
+          <img class="deco" src="imgs/chain.png" />
+        </section>
+        <section>
+          <h3>The Render (I)</h3>
+          <p>Read the <code>model</code> and draw it to a <code>canvas</code>:</p>
+          <ul>
+            <li class="fragment">Clears the scene: <code>clear()</code></li>
+            <li class="fragment">Paint the model: <code>render()</code></li>
+          </ul>
+        </section>
+
+        <section>
+          <p><strong>Add</strong> to <code>game/Render.js</code>:</p>
+          <pre><code class="javascript">
+  'use strict';
+
+  function Render(model, canvas) {
+    // Virtual (memory) pixels
+    canvas.width = model.scenario.width;
+    canvas.height = model.scenario.height;
+
+    // CSS (real) pixels
+    canvas.style.width = canvas.width + 'px';
+    canvas.style.height = canvas.height + 'px';
+
+    this.model = model;
+    this.canvas = canvas;
+    this.ctx = canvas.getContext('2d');
+  }
+          </code></pre>
+          <p class="fragment">Use a <strong>constructor</strong> to build Render instances</p>
+        </section>
+        <section>
+          <h3>The Prototype Chain</h3>
+          <ul>
+            <li class="fragment">Functions have a special <code>prototype</code> attribute. It is an object.</li>
+            <li class="fragment">When an object is created by using a constructor, it is chained to this <code>prototype</code> creating the <strong>prototype chain</strong>.</li>
+            <li class="fragment">While <strong>accesing an object's property</strong>, if the object does not have the property, it is looked for in the <strong>next link</strong> of the prototype chain.</li>
+          </ul>
+        </section>
+        <section>
+          <p>The <code>prototype</code> object of a constructor is<br/><strong>a convenient place to put functions</strong>.</p>
+          <p class="fragment">All instances will <strong>share</strong> the same behaviour</p>
+        </section>
+        <section>
+          <p><strong>Append to</strong> <code>game/Render.js</code>:</p>
+          <pre><code class="javascript">
+  Render.prototype.clear = function () {
+    this.canvas.width = this.canvas.width;
+  };
+  // Note the semicolon! We are ending an assignation expression
+          </code></pre>
+          <ul>
+            <li class="fragment">Functions can be <strong>anonymous</strong> (i.e. they have no name)</li>
+            <li class="fragment"><strong>Functions are values</strong>, so they can be assigned to variables or object's properties.</li>
+            <li class="fragment">Special variable <strong><code>this</code></strong> refers to the <strong>object from which the property is trying to be retrieved</strong>.</li>
+          </ul>
+        </section>
+        <section>
+          <img class="deco" src="imgs/tired.jpg" />
+          <p>So many things…</p>
+        </section>
+        <section>
+          <p>Relax and play a little bit:</p>
+          <pre><code class="javascript">
+ function SuperComputer(answer) {
+  // 0 is a valid value, we need to check if undefined
+  answer = typeof answer === 'undefined' ? 42 : answer;
+  this.name = "Deep Though";
+  this.answerToLife = answer;
+ }
+
+  SuperComputer.prototype.calculateAnswerToLife = function () {
+    return this.answer;
+  };
+
+  SuperComputer.prototype.getThis = function () {
+    return this;
+  };
+          </code></pre>
+        </section>
+        <section>
+          <pre><code class="javascript">
+  var computer = new SuperComputer();
+
+  // name is found with no delegation
+  console.log(computer.name);
+  console.log(computer.hasOwnProperty('name'));
+
+  // calculateAnswerToLife is found via delegation
+  console.log(computer.calculateAnswerToLife); // not a call!
+  console.log(computer.hasOwnProperty('calculateAnswerToLife'));
+
+  // this is the object delegating, i.e. computer
+  console.log(computer === computer.getThis());
+
+  // retrieving a computed method
+  var methodName = prompt("Provide a method name:");
+  console.log(computer[methodName]());
+
+  // There is no object delegating so this.name is undefined
+  var f = computer.calculateAnswerToLife;
+  console.log(f());
+          </code></pre>
+        </section>
+        <section>
+          <p><strong>Append to</strong> <code>game/Render.js</code>:</p>
+          <pre><code class="javascript">
+  Render.prototype.render = function () {
+    var m = this.model,
+        ctx = this.ctx;
+
+    // Divide & conquer!
+    // Here go methods to paint the elements.
+
+    paintBlocks();
+    paintPad();
+    paintBall();
+  };
+          </code></pre>
+          <p class="fragment">We will use a bottom-top approach:<br/>once we know what to do<br/><strong>let's implement each method</strong>!</p>
+        </section>
+      </section>
+
+      <section>
+        <section>
+          <h2>Drawing into Canvas & the Render</h2>
+          <img class="deco" src="imgs/raincorn.png" />
+        </section>
+        <section>
+          <h3>The Render (II)</h3>
+          <p>Read the <code>model</code> and draw it to a <code>canvas</code>:</p>
+          <ul>
+            <li class="fragment">The pad will be a rectangle</li>
+            <li class="fragment">The ball will be a circle</li>
+            <li class="fragment">The scenario will be a set of rectangles representing the blocks</li>
+          </ul>
+        </section>
+        <section>
+          <h3>How to draw?</h3>
+          <ul>
+            <li class="fragment">You don't draw in the canvas!</li>
+            <li class="fragment">You draw in a <strong>context</strong></li>
+          </ul>
+          <pre class="fragment"><code class="javascript">
+  function paintBlock(x0, y0, x1, y1) {
+    var canvas = document.getElementsByTagName('canvas');
+    var ctx = canvas.getContext('2d');
+
+    ctx.strokeStyle = 'black';
+    ctx.strokeRect(x0, y0, x1-x0, y1-y0);
+  }
+          </code></pre>
+        </section>
+        <section>
+          <h3>Saving & restoring context</h3>
+          <p class="fragment">You can <strong>save</strong> the current context…</p>
+          <pre class="fragment"><code class="javascript">
+  ctx.save();
+          </code></pre>
+          <p class="fragment">…then <strong>modify</strong> and use it…</p>
+          <pre class="fragment"><code class="javascript">
+  ctx.strokeStyle = 'black';
+  ctx.strokeRect(x0, y0, x1-x0, y1-y0);
+          </code></pre>
+          <p class="fragment">…and finally <strong>restore</strong> the previous context again</p>
+          <pre class="fragment"><code class="javascript">
+  ctx.restore();
+          </code></pre>
+        </section>
+        <section>
+          <p>This allows you to keep <strong>isolation</strong> between drawing methods</p>
+        </section>
+        <section>
+          <h3>Drawing the pad</h3>
+          <p><strong>Put</strong> inside <code>game/Render.js</code>:<code>render()</code> method</p>
+          <pre class="fragment"><code class="javascript">
+  function drawPad() {
+    var topLeft = [
+      m.pad.position[X] - (m.pad.width / 2),
+      m.pad.position[Y] - (m.pad.height / 2)
+    ];
+    ctx.save();
+    ctx.beginPath();
+    ctx.strokeStyle = 'black';
+    ctx.strokeRect(
+      topLeft[X], topLeft[Y],
+      m.pad.width, m.pad.height
+    );
+    ctx.restore();
+  }
+          </code></pre>
+        </section>
+        <section>
+          <h3>Drawing the ball</h3>
+          <p><strong>Put</strong> inside <code>game/Render.js</code>:<code>render()</code> method</p>
+          <pre class="fragment"><code class="javascript">
+  function drawBall() {
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(
+      m.ball.position[X], m.ball.position[Y], m.ball.radius,
+      0, 2*Math.PI // this is a library (libraries are objects)
+    );
+    ctx.fillStyle = 'grey';
+    ctx.fill();
+    ctx.strokeStyle = 'black';
+    ctx.stroke();
+    ctx.restore();
+  }
+        </code></pre>
+        </section>
+        <section>
+          <h3>Drawing the scenary</h3>
+          <p><strong>Put</strong> inside <code>game/Render.js</code>:<code>render()</code> method</p>
+          <pre class="fragment"><code class="javascript">
+  function drawBlocks() {
+    var blocks = m.scenario.blocks,
+        blockWidth = m.scenario.width / blocks[0].length,
+        blockHeight = m.pad.height,
+        block, topLeft;
+
+    ctx.save();
+    ctx.beginPath();
+    for (var row=0, rc=blocks.length; row &lt; rc; row++) {
+      for (var column=0, cc=blocks[row].length; column &lt; cc; column++) {
+        block = blocks[row][column];
+        if (block) {
+          topLeft = [
+            column * blockWidth,
+            row * blockHeight,
+          ];
+          ctx.rect(
+            topLeft[X], topLeft[Y],
+            blockWidth, blockHeight
+          );
+        }
+      }
+    }
+    ctx.fillStyle = 'black';
+    ctx.fill();
+    ctx.strokeStyle = 'grey';
+    ctx.stroke();
+    ctx.restore();
+  }
+          </code></pre>
+        </section>
+        <section>
+          <h3>The for loop</h3>
+        </section>
+        <section>
+          <p>The notation is simple:<br/><code>for (initializaton; test; increment) { /* body */ }</code></p>
+          <ol>
+            <li class="fragment">First, <code>initialization</code> is executed.</li>
+            <li class="fragment">Then <code>test</code> is checked.</li>
+            <li class="fragment">If <code>false</code>, we are done.</li>
+            <li class="fragment">If <code>true</code>, execute the body.</li>
+            <li class="fragment">Execute the <code>increment</code>.</li>
+            <li class="fragment">Return to step 2.</li>
+          </ol>
+        </section>
+      </section>
+      <section>
+        <section>
+          <h2>Testing time</h2>
+          <img class="deco" src="imgs/testing.gif" />
+        </section>
+        <section>
+          <pre><code class="html">
+  &lt;!DOCTYPE html&gt;
+  &lt;html&gt;
+    &lt;head&gt;
+      &lt;meta charset="utf-8"&gt;
+      &lt;title&gt;Awesomenoid&lt;/title&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+      &lt;canvas style="border: 1px solid black;"&gt;&lt;/canvas&gt;
+      &lt;pre id="info"&gt;&lt;/pre&gt;
+      &lt;script src="game/Utils.js"&gt;&lt;/script&gt;
+      &lt;script src="game/Model.js"&gt;&lt;/script&gt;
+      &lt;script src="game/Render.js"&gt;&lt;/script&gt;
+      &lt;script&gt;
+        'use strict';
+        var canvas = document.getElementsByTagName('canvas')[0];
+        var theModel = new Model();
+        var theRender = new Render(theModel, canvas);
+        theRender.render();
+      &lt;/script&gt;
+    &lt;/body&gt;
+  &lt;/html&gt;
+          </code></pre>
+          <p class="fragment"><a href="test.html" target="_blank">Check here!</a> Don't forget to see the source!</p>
+        </section>
+      </section>
+
+      <section>
+        <section>
+          <h2>The Event Model & Input</h2>
+          <img class="deco" src="imgs/bmo.png" />
+        </section>
+        <section>
+          <h3>The event model</h3>
+          <ul>
+            <li class="fragment">An event is something that happens</li>
+            <li class="fragment">We can <strong>attach listeners</strong> to events</li>
+            <li class="fragment">When an event happens, all listeners receive the event</li>
+          </ul>
+        </section>
+        <section>
+          <p>Try in console:</p>
+          <pre><code class="javascript">
+  window.addEventListener('keypress', function (evt) {
+    var code = evt.keyCode || evt.charCode;
+    alert(code);
+  });
+          </code></pre>
+          <p class="fragment">Now press a key<br/>try a, d, p and +</p>
+        </section>
+        <section>
+          <h3>Custom events</h3>
+          <ul>
+            <li class="fragment">You can build <strong>new events</strong></li>
+            <li class="fragment">Use <code>new CustomEvent(eventName)</code></li>
+            <li class="fragment">Once created, send it!</li>
+          </ul>
+        </section>
+        <section>
+          <h3>The Input</h3>
+          <p>Capture user events and transform into <strong>game events</strong></p>
+        </section>
+        <section>
+          <p><strong>Add</strong> to <code>game/Input.js</code>:</p>
+          <pre><code class="javascript">
+  'use strict';
+
+  function Input() {
+    window.addEventListener('keypress', function (evt) {
+      var code = evt.keyCode || evt.charCode,
+          event;
+      if (code === 97) { // a key
+        event = new CustomEvent('moveLeft');
+        window.dispatchEvent(event);
+      }
+      else if (code === 100) { // d key
+        event = new CustomEvent('moveRight');
+        window.dispatchEvent(event);
+      }
+    });
+  }
+          </code></pre>
+        </section>
+      </section>
+
+      <section>
+        <section>
+          <h2>Physics & Control</h2>
+          <img class="deco" src="imgs/reversed.gif" />
+        </section>
+        <section>
+          <h3>The Control</h3>
+          <p>Applies the laws of the simulation:</p>
+          <ul>
+            <li class="fragment">Move the pad</li>
+            <li class="fragment">Move the ball</li>
+            <li class="fragment">Control bouncing</li>
+            <li class="fragment">Check collisions</li>
+            <li class="fragment">Remove blocks</li>
+          </ul>
+        </section>
+        <section>
+          <p><strong>Add</strong> to <code>game/Control.js</code>:</p>
+          <pre><code class="javascript">
+  'use strict';
+
+  function Control(model) {
+    this.model = model;
+    var padSemiWidth = model.pad.width / 2;
+
+    window.addEventListener('moveLeft', function (evt) {
+      if (model.pad.position[X] - padSemiWidth &gt; 0) {
+        model.pad.position[X] -= 20;
+      }
+    });
+
+    window.addEventListener('moveRight', function (evt) {
+      if (model.pad.position[X] + padSemiWidth &lt; model.scenario.width) {
+        model.pad.position[X] += 20;
+      }
+    });
+  }
+          </code></pre>
+        </section>
+        <section>
+          <h3>Bouncing physics</h3>
+          <p class="fragment">Keep focus on <strong>circles against rectangles</strong>!</p>
+          <p class="fragment">Only <strong>complete elastyc</strong> bounces</p>
+        </section>
+        <section>
+          <p class="fragment">Suppose you have a <code>checkBallBlockCollision(block)</code> magic method.</p>
+          <p class="fragment">It returns <code>true</code> if the ball is colliding with the block<br/> at the same time it <strong>updates the velocity</strong> of the ball</p>
+        </section>
+        <section>
+          <p><strong>Add</strong> to <code>game/Control.js</code>:</p>
+          <pre><code class="javascript">
+  Control.prototype.simulate = function() {
+    var model = this.model;
+    var radius = model.ball.radius,
+        ballPos = model.ball.position,
+        padTopLeft = [
+          model.pad.position[X] - padSemiWidth,
+          model.pad.position[Y] - padSemiHeight
+        ],
+        SUBSTEPS, dv;
+
+    function checkBallScenarioCollision() {
+      // walls
+      checkBallBlockCollision([0, -1], model.scenario.width, 1);
+      checkBallBlockCollision([-1, 0], 1, model.scenario.height);
+      checkBallBlockCollision([model.scenario.width, 0], 1, model.scenario.height);
+
+      // check if fall below the scenario
+      if (ballPos[Y] - radius > model.scenario.height) {
+        model.ball.position = [
+          Math.floor(model.scenario.width / 2),
+          Math.floor(model.scenario.height / 2)
+        ];
+      }
+    }
+
+    function checkBallPadCollision() {
+      var padSemiHeight = model.pad.height / 2,
+          padSemiWidth = model.pad.width / 2;
+      checkBallBlockCollision(padTopLeft, model.pad.width, model.pad.height);
+    }
+
+    function checkBallBlocksCollision() {
+      var gameoverEvent, remainBlocks = false,
+          block, blocks = model.scenario.blocks;
+      var blockWidth = model.scenario.width / blocks[0].length,
+          topLeft, blockHeight = model.pad.height;
+
+      // check each block
+      for (var row = 0, rc = blocks.length; row &lt; rc; row++){
+        for (var col = 0, cc = blocks[row].length; col &lt; cc; col++) {
+          if (blocks[row][col]) {
+            remainBlocks = true;
+            topLeft = [
+              col * blockWidth,
+              row * blockHeight
+            ];
+
+            // if there is a collision, remove the block
+            if (checkBallBlockCollision(topLeft, blockWidth, blockHeight)) {
+              model.scenario.blocks[row][col] = 0;
+            }
+          }
+        }
+      }
+
+      // no remaining blocks -> game over
+      if (!remainBlocks) {
+        gameoverEvent = new CustomEvent('gameover');
+        window.dispatchEvent(gameoverEvent);
+      }
+    }
+  }
+          </code></pre>
+        </section>
+        <section>
+          <h3>The magic method</h3>
+          <p><code>checkBallBlockCollision(block)</code></p>
+        </section>
+        <section>
+          <img class="deco" src="imgs/bouncing/over.png" />
+        </section>
+        <section>
+          <img class="deco" src="imgs/bouncing/regular-zones.png" />
+        </section>
+        <section>
+          <h3>Perimeter collisions</h3>
+          <pre><code class="javascript">
+  // check side collision
+  atSide = ballPos[Y] >= topLeft[Y] &&
+           ballPos[Y] <= bottomRight[Y];
+
+  lateralCheck = atSide &&
+                (equal(ballPos[X] + radius, topLeft[X]) ||
+                 equal(ballPos[X] - radius, bottomRight[X]));
+
+  // check frontal collistion
+  onBlock = ballPos[X] >= topLeft[X] &&
+            ballPos[X] <= bottomRight[X];
+
+  frontalCheck = onBlock &&
+                (equal(ballPos[Y] + radius, topLeft[Y]) ||
+                 equal(ballPos[Y] - radius, bottomRight[Y]));
+          </code></pre>
+        </section>
+        <section>
+          <img class="deco" src="imgs/bouncing/approach.png" />
+        </section>
+        <section>
+          <img class="deco" src="imgs/bouncing/hit.png" />
+        </section>
+        <section>
+          <img class="deco" src="imgs/bouncing/hit2.png" />
+        </section>
+        <section>
+          <p>Check and reflect</p>
+          <p><strong>Add</strong> to <code>game/Control.js</code>:<code>update()</code></p>
+          <pre><code class="javascript">
+  function checkBallBlockCollision(topLeft, width, height) {
+    var lateralCheck, frontalCheck, cornerCheck, atSide, onBlock,
+        c1, c2, c3, c4, bounceVelocity, r;
+
+    // get corners
+    var topRight = [
+      topLeft[X] + width,
+      topLeft[Y]
+    ];
+    var bottomRight = [
+      topRight[X],
+      topRight[Y] + height
+    ];
+    var bottomLeft = [
+      topLeft[X],
+      bottomRight[Y]
+    ];
+
+    // check side collision
+    atSide = ballPos[Y] >= topLeft[Y] &&
+             ballPos[Y] <= bottomRight[Y];
+
+    lateralCheck = atSide &&
+                  (equal(ballPos[X] + radius, topLeft[X]) ||
+                   equal(ballPos[X] - radius, bottomRight[X]));
+
+    if (lateralCheck) {
+      model.ball.velocity[X] = -model.ball.velocity[X];
+    }
+
+    // check frontal collistion
+    onBlock = ballPos[X] >= topLeft[X] &&
+              ballPos[X] <= bottomRight[X];
+
+    frontalCheck = onBlock &&
+                  (equal(ballPos[Y] + radius, topLeft[Y]) ||
+                   equal(ballPos[Y] - radius, bottomRight[Y]));
+
+    if (frontalCheck) {
+      model.ball.velocity[Y] = -model.ball.velocity[Y];
+    }
+
+    // your code will continue here...
+  }
+          </code></pre>
+        </section>
+        <section>
+          <img class="deco" src="imgs/bouncing/corner.png" />
+        </section>
+        <section>
+          <h3>Corner collisions</h3>
+          <p><strong>Add</strong> to <code>game/Control.js</code>:<code>checkBallBlockCollision()</code></p>
+          <pre><code class="javascript">
+    // check corner collision
+    c1 = [
+      topLeft[X]+1,
+      topLeft[Y]+1
+    ];
+
+    c2 = [
+      topRight[X]-1,
+      topRight[Y]+1
+    ];
+
+    c3 = [
+      bottomRight[X]-1,
+      bottomRight[Y]-1
+    ];
+
+    c4 = [
+      bottomLeft[X]+1,
+      bottomLeft[Y]-1
+    ];
+
+    // select corner
+    r = radius + Math.sqrt(2);
+    cornerCheck = (equal(distance(ballPos, c1), r, 0.1) ? 1 : 0) ||
+                  (equal(distance(ballPos, c2), r, 0.1) ? 2 : 0) ||
+                  (equal(distance(ballPos, c3), r, 0.1) ? 3 : 0) ||
+                  (equal(distance(ballPos, c4), r, 0.1) ? 4 : 0);
+
+    // output velocity
+    bounceVelocity = [
+      Math.abs(model.ball.velocity[X]),
+      Math.abs(model.ball.velocity[Y])
+    ];
+    switch (cornerCheck) {
+      case 1:
+        model.ball.velocity = [
+          -bounceVelocity[X],
+          -bounceVelocity[Y]
+        ];
+        break;
+      case 2:
+        model.ball.velocity = [
+          bounceVelocity[X],
+          -bounceVelocity[Y]
+        ];
+        break;
+      case 3:
+        model.ball.velocity = [
+          bounceVelocity[X],
+          bounceVelocity[Y]
+        ];
+        break;
+      case 4:
+        model.ball.velocity = [
+          -bounceVelocity[X],
+          bounceVelocity[Y]
+        ];
+        break;
+    }
+
+    // a collision
+    return lateralCheck || frontalCheck || cornerCheck;
+          </code></pre>
+        </section>
+        <section>
+          <h3>Updating the simulation</h3>
+          <p><strong>Add</strong> at the end of <code>game/Control.js</code>:<code>simulate()</code></p>
+          <pre><code class="javascript">
+    model.ball.position[X] += model.ball.velocity[X];
+    model.ball.position[Y] += model.ball.velocity[Y];
+
+    checkBallScenarioCollision();
+    checkBallPadCollision();
+    checkBallBlocksCollision();
+          </code></pre>
+        </section>
+        <section>
+          <h3>Game over</h3>
+          <p><strong>Add</strong> to <code>game/Control.js</code>:<code>Control()</code></p>
+          <pre><code class="javascript">
+  window.addEventListener('gameover', function onGameover(evt) {
+    window.removeEventListener('gameover', onGameover);
+    alert("You won!");
+  });
+          </code></pre>
+        </section>
+      </section>
+
+      <section>
+        <section>
+          <h2>More<br />Testing time</h2>
+          <img class="deco" src="imgs/testing.gif" />
+        </section>
+        <section>
+          <pre><code class="html">
+  &lt;!DOCTYPE html&gt;
+  &lt;html&gt;
+    &lt;head&gt;
+      &lt;meta charset="utf-8"&gt;
+      &lt;title&gt;Awesomenoid&lt;/title&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+      &lt;canvas style="border: 1px solid black;"&gt;&lt;/canvas&gt;
+      &lt;pre id="info"&gt;&lt;/pre&gt;
+      &lt;script src="game/Utils.js"&gt;&lt;/script&gt;
+      &lt;script src="game/Model.js"&gt;&lt;/script&gt;
+      &lt;script src="game/Render.js"&gt;&lt;/script&gt;
+      &lt;script src="game/Input.js"&gt;&lt;/script&gt;
+      &lt;script src="game/Control.js"&gt;&lt;/script&gt;
+      &lt;script&gt;
+        'use strict';
+        var canvas = document.getElementsByTagName('canvas')[0];
+        var theModel = new Model();
+        var theRender = new Render(theModel, canvas);
+        var theInput = new Input();
+        var theControl = new Control(theModel);
+
+        function gameLoop() {
+          theControl.simulate();
+          theRender.clear();
+          theRender.render();
+        }
+
+        var fps = 60;
+        var simulation = setInterval(gameLoop, 1000/fps);
+
+        // DEBUG
+        window.addEventListener('keypress', function (evt) {
+          var code = evt.keyCode || evt.charCode;
+          // pause / resume the game
+          if ('P'.charCodeAt(0) === code) {
+            if (simulation) {
+              clearInterval(simulation);
+              simulation = 0;
+            } else {
+              simulation = setInterval(gameLoop, 1000/fps);
+            }
+          }
+          // step by step
+          else if ('+'.charCodeAt(0) === code && !simulation) {
+            gameLoop();
+          }
+        });
+      &lt;/script&gt;
+    &lt;/body&gt;
+  &lt;/html&gt;
+          </code></pre>
+          <p class="fragment"><a href="test2.html" target="_blank">Check here!</a> Don't forget to see the source!</p>
+        </section>
+      </section>
+
+      <section>
+        <section>
+          <h2>The integrator</h2>
+          <img class="deco" src="imgs/lich.gif" />
+        </section>
+        <section>
+          <p>Pause the game and advance <strong>step by step</strong></p>
+          <p class="fragment">Use <strong>the console</strong> to loonk into the model and check what happen</p>
+          <p class="fragment">Remember you can <strong>execute</strong> code!</p>
+        </section>
+        <section>
+          <p>…</p>
+        </section>
+        <section>
+          <p>The problem is related with initial velocity</p>
+          <p class="fragment">Try with <code>[1.0, 1.0]</code></p>
+          <p class="fragment">You can raise the perceived velocity <strong>increasing FPS</strong></p>
+        </section>
+        <section>
+          <p>…</p>
+        </section>
+        <section>
+          <p>The real solution consists into split the simulation in <strong>several substesps</strong></p>
+          <p class="fragment">These substeps are called <strong>deltas</strong></p>
+          <p class="fragment">We need to program an <strong>integrator</strong> to unify deltas</p>
+        </section>
+        <section>
+          <h2>Simple Euler integrator</h3>
+          <p><strong>Put</strong> inside <code>game/Control.js</code>:<code>simulate()</code></p>
+          <pre><code class="javascript">
+  // integrator
+  SUBSTEPS = 20;
+  dv = [
+    Math.abs(model.ball.velocity[X] / SUBSTEPS),
+    Math.abs(model.ball.velocity[Y] / SUBSTEPS)
+  ];
+  for (var i = 0; i &lt; SUBSTEPS; i++) {
+    model.ball.position[X] += model.ball.velocity[X] &lt; 0 ? -dv[X] : dv[X];
+    model.ball.position[Y] += model.ball.velocity[Y] &lt; 0 ? -dv[Y] : dv[Y];
+
+    checkBallScenarioCollision();
+    checkBallPadCollision();
+    checkBallBlocksCollision();
+  }
+
+          </code></pre>
+
+        </section>
+      </section>
+
+      <section>
+        <section>
+          <h2>Play time!</h2>
+          <img class="deco" src="imgs/game-bmo.gif" />
+        </section>
+      </section>
+
+    </div>
+  </div>
+
+  <script src="lib/js/head.min.js"></script>
+  <script src="js/reveal.min.js"></script>
+
+  <script>
+
+    // Full list of configuration options available here:
+    // https://github.com/hakimel/reveal.js#configuration
+    Reveal.initialize({
+      controls: true,
+      progress: true,
+      history: true,
+      center: true,
+
+      theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+      transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/none
+
+      // Optional libraries used to extend on reveal.js
+      dependencies: [
+        { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+        { src: 'plugin/markdown/showdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+        { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+        { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+        { src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+        { src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+        // { src: 'plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+      ]
+    });
+
+  </script>
+
+</body>
+</html>…
