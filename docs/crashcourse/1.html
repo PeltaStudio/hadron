@@ -349,8 +349,8 @@
             <pre><code class="javascript">
   function Scenario(blocks, scenarioWidth, scenarioHeight) {
     this.scenario = {
-      width: scenarioWidth,
-      height: scenarioHeight,
+      width: scenarioWidth || 500,
+      height: scenarioHeight || 400,
       blocks: blocks // blocks before : is a name
                      // blocks after : refer to the parameter
     };
@@ -539,9 +539,9 @@
     // Divide & conquer!
     // Here go methods to paint the elements.
 
-    paintBlocks();
-    paintPad();
-    paintBall();
+    drawBlocks();
+    drawPad();
+    drawBall();
   };
           </code></pre>
           <p class="fragment">We will use a bottom-top approach:<br/>once we know what to do<br/><strong>let's implement each method</strong>!</p>
@@ -803,15 +803,19 @@
     var padSemiWidth = model.pad.width / 2;
 
     window.addEventListener('moveLeft', function (evt) {
-      if (model.pad.position[X] - padSemiWidth &gt; 0) {
-        model.pad.position[X] -= 20;
-      }
+      var newPosition = model.pad.position[X] - 20;
+      model.pad.position[X] = Math.max(
+        newPosition,
+        padSemiWidth
+      );
     });
 
     window.addEventListener('moveRight', function (evt) {
-      if (model.pad.position[X] + padSemiWidth &lt; model.scenario.width) {
-        model.pad.position[X] += 20;
-      }
+      var newPosition = model.pad.position[X] + 20;
+      model.pad.position[X] = Math.min(
+        newPosition,
+        model.scenario.width - padSemiWidth
+      );
     });
   }
           </code></pre>
@@ -829,9 +833,11 @@
           <p><strong>Add</strong> to <code>game/Control.js</code>:</p>
           <pre><code class="javascript">
   Control.prototype.simulate = function() {
-    var model = this.model;
-    var radius = model.ball.radius,
+    var model = this.model,
+        radius = model.ball.radius,
         ballPos = model.ball.position,
+        padSemiHeight = model.pad.height / 2,
+        padSemiWidth = model.pad.width / 2,
         padTopLeft = [
           model.pad.position[X] - padSemiWidth,
           model.pad.position[Y] - padSemiHeight
@@ -854,8 +860,6 @@
     }
 
     function checkBallPadCollision() {
-      var padSemiHeight = model.pad.height / 2,
-          padSemiWidth = model.pad.width / 2;
       checkBallBlockCollision(padTopLeft, model.pad.width, model.pad.height);
     }
 
@@ -868,8 +872,8 @@
       // check each block
       for (var row = 0, rc = blocks.length; row &lt; rc; row++){
         for (var col = 0, cc = blocks[row].length; col &lt; cc; col++) {
-          if (blocks[row][col]) {
-            remainBlocks = true;
+          block = blocks[row][col];
+          if (block) {
             topLeft = [
               col * blockWidth,
               row * blockHeight
@@ -878,6 +882,8 @@
             // if there is a collision, remove the block
             if (checkBallBlockCollision(topLeft, blockWidth, blockHeight)) {
               model.scenario.blocks[row][col] = 0;
+            } else {
+              remainBlocks = true;
             }
           }
         }
@@ -889,7 +895,9 @@
         window.dispatchEvent(gameoverEvent);
       }
     }
-  }
+
+    // your code will continue here...
+  };
           </code></pre>
         </section>
         <section>
@@ -933,7 +941,7 @@
         </section>
         <section>
           <p>Check and reflect</p>
-          <p><strong>Add</strong> to <code>game/Control.js</code>:<code>update()</code></p>
+          <p><strong>Add</strong> to <code>game/Control.js</code>:<code>simulate()</code></p>
           <pre><code class="javascript">
   function checkBallBlockCollision(topLeft, width, height) {
     var lateralCheck, frontalCheck, cornerCheck, atSide, onBlock,

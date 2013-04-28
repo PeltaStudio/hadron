@@ -1,17 +1,23 @@
+'use strict';
+
 function Control(model) {
   this.model = model;
   var padSemiWidth = model.pad.width / 2;
 
   window.addEventListener('moveLeft', function (evt) {
-    if (model.pad.position[X] - padSemiWidth > 0) {
-      model.pad.position[X] -= 20;
-    }
+    var newPosition = model.pad.position[X] - 20;
+    model.pad.position[X] = Math.max(
+      newPosition,
+      padSemiWidth
+    );
   });
 
   window.addEventListener('moveRight', function (evt) {
-    if (model.pad.position[X] + padSemiWidth < model.scenario.width) {
-      model.pad.position[X] += 20;
-    }
+    var newPosition = model.pad.position[X] + 20;
+    model.pad.position[X] = Math.min(
+      newPosition,
+      model.scenario.width - padSemiWidth
+    );
   });
 
   window.addEventListener('gameover', function onGameover(evt) {
@@ -20,7 +26,7 @@ function Control(model) {
   });
 }
 
-Control.prototype.simulate = function () {
+Control.prototype.simulate = function() {
   var model = this.model,
       radius = model.ball.radius,
       ballPos = model.ball.position,
@@ -31,6 +37,58 @@ Control.prototype.simulate = function () {
         model.pad.position[Y] - padSemiHeight
       ],
       SUBSTEPS, dv;
+
+  function checkBallScenarioCollision() {
+    // walls
+    checkBallBlockCollision([0, -1], model.scenario.width, 1);
+    checkBallBlockCollision([-1, 0], 1, model.scenario.height);
+    checkBallBlockCollision([model.scenario.width, 0], 1, model.scenario.height);
+
+    // check if fall below the scenario
+    if (ballPos[Y] - radius > model.scenario.height) {
+      model.ball.position = [
+        Math.floor(model.scenario.width / 2),
+        Math.floor(model.scenario.height / 2)
+      ];
+    }
+  }
+
+  function checkBallPadCollision() {
+    checkBallBlockCollision(padTopLeft, model.pad.width, model.pad.height);
+  }
+
+  function checkBallBlocksCollision() {
+    var gameoverEvent, remainBlocks = false,
+        block, blocks = model.scenario.blocks;
+    var blockWidth = model.scenario.width / blocks[0].length,
+        topLeft, blockHeight = model.pad.height;
+
+    // check each block
+    for (var row = 0, rc = blocks.length; row < rc; row++){
+      for (var col = 0, cc = blocks[row].length; col < cc; col++) {
+        block = blocks[row][col];
+        if (block) {
+          topLeft = [
+            col * blockWidth,
+            row * blockHeight
+          ];
+
+          // if there is a collision, remove the block
+          if (checkBallBlockCollision(topLeft, blockWidth, blockHeight)) {
+            model.scenario.blocks[row][col] = 0;
+          } else {
+            remainBlocks = true;
+          }
+        }
+      }
+    }
+
+    // no remaining blocks -> game over
+    if (!remainBlocks) {
+      gameoverEvent = new CustomEvent('gameover');
+      window.dispatchEvent(gameoverEvent);
+    }
+  }
 
   function checkBallBlockCollision(topLeft, width, height) {
     var lateralCheck, frontalCheck, cornerCheck, atSide, onBlock,
@@ -51,18 +109,25 @@ Control.prototype.simulate = function () {
     ];
 
     // check side collision
-    atSide = ballPos[Y] >= topLeft[Y] && ballPos[Y] <= bottomRight[Y];
-    lateralCheck = atSide && (equal(ballPos[X] + radius, topLeft[X]) ||
-                    equal(ballPos[X] - radius, bottomRight[X]));
+    atSide = ballPos[Y] >= topLeft[Y] &&
+             ballPos[Y] <= bottomRight[Y];
+
+    lateralCheck = atSide &&
+                  (equal(ballPos[X] + radius, topLeft[X]) ||
+                   equal(ballPos[X] - radius, bottomRight[X]));
 
     if (lateralCheck) {
       model.ball.velocity[X] = -model.ball.velocity[X];
     }
 
     // check frontal collistion
-    onBlock = ballPos[X] >= topLeft[X] && ballPos[X] <= bottomRight[X];
-    frontalCheck = onBlock && (equal(ballPos[Y] + radius, topLeft[Y]) ||
-                  equal(ballPos[Y] - radius, bottomRight[Y]));
+    onBlock = ballPos[X] >= topLeft[X] &&
+              ballPos[X] <= bottomRight[X];
+
+    frontalCheck = onBlock &&
+                  (equal(ballPos[Y] + radius, topLeft[Y]) ||
+                   equal(ballPos[Y] - radius, bottomRight[Y]));
+
     if (frontalCheck) {
       model.ball.velocity[Y] = -model.ball.velocity[Y];
     }
@@ -129,56 +194,6 @@ Control.prototype.simulate = function () {
 
     // a collision
     return lateralCheck || frontalCheck || cornerCheck;
-  }
-
-  function checkBallScenarioCollision() {
-    // walls
-    checkBallBlockCollision([0, -1], model.scenario.width, 1);
-    checkBallBlockCollision([-1, 0], 1, model.scenario.height);
-    checkBallBlockCollision([model.scenario.width, 0], 1, model.scenario.height);
-
-    // check if fall below the scenario
-    if (ballPos[Y] - radius > model.scenario.height) {
-      model.ball.position = [
-        Math.floor(model.scenario.width / 2),
-        Math.floor(model.scenario.height / 2)
-      ];
-    }
-  }
-
-  function checkBallPadCollision() {
-    checkBallBlockCollision(padTopLeft, model.pad.width, model.pad.height);
-  }
-
-  function checkBallBlocksCollision() {
-    var gameoverEvent, remainBlocks = false,
-        block, blocks = model.scenario.blocks;
-    var blockWidth = model.scenario.width / blocks[0].length,
-        topLeft, blockHeight = model.pad.height;
-
-    // check each block
-    for (var row = 0, rc = blocks.length; row < rc; row++){
-      for (var col = 0, cc = blocks[row].length; col < cc; col++) {
-        if (blocks[row][col]) {
-          remainBlocks = true;
-          topLeft = [
-            col * blockWidth,
-            row * blockHeight
-          ];
-
-          // if there is a collision, remove the block
-          if (checkBallBlockCollision(topLeft, blockWidth, blockHeight)) {
-            model.scenario.blocks[row][col] = 0;
-          }
-        }
-      }
-    }
-
-    // no remaining blocks -> game over
-    if (!remainBlocks) {
-      gameoverEvent = new CustomEvent('gameover');
-      window.dispatchEvent(gameoverEvent);
-    }
   }
 
   model.ball.position[X] += model.ball.velocity[X];
