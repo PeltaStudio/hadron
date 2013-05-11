@@ -1,0 +1,58 @@
+
+html {
+  font-size: 10px;
+}
+
+body {
+  position: relative;
+  margin-top: 40px;
+}
+
+header {
+  color: white;
+  padding: 3rem 4rem;
+
+  background: #890200; /* Old browsers */
+  background: -moz-linear-gradient(top,  hsla(1,100%,27%,1) 0%, hsla(347,81%,36%,1) 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,hsla(1,100%,27%,1)), color-stop(100%,hsla(347,81%,36%,1))); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top,  hsla(1,100%,27%,1) 0%,hsla(347,81%,36%,1) 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top,  hsla(1,100%,27%,1) 0%,hsla(347,81%,36%,1) 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top,  hsla(1,100%,27%,1) 0%,hsla(347,81%,36%,1) 100%); /* IE10+ */
+  background: linear-gradient(to bottom,  hsla(1,100%,27%,1) 0%,hsla(347,81%,36%,1) 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#890200', endColorstr='#a81232',GradientType=0 ); /* IE6-9 */
+
+  text-shadow: 0 0.2rem black;
+  box-shadow: 0 5px 10px 2px black;
+}
+
+header h1 {
+  font-size: 8rem;
+  line-height: 1;
+}
+
+header p {
+  font-size: 2rem !important;
+}
+
+.navbar .container {
+  margin-left: 4rem;
+}
+
+.logo {
+  width: 30rem;
+  height: 34rem;
+  background: url("../img/logo.png");
+  position: absolute;
+  top: 0; right: 0;
+  z-index: 5000;
+}
+
+.pure-javascript:before {
+  content: "<";
+  margin: 0.5rem;
+}
+
+.pure-javascript:after {
+  content: "/>";
+  margin: 0.5rem;
+}
