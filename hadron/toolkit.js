@@ -49,8 +49,17 @@ define(function (require) {
     return copy;
   }
 
+  function assertDefined(obj, errorMessage) {
+    errorMessage = errorMessage || (obj + ' is undefined or null');
+    if (typeof obj === 'undefined' || obj === null)
+      throw new Error(errorMessage);
+
+    return true;
+  }
+
   return {
     extend: extend,
-    clone: clone
+    clone: clone,
+    assertDefined: assertDefined
   };
 });

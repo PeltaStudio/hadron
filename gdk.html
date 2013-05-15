@@ -33,6 +33,10 @@
           control: theControl,
           render: theRender
         });
+
+        var Grid = require('hadron/models/helpers/Grid');
+        theRender.add(new Grid());
+
         theSimulation.start();
       });
     </script>

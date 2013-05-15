@@ -2,34 +2,42 @@
 define(function (require) {
   'use strict'
 
-  var _ = require('hadron/toolkit');
-
   function Render(model, canvas) {
-    this.model = model;
-    this.canvas = canvas;
-    this.ctx = canvas.getContext('2d');
-    this.entities = [];
-  }
+    var model = model,
+        canvas = canvas,
+        drawer = canvas.getContext('2d'),
+        entities = [];
 
-  Render.prototype.add = function(entity, render) {
-    if (this.entities.indexOf(entity) !== -1) {
-      return;
+    function add(entity, render) {
+      if (entities.indexOf(entity) !== -1) {
+        return;
+      }
+
+      if (typeof render === 'function') {
+        if (typeof entity === 'function') {
+          entity.prototype.render = render;
+        }
+        else {
+          entity.render = controller;
+        }
+      }
+
+      if (typeof entity !== 'function') {
+        entities.push(entity);
+      }
     }
 
-    if (typeof render === 'function') {
-      entity.render = render;
+    function render(interpolationValue) {
+      var self = this;
+      entities.forEach(function onEach(entity) {
+        entity.render(interpolationValue, drawer, model, self);
+      });
     }
 
-    if (typeof entity !== 'function') {
-      this.entities.push(entity);
+    return {
+      add: add,
+      render: render
     }
-  };
-
-  Render.prototype.render = function() {
-    var self = this;
-    this.entities.forEach(function onEach(entity) {
-      entity.render(self.model, self);
-    });
   }
 
   return Render;
