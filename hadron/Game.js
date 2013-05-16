@@ -4,44 +4,47 @@ define(function () {
 
   var T = require('toolkit');
 
-  var defaultSimulationOptions = {
+  var defaultGameOptions = {
     fps: 60,
     maxSimulationTime: 300,
     simulationDelta: 10
   };
 
-  function Simulation(customOptions) {
+  function Game(customOptions) {
 
     checkOptions(customOptions);
 
-    var simulationId = null,
-        model = customOptions.model,
+    var runningGameId = null,
+        rootModel = customOptions.rootModel,
         render = customOptions.render,
         control = customOptions.control,
         options = getCustomizedOptions(customOptions);
 
-    var t, newTime, currentTime, accumulator;
+    var t, newTime, currentTime, pauseTime, accumulator;
 
-    function gameStep() {
+    function gameStep(forcedSimulationTime) {
       newTime = Date.now();
       var frameTime = newTime - currentTime;
-      var timeToSimulate = Math.min(frameTime, optionsMaxSimulationTime);
+      var timeToSimulate = Math.min(
+        forcedSimulationTime !== void 0 ? forcedSimulationTime : frameTime,
+        options.maxSimulationTime
+      );
       currentTime = newTime;
 
       accumulator += timeToSimulate;
       var dt = options.simulationDelta;
       while (timeToSimulate >= dt) {
-        control.simulate(t, dt);
+        rootModel.as(control, t, dt, rootModel);
         t += dt;
         accumulator -= dt;
       }
 
       var interpolationValue = accumulator / dt;
-      render.render(interpolationValue);
+      rootModel.as(render, interpolationValue, rootModel);
     }
 
     function start() {
-      if (!simulationId) {
+      if (!runningGameId) {
         reset();
         resume();
       }
@@ -55,20 +58,21 @@ define(function () {
     }
 
     function pause() {
-      clearInterval(simulationId);
-      simulationId = null;
+      pauseTime = Date.now();
+      clearInterval(runningGameId);
+      runningGameId = null;
     }
 
     function resume() {
-      if (!simulationId) {
+      if (!runningGameId) {
         var periodInMillis = 1000/options.fps;
-        simulationId = setInterval(gameStep, periodInMillis);
+        runningGameId = setInterval(gameStep, periodInMillis);
       }
     }
 
-    // fixme: add the duration of the step or it will be since the last pause
-    function step() {
-      if (!simulationId) {
+    function step(timeToSimulate) {
+      timeToSimulate = timeToSimulate || options.simulationDelta;
+      if (!runningGameId) {
         gameStep();
       }
     }
@@ -83,14 +87,14 @@ define(function () {
   };
 
   function checkOptions(customOptions) {
-    T.assertDefined(customOptions.model, 'The `model` key is mandatory!');
+    T.assertDefined(customOptions.rootModel, 'The `rootModel` key is mandatory!');
     T.assertDefined(customOptions.render, 'The `render` key is mandatory!');
     T.assertDefined(customOptions.control, 'The `control` key is mandatory!');
   };
 
   function getCustomizedOptions(customOptions) {
-    return T.extend({}, defaultSimulationOptions, customOptions);
+    return T.extend({}, defaultGameOptions, customOptions);
   }
 
-  return Simulation;
+  return Game;
 });

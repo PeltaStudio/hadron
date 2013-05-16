@@ -7,7 +7,7 @@
     <title>Hadron Builder - The game development kit</title>
 
     <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/gdk.css">
+<!--    <link rel="stylesheet" href="css/gdk.css"> -->
 
     <script data-main="hadron/main.js" src="hadron/require.js" type="text/javascript"></script>
     <script defer src="js/jquery-2.0.0.min.js"></script>
@@ -25,8 +25,8 @@
             Simulation = require('hadron/Simulation');
 
         var theModel = new Model(),
-            theControl = new Control(theModel),
-            theRender = new Render(theModel, zoneEditor);
+            theControl = new Control(),
+            theRender = new Render(zoneEditor);
 
         var theSimulation = new Simulation({
           model: theModel,
