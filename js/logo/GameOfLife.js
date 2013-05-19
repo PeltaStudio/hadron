@@ -7,54 +7,75 @@ define(function (require) {
       HexCell = require('HexCell');
 
   function GameOfLife(side, size, center) {
+    var self = this;
     Model.apply(this, arguments);
 
-    var BOARD_SIZE = 150, FILL_AREA = BOARD_SIZE * 0.83,
-        cell, X, Y, f, c, fc, cc, r, fillHoles = true,
-        board = new Hexagon(BOARD_SIZE, center);
-    board.fillColor = 'white';
-    board.rotation = Math.PI / 2;
-    this.add(board);
-
-    for (f = 0; f < side; f++) {
-      X = center[0] - (3/2 * size * f);
-      Y = center[1] - FILL_AREA + (size * Math.sqrt(3)/2 * f);
-      for (c = 0, cc = f + 1; c < cc; c++) {
-        cell = new HexCell(size, [X, Y]);
-        this.add(cell);
-        X += 3 * size;
-      }
-    }
-
-    for (fc = f + 2 * (side - 1); f < fc; f++) {
-      X = center[0] - (3/2 * size * (side - (fillHoles ? 2 : 1)));
-      Y = center[1] - FILL_AREA + (size * Math.sqrt(3)/2 * f);
-      for (c = 0, cc = side - (fillHoles ? 1 : 0); c < cc; c++) {
-        cell = new HexCell(size, [X, Y]);
-        this.add(cell);
-        X += 3 * size;
-      }
-      fillHoles = !fillHoles;
-    }
-
-    for (r = side, fc = f + (side - 1); f < fc; f++, r--) {
-      X = center[0] - (3/2 * size * (r - (fillHoles ? 2 : 1)));
-      Y = center[1] - FILL_AREA + (size * Math.sqrt(3)/2 * f);
-      for (c = 0, cc = r - 1; c < cc; c++) {
-        cell = new HexCell(size, [X, Y]);
-        this.add(cell);
-        X += 3 * size;
-      }
-    }
-
-    function setupBoard() {
-      
-    }
+    var BOARD_SIZE = 150,
+        FILL_AREA = Math.sqrt(3) * size * (side - 1);
 
     setupBoard();
     setupTop();
     setupMiddle();
     setupBottom();
+
+    function setupBoard() {
+      var board = new Hexagon(BOARD_SIZE, center);
+      board.fillColor = 'white';
+      board.rotation = Math.PI / 2;
+      self.add(board);
+    }
+
+    // 0-based row counting
+    function setupTop() {
+      var cell, row, col, colCount, X, Y, hexagonsByRow;
+      for (row = 0; row < side; row++) {
+        X = center[0] - (3/2 * size * row);
+        Y = center[1] - FILL_AREA + (size * Math.sqrt(3)/2 * row);
+        hexagonsByRow = row + 1;
+        for (col = 0, colCount = hexagonsByRow; col < colCount; col++) {
+          cell = new HexCell(size, [X, Y]);
+          self.add(cell);
+          X += 3 * size;
+        }
+      }
+    }
+
+    function setupMiddle() {
+      var cell, row, lastRow, col, colCount, X, Y, hexagonsByRow,
+          fillingHoles = true,
+          fillingStartingPosition = center[0] - (3/2 * size * (side - 2)),
+          defaultStartingPosition = center[0] - (3/2 * size * (side - 1)),
+          holes = side - 1;
+
+      lastRow = side + 2 * (side - 1);
+      for (row = side; row < lastRow; row++) {
+        X = fillingHoles ? fillingStartingPosition : defaultStartingPosition;
+        Y = center[1] - FILL_AREA + (size * Math.sqrt(3)/2 * row);
+        hexagonsByRow = fillingHoles ? holes : side;
+        for (col = 0, colCount = hexagonsByRow; col < colCount; col++) {
+          cell = new HexCell(size, [X, Y]);
+          self.add(cell);
+          X += 3 * size;
+        }
+        fillingHoles = !fillingHoles;
+
+      }
+    }
+
+    function setupBottom() {
+      var cell, rowOffset, i, row, col, colCount, X, Y, hexagonsByRow;
+      rowOffset = side + 2 * (side - 1);
+      for (row = side - 2, i = 0; row >= 0; row--, i++) {
+        X = center[0] - (3/2 * size * row);
+        Y = center[1] - FILL_AREA + (size * Math.sqrt(3)/2 * (rowOffset + i));
+        hexagonsByRow = row + 1;
+        for (col = 0, colCount = hexagonsByRow; col < colCount; col++) {
+          cell = new HexCell(size, [X, Y]);
+          self.add(cell);
+          X += 3 * size;
+        }
+      }
+    }
   }
 
   GameOfLife.prototype = Object.create(Model.prototype);

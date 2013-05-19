@@ -39,9 +39,8 @@ header p {
 }
 
 .logo {
-  width: 30rem;
-  height: 34rem;
-  background: url("../img/logo.png");
+  width: 35rem;
+  height: 35rem;
   position: absolute;
   top: 0; right: 0;
   z-index: 5000;
@@ -55,11 +54,4 @@ header p {
 .pure-javascript:after {
   content: "/>";
   margin: 0.5rem;
-}
-
-#hadron-logo {
-  border: 1px black solid;
-  position: absolute;
-  width: 35rem;
-  height: 35rem;
 }

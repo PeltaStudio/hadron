@@ -19,7 +19,12 @@ requirejs(
   function (T, RenderAspect, ControlAspect, Game, GameOfLife) {
 
     var hadronLogo = document.getElementById('hadron-logo'),
-        canvasCenter = [hadronLogo.width/2, hadronLogo.height/2];
+        canvasCenter;
+
+    var logoComputedStyle = window.getComputedStyle(hadronLogo);
+    hadronLogo.width = parseInt(logoComputedStyle.width, 10);
+    hadronLogo.height = parseInt(logoComputedStyle.height, 10);
+    canvasCenter = [hadronLogo.width/2, hadronLogo.height/2];
 
     var gameOfLife = new GameOfLife(10, 8, canvasCenter),
         controlAspect = new ControlAspect(),
