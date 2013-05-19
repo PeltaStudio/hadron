@@ -1,8 +1,7 @@
-
 define(function (require) {
   'use strict'
 
-  var T = require('toolkit');
+  var T = require('hadron/toolkit');
   var SortedArray = T.SortedArray;
 
   function RenderAspect(canvas) {
@@ -15,6 +14,10 @@ define(function (require) {
     renderQueue.key = function (item) {
       return item.zIndex || Infinity;
     };
+
+    function clearCanvas() {
+      canvas.width = canvas.width;
+    }
 
     function reveal(entity, interpolationValue, model) {
       var helper, renderMethod = entity.render;
@@ -36,7 +39,7 @@ define(function (require) {
 
     function runRenderQueue() {
       var task;
-      while (renderQueue) {
+      while (renderQueue.length) {
         task = renderQueue.shift();
         task();
       }
@@ -46,10 +49,11 @@ define(function (require) {
       addRenderProcedure: addRenderProcedure
     };
 
-    return {
-      reveal: reveal,
-      runRenderQueue: runRenderQueue
-    }
+    // FIXME: this is a violation of the paradigm, lets stay here until we
+    // have implemented the proper way. ClearAspect?
+    this.clearCanvas = clearCanvas;
+    this.reveal = reveal;
+    this.runRenderQueue = runRenderQueue;
   }
 
   return RenderAspect;

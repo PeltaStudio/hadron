@@ -1,6 +1,7 @@
+define(function (require) {
+  'use strict';
 
-define(function () {
-  'use script';
+  var T = require('hadron/toolkit');
 
   function Model() {
 
@@ -32,19 +33,19 @@ define(function () {
     }
 
     function as(aspect) {
-      arguments[0] = this;
-      aspect.reveal.apply(aspect, arguments);
+      T.assert.isAspect(aspect);
+      var args = [].slice.call(arguments, 0);
+      args[0] = this;
+      aspect.reveal.apply(aspect, args);
       for (var i = 0, l = children.length; i < l; i++) {
-        children[i].as(aspect);
+        children[i].as.apply(children[i], arguments);
       }
     }
 
-    return {
-      as: as,
-      add: add,
-      getChildren: getChildren,
-      remove: remove
-    };
+    this.as = as;
+    this.add = add;
+    this.getChildren = getChildren;
+    this.remove = remove;
   }
 
   return Model;

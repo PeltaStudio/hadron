@@ -1,4 +1,3 @@
-
 define(function (require) {
   'use strict'
 
@@ -8,7 +7,7 @@ define(function (require) {
         key;
 
     sources.forEach(function augmentTarget(source) {
-      for (key in source) if (source.hasOwnAttribute(key)) {
+      for (key in source) if (source.hasOwnProperty(key)) {
         target[key] = source[key];
       }
     });
@@ -18,7 +17,7 @@ define(function (require) {
 
   function clone(obj) {
     if (obj === null || !(obj instanceof Object)) {
-      return target;
+      return obj;
     }
 
     var copy,
@@ -112,7 +111,7 @@ define(function (require) {
   }
 
   return {
-    SortedArray: SortedArray
+    SortedArray: SortedArray,
     assert: assert,
     clone: clone,
     extend: extend

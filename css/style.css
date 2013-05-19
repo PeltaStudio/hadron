@@ -56,3 +56,10 @@ header p {
   content: "/>";
   margin: 0.5rem;
 }
+
+#hadron-logo {
+  border: 1px black solid;
+  position: absolute;
+  width: 35rem;
+  height: 35rem;
+}

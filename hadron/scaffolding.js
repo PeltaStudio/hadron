@@ -1,7 +1,7 @@
 
 define(function (require) {
 
-  var T = require('toolkit');
+  var T = require('hadron/toolkit');
 
   return {
   };

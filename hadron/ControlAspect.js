@@ -1,8 +1,7 @@
-
 define(function (require) {
   'use strict'
 
-  var T = require('toolkit');
+  var T = require('hadron/toolkit');
   var SortedArray = T.SortedArray;
 
   function ControlAspect() {
@@ -21,7 +20,7 @@ define(function (require) {
                  simulateMethod.helper.call(entity, model) :
                  model;
 
-        simulateMethod.call(entity, t, dt, model, updateManager);
+        simulateMethod.call(entity, t, dt, helper, updateManager);
       }
     }
 
@@ -41,10 +40,8 @@ define(function (require) {
       addUpdate: addUpdate
     };
 
-    return {
-      reveal: reveal,
-      runUpdateQueue: runUpdateQueue
-    }
+    this.reveal = reveal;
+    this.runUpdateQueue = runUpdateQueue;
   }
 
   return ControlAspect;

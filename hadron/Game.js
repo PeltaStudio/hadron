@@ -1,8 +1,7 @@
-
-define(function () {
+define(function (require) {
   'use strict';
 
-  var T = require('toolkit');
+  var T = require('hadron/toolkit');
 
   var defaultGameOptions = {
     fps: 60,
@@ -23,24 +22,33 @@ define(function () {
     var t, newTime, currentTime, pauseTime, accumulator;
 
     function gameStep(forcedSimulationTime) {
-      newTime = Date.now();
-      var frameTime = newTime - currentTime;
-      var timeToSimulate = Math.min(
-        forcedSimulationTime !== void 0 ? forcedSimulationTime : frameTime,
-        options.maxSimulationTime
-      );
-      currentTime = newTime;
+      try {
+        newTime = Date.now();
+        var frameTime = newTime - currentTime;
+        var timeToSimulate = Math.min(
+          forcedSimulationTime !== void 0 ? forcedSimulationTime : frameTime,
+          options.maxSimulationTime
+        );
+        currentTime = newTime;
 
-      accumulator += timeToSimulate;
-      var dt = options.simulationDelta;
-      while (timeToSimulate >= dt) {
-        rootModel.as(control, t, dt, rootModel);
-        t += dt;
-        accumulator -= dt;
+        accumulator += timeToSimulate;
+        var dt = options.simulationDelta;
+        while (accumulator >= dt) {
+          rootModel.as(control, t, dt, rootModel);
+          control.runUpdateQueue();
+          t += dt;
+          accumulator -= dt;
+        }
+
+        var interpolationValue = accumulator / dt;
+        render.clearCanvas(); // FIXME: See RenderAspect notes
+        rootModel.as(render, interpolationValue, rootModel);
+        render.runRenderQueue();
+      } catch (error) {
+        pause();
+        console.dir(error.stack);
+        throw error;
       }
-
-      var interpolationValue = accumulator / dt;
-      rootModel.as(render, interpolationValue, rootModel);
     }
 
     function start() {
@@ -54,7 +62,7 @@ define(function () {
       pause();
       t = newOffset || 0;
       currentTime = Date.now();
-      accumulator();
+      accumulator = 0;
     }
 
     function pause() {
@@ -87,9 +95,14 @@ define(function () {
   };
 
   function checkOptions(customOptions) {
-    T.assertDefined(customOptions.rootModel, 'The `rootModel` key is mandatory!');
-    T.assertDefined(customOptions.render, 'The `render` key is mandatory!');
-    T.assertDefined(customOptions.control, 'The `control` key is mandatory!');
+    T.assert.isDefined(customOptions.rootModel,
+      'The `rootModel` key is mandatory!');
+
+    T.assert.isDefined(customOptions.render,
+      'The `render` key is mandatory!');
+
+    T.assert.isDefined(customOptions.control,
+      'The `control` key is mandatory!');
   };
 
   function getCustomizedOptions(customOptions) {
