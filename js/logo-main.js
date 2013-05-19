@@ -1,5 +1,5 @@
 requirejs.config({
-  baseUrl: '/js/logo',
+  baseUrl: './js/logo',
   urlArgs: 'bust=' + Date.now(),
   paths: {
     hadron: '../../hadron'
