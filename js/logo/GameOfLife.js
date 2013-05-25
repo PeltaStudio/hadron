@@ -8,30 +8,48 @@ define(function (require) {
       FOSSIL_CELL;
 
   // Ad-hoc completely dead (no render / no behaviour) cell
-  FOSSIL_CELL = new HexCell(0, [0,0], false);
+  FOSSIL_CELL = new HexCell([-1, -1], 0, [0,0], false);
   FOSSIL_CELL.render = void 0;
   FOSSIL_CELL.simulate = void 0;
 
   function GameOfLife(side, cellRadius, center) {
     var self = this;
-    Model.apply(this, arguments);
+    Model.call(this);
 
-    var BOARD_cellRadius = 150,
+    var BOARD_SIZE = 150,
         START_OF_THE_FILL_AREA = Math.sqrt(3) * cellRadius * (side - 1),
         board = [], cols, rows;
 
     setupFrame();
     setupBoard();
+    setupInitialConfiguration();
+
+    self.getNeighbourhood = function (cellId) {
+      var r = cellId[0],
+          c = cellId[1],
+          neighbourhood;
+
+      neighbourhood = [
+        r >= 2 ? board[r - 2][c] : FOSSIL_CELL, // N
+        r >= 1 ? board[r - 1][c] : FOSSIL_CELL, // NE
+        r < rows - 1 ? board[r + 1][c] : FOSSIL_CELL, // SE
+        r < rows - 2 ? board[r + 2][c] : FOSSIL_CELL, // S
+        r < rows - 1 && c >= 1 ? board[r + 1][c - 1] : FOSSIL_CELL, // SW
+        r >= 1 && c >= 1 ? board[r - 1][c - 1] : FOSSIL_CELL, // NW
+      ];
+
+      return neighbourhood;
+    };
 
     function setupFrame() {
-      var board = new Hexagon(BOARD_cellRadius, center);
+      var board = new Hexagon(BOARD_SIZE, center);
       board.fillColor = 'white';
       board.rotation = Math.PI / 2;
       self.add(board);
     }
 
     function setupBoard() {
-      var cell,
+      var cell, cellId,
           isRowOdd, evenRowStartingX, oddRowStartingX,
           x, y, stepX, stepY;
 
@@ -49,8 +67,10 @@ define(function (require) {
         isRowOdd = (r % 2 === 1);
         x = isRowOdd ? oddRowStartingX : evenRowStartingX;
         for (var c = 0; c < cols; c++) {
-          cell = isOutOfTheHexagon(r, c) ? FOSSIL_CELL :
-                                           new HexCell(0.9 * cellRadius, [x, y]);
+          cellId = [r, c];
+          cell = isOutOfTheHexagon(r, c) ?
+                 FOSSIL_CELL :
+                 new HexCell(cellId, 0.9 * cellRadius, [x, y]);
           board[r][c] = cell;
           self.add(cell);
           x += stepX;
@@ -112,6 +132,14 @@ define(function (require) {
 
         equivalentRowForTopTriangle = side - (r - bottomBoundary) - 1;
         return isNotInTopTriangle(equivalentRowForTopTriangle, c);
+      }
+    }
+    
+    function setupInitialConfiguration() {
+      for (var r = 0, rc = board.length; r < rc; r++) {
+        for (var c = 0, cc = board[r].length; c < cc; c++) {
+          board[r][c].alive = Math.random() < 0.5;
+        }
       }
     }
   }
