@@ -50,7 +50,7 @@ define(function (require) {
         x = isRowOdd ? oddRowStartingX : evenRowStartingX;
         for (var c = 0; c < cols; c++) {
           cell = isOutOfTheHexagon(r, c) ? FOSSIL_CELL :
-                                           new HexCell(cellRadius, [x, y]);
+                                           new HexCell(0.9 * cellRadius, [x, y]);
           board[r][c] = cell;
           self.add(cell);
           x += stepX;
@@ -59,35 +59,38 @@ define(function (require) {
       }
     }
 
-    // Determine if a pair row, colum is inside the a hexagon shape according
-    // to the size of the hexagon (`side`). A pair is inside the hexagon if
-    // it is in the central zone, or inside one of the triangles that are over
-    // and below the central zone.
+    // Consider a hexagon as:
+    // A top triangle:     /\
+    // A central zone:    |  |
+    // A bottom triangle:  \/
     function isOutOfTheHexagon(r, c) {
       var topBoundary, bottomBoundary,
           leftBoundary, rightBoundary,
           isRowEven = (r % 2 === 0),
-          middle = (side / 2) - 1,
-          index; // index in the odd/even serie
+          middle = (side / 2) - 1;
 
-      // TODO: this is the last column; could it be generalized?
-      if (isRowEven && c === side - 1 || r === side * 4) {
-        return true;
+      return isNotInCentralZone(r, c) &&
+             isNotInTopTriangle(r, c) &&
+             isNotInBottomTriangle(r, c);
+
+      function isNotInCentralZone(r, c) {
+        topBoundary = side - 1;
+        bottomBoundary = rows - side;
+
+        if (r < topBoundary || r > bottomBoundary ||
+            isRowEven && c === side - 1) {
+          return true;
+        }
       }
 
-      topBoundary = side - 1;
-      bottomBoundary = rows - side;
+      function isNotInTopTriangle(r, c) {
+        var index; // index in the odd/even serie
 
-      if (topBoundary <= r && r <= bottomBoundary) {
-        return false;
-      }
-      else {
-        if (r > bottomBoundary) {
-          r -= bottomBoundary;
-          r = side - r;
+        if (r >= topBoundary) {
+          return true;
         }
 
-        index = isRowEven ? r / 2 : (r - 1) / 2;
+        index = isRowEven ? r/2 : (r - 1)/2;
         if (isRowEven) {
           leftBoundary = middle - index;
           rightBoundary = middle + index;
@@ -96,7 +99,19 @@ define(function (require) {
           leftBoundary = middle - index;
           rightBoundary = (middle + index) + 1;
         }
+
         return c < leftBoundary || c > rightBoundary;
+      }
+
+      function isNotInBottomTriangle(r, c) {
+        var equivalentRowForTopTriangle;
+
+        if (r <= bottomBoundary || r === side * 4) {
+          return true;
+        }
+
+        equivalentRowForTopTriangle = side - (r - bottomBoundary) - 1;
+        return isNotInTopTriangle(equivalentRowForTopTriangle, c);
       }
     }
   }
