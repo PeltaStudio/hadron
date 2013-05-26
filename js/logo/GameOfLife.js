@@ -169,9 +169,13 @@ define(function (require) {
     }
 
     function setupInitialConfiguration() {
+      var cell;
       for (var r = 0, rc = board.length; r < rc; r++) {
         for (var c = 0, cc = board[r].length; c < cc; c++) {
-          board[r][c].alive = Math.random() < 0.5;
+          cell = board[r][c];
+          if (cell !== FOSSIL_CELL) {
+            cell.alive = Math.random() < 0.5;
+          }
         }
       }
     }
