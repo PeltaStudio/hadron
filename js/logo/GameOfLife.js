@@ -5,16 +5,44 @@ define(function (require) {
       Model = require('hadron/Model'),
       Hexagon = require('Hexagon'),
       HexCell = require('HexCell'),
-      FOSSIL_CELL;
+      FOSSIL_CELL,
+      selectDirection;
 
   // Ad-hoc completely dead (no render / no behaviour) cell
   FOSSIL_CELL = new HexCell([-1, -1], 0, [0,0], false);
   FOSSIL_CELL.render = void 0;
   FOSSIL_CELL.simulate = void 0;
 
+  selectDirection = {
+    N: function (cellId) { return [
+      cellId[0] - 2,
+      cellId[1]
+    ]; },
+    NE: function (cellId) { return [
+      cellId[0] - 1,
+      cellId[1] + (1 - cellId[0]%2)
+    ]; },
+    SE: function (cellId) { return [
+      cellId[0] + 1,
+      cellId[1] + (1 - cellId[0]%2)
+    ]; },
+    S: function (cellId) { return [
+      cellId[0] + 2,
+      cellId[1]
+    ]; },
+    SW: function (cellId) { return [
+      cellId[0] + 1,
+      cellId[1] - cellId[0]%2
+    ]; },
+    NW: function (cellId) { return [
+      cellId[0] - 1,
+      cellId[1] - cellId[0]%2
+    ]; }
+  };
+
   function GameOfLife(side, cellRadius, center) {
     var self = this;
-    Model.call(this);
+    Model.call(self);
 
     var BOARD_SIZE = 150,
         START_OF_THE_FILL_AREA = Math.sqrt(3) * cellRadius * (side - 1),
@@ -24,22 +52,27 @@ define(function (require) {
     setupBoard();
     setupInitialConfiguration();
 
-    self.getNeighbourhood = function (cellId) {
-      var r = cellId[0],
-          c = cellId[1],
-          neighbourhood;
+    self.getNeighbourhood = getNeighbourhood;
 
-      neighbourhood = [
-        r >= 2 ? board[r - 2][c] : FOSSIL_CELL, // N
-        r >= 1 ? board[r - 1][c] : FOSSIL_CELL, // NE
-        r < rows - 1 ? board[r + 1][c] : FOSSIL_CELL, // SE
-        r < rows - 2 ? board[r + 2][c] : FOSSIL_CELL, // S
-        r < rows - 1 && c >= 1 ? board[r + 1][c - 1] : FOSSIL_CELL, // SW
-        r >= 1 && c >= 1 ? board[r - 1][c - 1] : FOSSIL_CELL, // NW
+    function getNeighbourhood (cellId) {
+      return [
+        getNeighbour(cellId, 'N'),
+        getNeighbour(cellId, 'NE'),
+        getNeighbour(cellId, 'SE'),
+        getNeighbour(cellId, 'S'),
+        getNeighbour(cellId, 'SW'),
+        getNeighbour(cellId, 'NW')
       ];
-
-      return neighbourhood;
     };
+
+    function getNeighbour(cellId, direction) {
+      direction = direction.toUpperCase();
+      var neighbourId = selectDirection[direction](cellId),
+          r = neighbourId[0], c = neighbourId[1],
+          isOutOfBounds = r < 0 || r >= rows || c < 0 || c >= cols;
+
+      return isOutOfBounds ? FOSSIL_CELL : board[r][c];
+    }
 
     function setupFrame() {
       var board = new Hexagon(BOARD_SIZE, center);
@@ -134,7 +167,7 @@ define(function (require) {
         return isNotInTopTriangle(equivalentRowForTopTriangle, c);
       }
     }
-    
+
     function setupInitialConfiguration() {
       for (var r = 0, rc = board.length; r < rc; r++) {
         for (var c = 0, cc = board[r].length; c < cc; c++) {

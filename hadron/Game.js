@@ -21,6 +21,8 @@ define(function (require) {
 
     var t, newTime, currentTime, pauseTime, accumulator;
 
+    Object.defineProperty(this, 'rootModel', { value: rootModel });
+
     function gameStep(forcedSimulationTime) {
       try {
         newTime = Date.now();
