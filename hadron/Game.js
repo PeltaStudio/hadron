@@ -4,7 +4,6 @@ define(function (require) {
   var T = require('hadron/toolkit');
 
   var defaultGameOptions = {
-    fps: 60,
     maxSimulationTime: 300,
     simulationDelta: 10
   };
@@ -23,6 +22,43 @@ define(function (require) {
 
     Object.defineProperty(this, 'rootModel', { value: rootModel });
 
+    function start() {
+      if (!runningGameId) {
+        reset();
+        resume();
+      }
+    }
+
+    function reset(newOffset) {
+      pause();
+      t = newOffset || 0;
+      currentTime = Date.now();
+      accumulator = 0;
+    }
+
+    function pause() {
+      pauseTime = Date.now();
+      clearInterval(runningGameId);
+      runningGameId = null;
+    }
+
+    function resume() {
+      if (!runningGameId) {
+        runningGameId = setInterval(gameStep, 0);
+      }
+    }
+
+    function step(timeToSimulate) {
+      timeToSimulate = timeToSimulate || options.simulationDelta;
+      if (!runningGameId) {
+        gameStep();
+      }
+    }
+
+    /*
+    Based on article: Fix your timestep! by Glenn Fiedler
+    http://gafferongames.com/game-physics/fix-your-timestep/
+    */
     function gameStep(forcedSimulationTime) {
       try {
         newTime = Date.now();
@@ -48,44 +84,11 @@ define(function (require) {
         render.runRenderQueue();
       } catch (error) {
         pause();
-        console.dir(error.stack);
+        console.log(error.message + '\n' + error.stack);
         throw error;
       }
     }
 
-    function start() {
-      if (!runningGameId) {
-        reset();
-        resume();
-      }
-    }
-
-    function reset(newOffset) {
-      pause();
-      t = newOffset || 0;
-      currentTime = Date.now();
-      accumulator = 0;
-    }
-
-    function pause() {
-      pauseTime = Date.now();
-      clearInterval(runningGameId);
-      runningGameId = null;
-    }
-
-    function resume() {
-      if (!runningGameId) {
-        var periodInMillis = 1000/options.fps;
-        runningGameId = setInterval(gameStep, periodInMillis);
-      }
-    }
-
-    function step(timeToSimulate) {
-      timeToSimulate = timeToSimulate || options.simulationDelta;
-      if (!runningGameId) {
-        gameStep();
-      }
-    }
 
     return {
       start: start,

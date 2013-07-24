@@ -6,9 +6,10 @@ html {
 body {
   position: relative;
   margin-top: 40px;
+  background-color: #FAFAFA;
 }
 
-header {
+#main-header {
   color: white;
   padding: 3rem 4rem;
 
@@ -25,12 +26,12 @@ header {
   box-shadow: 0 5px 10px 2px black;
 }
 
-header h1 {
+#main-header h1 {
   font-size: 8rem;
   line-height: 1;
 }
 
-header p {
+#main-header p {
   font-size: 2rem !important;
 }
 
@@ -54,4 +55,61 @@ header p {
 .pure-javascript:after {
   content: "/>";
   margin: 0.5rem;
+}
+
+.stories {
+  margin: 2rem 0 2 rem 1rem;
+  width: 650px;
+}
+
+.stories article {
+  padding: 2rem;
+  padding-bottom: 5.7rem;
+  position: relative;
+  clear: both;
+  border-radius: 0 1rem 1rem 1rem;
+  box-shadow: 0 0.4rem 1rem rgba(255, 255, 128, 0.5);
+  margin: 2rem;
+}
+
+.stories article p {
+  text-align: justify;
+}
+
+.stories article h1 {
+  color: hsla(347,81%,36%,1);
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  text-shadow: 0 -0.15rem 0 hsla(347,81%,80%,1),
+               0 +0.2rem 0.1rem white;
+}
+
+.stories article aside {
+  border-radius: 0 1rem 1rem 1rem;
+  background-color: hsla(347,81%,36%,1);
+  display: inline-block;
+  height: 3rem;
+  font-weight: bold;
+  padding: 1rem;
+  text-align: center;
+  position: relative;
+  float: right;
+  min-width: 6rem;
+}
+
+.stories article aside p {
+  color: white;
+  font-size: 1.2rem;
+  line-height: .4rem;
+  text-align: center;
+}
+
+.stories article aside time {
+  position: absolute;
+  bottom: 0rem;
+  left: 0; right: 0;
+  padding: 0.5rem 0 0.3rem 0;
+  background-color: white;
+  border-radius: 0 1rem 1rem 1rem;
+  color: hsla(347,81%,36%,1);
 }

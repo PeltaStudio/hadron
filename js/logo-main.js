@@ -35,7 +35,6 @@ requirejs(
       control: controlAspect,
       render: renderAspect
     });
-
     game.start();
   }
 );

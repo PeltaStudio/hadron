@@ -1,5 +1,5 @@
 define(function (require) {
-  'use strict'
+  'use strict';
 
   var T = require('hadron/toolkit');
   var SortedArray = T.SortedArray;

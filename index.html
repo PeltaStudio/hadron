@@ -9,9 +9,13 @@
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/style.css">
 
+    <script src="js/polyfills/Promise.js" type="text/javascript"></script>
+
     <script data-main="js/logo-main.js" src="hadron/require.js" type="text/javascript"></script>
-    <script defer src="js/jquery-1.9.1.min.js"></script>
+    <script defer src="js/jquery-2.0.0.min.js"></script>
     <script defer src="js/bootstrap.min.js" type="text/javascript"></script>
+    <script defer src="js/showdown.js" type="text/javascript"></script>
+    <script defer src="js/autoblog.js" type="text/javascript"></script>
   </head>
   <body>
     <section class="navbar navbar-inverse navbar-fixed-top">
@@ -38,13 +42,12 @@
         </div>
       </div>
     </section>
-    <header>
+    <header id="main-header">
       <h1>Hadron</h1><canvas id="hadron-logo" width="350" height="350" class="logo"></canvas>
       <p class="lead">Isometric <span class="pure-javascript">pure <strong>HTML5</strong></span> game engine</p>
     </header>
 
-    <p>
-      
-    </p>
+    <section class="stories" data-stream>
+    </section>
   </body>
 </html>
