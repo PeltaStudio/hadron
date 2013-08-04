@@ -2,7 +2,7 @@ requirejs.config({
   baseUrl: './js/logo',
   urlArgs: 'bust=' + Date.now(),
   paths: {
-    hadron: '../../hadron'
+    hadron: '../../hadron/src'
   }
 });
 
