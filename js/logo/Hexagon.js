@@ -17,7 +17,8 @@ define(function (require) {
   Hexagon.prototype = Object.create(Model.prototype);
   Hexagon.prototype.constructor = Hexagon;
 
-  Hexagon.prototype.render = function (alpha, ctx) {
+  Hexagon.prototype.render = function (alpha, drawer) {
+    var ctx = drawer.getContext('2d');
     var startPoint = [
       this.position[0],
       this.position[1] - this.size

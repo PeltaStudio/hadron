@@ -27,8 +27,10 @@ requirejs(
     canvasCenter = [hadronLogo.width/2, hadronLogo.height/2];
 
     var gameOfLife = new GameOfLife(10, 8, canvasCenter),
-        controlAspect = new ControlAspect(),
-        renderAspect = new RenderAspect(hadronLogo);
+        controlAspect = new ControlAspect(), renderAspect;
+
+    hadronLogo.clear = function () { this.width = this.width; };
+    renderAspect = new RenderAspect(hadronLogo);
 
     game = new Game({
       rootModel: gameOfLife,

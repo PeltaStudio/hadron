@@ -4,11 +4,9 @@ define(function (require) {
   var T = require('hadron/toolkit');
   var SortedArray = T.SortedArray;
 
-  function RenderAspect(canvas) {
+  function RenderAspect(drawer) {
     var renderQueue,
-        renderManager,
-        canvas = canvas,
-        drawer = canvas.getContext('2d'),
+        renderManager;
 
     renderQueue = new SortedArray();
     renderQueue.key = function (item) {
@@ -16,7 +14,7 @@ define(function (require) {
     };
 
     function clearCanvas() {
-      canvas.width = canvas.width;
+      drawer.clear();
     }
 
     function reveal(entity, interpolationValue, model) {
