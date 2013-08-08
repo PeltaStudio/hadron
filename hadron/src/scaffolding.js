@@ -18,6 +18,10 @@ define(function (require) {
       addGet: function (name, f) {
         Object.defineProperty(object, name, { get: f });
         return this;
+      },
+      addSet: function (name, f) {
+        Object.defineProperty(object, name, { set: f });
+        return this;
       }
     }
   }

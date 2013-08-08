@@ -1,29 +1,30 @@
 requirejs.config({
-  baseUrl: '/hadron',
+  baseUrl: '/gdk',
   urlArgs: 'bust=' + Date.now(),
   paths: {
-    gdk: '../gdk'
+    hadron: '../hadron/src'
   }
 });
 
-var game;
+var mapBuilder, isoDrawer;
 
 requirejs(
-  ['RenderAspect', 'ControlAspect', 'Model', 'Game'],
-  function (RenderAspect, ControlAspect, Model, Game) {
+  [
+    'hadron/drawing/canvas2d/Drawer',
+    'hadron/RenderAspect',
+    'hadron/ControlAspect',
+    'hadron/Game',
+    'MapBuilder'
+  ],
+  function (Drawer, RenderAspect, ControlAspect, Game, MapBuilder) {
+    var mapBuilderViewport = document.getElementById('map-builder');
+        isoDrawer = new Drawer(mapBuilderViewport.getContext('2d'));
 
-    var zoneEditor = document.getElementById('zone-editor');
-
-    var rootModel = new Model(),
-        controlAspect = new ControlAspect(),
-        renderAspect = new RenderAspect(zoneEditor);
-
-    game = new Game({
-      rootModel: rootModel,
-      control: controlAspect,
-      render: renderAspect
+    mapBuilder = new Game({
+      rootModel: new MapBuilder(mapBuilderViewport, isoDrawer),
+      control: new ControlAspect(),
+      render: new RenderAspect(isoDrawer)
     });
-
-    game.start();
+    mapBuilder.start();
   }
 );

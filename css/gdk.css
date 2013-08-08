@@ -1,8 +1,16 @@
-html {
-  font-size: 10px;
+
+* {
+  margin: 0; padding: 0;
 }
 
-body {
-  position: relative;
-  margin-top: 40px;
+html {
+  overflow: hidden;
+}
+
+#tool-area {
+  overflow: hidden;
+}
+
+#map-builder {
+  background-color: #DDD;
 }
