@@ -48,13 +48,20 @@ define(function (require) {
         START_OF_THE_FILL_AREA = Math.sqrt(3) * cellRadius * (side - 1),
         board = [], cols, rows;
 
+    var background, cells = [];
+
     setupFrame();
     setupBoard();
     setupInitialConfiguration();
 
+    self.getComponents = getComponents;
     self.getNeighbourhood = getNeighbourhood;
 
-    function getNeighbourhood (cellId) {
+    function getComponents() {
+      return [background].concat(cells);
+    }
+
+    function getNeighbourhood(cellId) {
       return [
         getNeighbour(cellId, 'N'),
         getNeighbour(cellId, 'NE'),
@@ -78,7 +85,7 @@ define(function (require) {
       var board = new Hexagon(BOARD_SIZE, center);
       board.fillColor = 'white';
       board.rotation = Math.PI / 2;
-      self.add(board);
+      background = board;
     }
 
     function setupBoard() {
@@ -105,7 +112,7 @@ define(function (require) {
                  FOSSIL_CELL :
                  new HexCell(cellId, 0.9 * cellRadius, [x, y]);
           board[r][c] = cell;
-          self.add(cell);
+          cells.push(cell);
           x += stepX;
         }
         y += stepY;
