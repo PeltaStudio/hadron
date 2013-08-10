@@ -12,10 +12,10 @@ define(function (require) {
     this.tile = new Tile([0, 0]);
     this.mapViewport = new Camera(viewport, drawer);
     this.mapViewport.maximize();
-    this.mapViewport.centerOnViewport();
+    this.mapViewport.goToOrigin();
     window.onresize = function() {
       self.mapViewport.maximize();
-      self.mapViewport.centerOnViewport();
+      self.mapViewport.goToOrigin();
     };
   }
   S.inherit(MapBuilder, Model);
@@ -25,7 +25,9 @@ define(function (require) {
   };
 
   MapBuilder.prototype.render = function (alpha, drawer) {
-    drawer.showScreenAxis();
+    var clipArea = this.mapViewport.getViewport();
+    drawer.showIsometricGrid(100, clipArea);
+    drawer.showScreenAxis(clipArea);
   };
 
   return MapBuilder;
