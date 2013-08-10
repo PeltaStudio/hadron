@@ -8,7 +8,7 @@ define(function (require) {
 
   function Tile() {
     Model.apply(this, arguments);
-    this.size = 70;
+    this.size = 100;
     this.height = this.size;
     this.position = [0, 0, 0]; // X and Y are discretized but Z is continuous
   }
