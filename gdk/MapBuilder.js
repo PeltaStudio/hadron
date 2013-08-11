@@ -24,10 +24,12 @@ define(function (require) {
     return [this.tile];
   };
 
-  MapBuilder.prototype.render = function (alpha, drawer) {
+  MapBuilder.prototype.render = function (alpha, drawer, h, rm) {
     var clipArea = this.mapViewport.getViewport();
-    drawer.showIsometricGrid(100, clipArea);
-    drawer.showScreenAxis(clipArea);
+    rm.addRenderProcedure(function() {
+      drawer.showIsometricGrid(100, clipArea);
+      drawer.showScreenAxis(clipArea);
+    });
   };
 
   return MapBuilder;

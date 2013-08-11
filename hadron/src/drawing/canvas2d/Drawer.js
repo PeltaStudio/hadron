@@ -14,7 +14,7 @@ define(function (require) {
 
   var ROOT_2 = Math.sqrt(2),
       SEMI_ROOT_2 = ROOT_2/2,
-      SCALE = Math.sqrt(10)/4;
+      SCALE = Math.sqrt(10/16);
 
   function Drawer(context2D) {
     S.to(context2D)
@@ -29,9 +29,7 @@ define(function (require) {
   }
 
   function clear() {
-    var maxNumber = Number.MAX_VALUE,
-        minNumber = -maxNumber;
-    this.clearRect(minNumber, minNumber, maxNumber, maxNumber);
+    this.clearRect(-10000, -10000, 20000, 20000);
   }
 
   function showScreenAxis(renderArea) {
@@ -48,10 +46,10 @@ define(function (require) {
   }
 
   function showIsometricGrid(size, renderArea) {
-    var top = Math.floor(renderArea.top / size) * size * 2,
-        bottom = Math.ceil(renderArea.bottom / size) * size * 2,
-        left = Math.floor(renderArea.left / size) * size * 2,
-        right = Math.ceil(renderArea.right / size) * size * 2;
+    var top = Math.floor(renderArea.top / size) * size * 3,
+        bottom = Math.ceil(renderArea.bottom / size) * size * 3,
+        left = Math.floor(renderArea.left / size) * size * 3,
+        right = Math.ceil(renderArea.right / size) * size * 3;
 
     this.save();
     this.setDimetricProjection();
@@ -80,7 +78,7 @@ define(function (require) {
 
   function setDimetricProjection() {
     this.scale(1, 0.5); // Scale
-    this.rotate(Math.PI/4); // Rotate
+    this.rotate(-Math.PI/4); // Rotate
   }
 
   function getIsoCube(size, height) {
