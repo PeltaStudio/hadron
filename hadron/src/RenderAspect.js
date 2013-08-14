@@ -18,15 +18,11 @@ define(function (require) {
     }
 
     function reveal(entity, interpolationValue, model) {
-      var helper, renderMethod = entity.render;
+      var renderMethod = entity.render;
       if (typeof renderMethod === 'function') {
-        helper = typeof renderMethod.helper === 'function' ?
-                 renderMethod.helper.call(entity, model) :
-                 model;
-
         renderMethod.call(
           entity,
-          interpolationValue, drawer, helper, renderManager
+          interpolationValue, drawer, renderManager
         );
       }
     }

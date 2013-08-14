@@ -14,13 +14,9 @@ define(function (require) {
     };
 
     function reveal(entity, t, dt, model) {
-      var helper, simulateMethod = entity.simulate;
+      var simulateMethod = entity.simulate;
       if (typeof entity.simulate === 'function') {
-        helper = typeof simulateMethod.helper === 'function' ?
-                 simulateMethod.helper.call(entity, model) :
-                 model;
-
-        simulateMethod.call(entity, t, dt, helper, updateManager);
+        simulateMethod.call(entity, t, dt, updateManager);
       }
     }
 

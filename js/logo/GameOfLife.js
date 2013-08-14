@@ -111,6 +111,7 @@ define(function (require) {
           cell = isOutOfTheHexagon(r, c) ?
                  FOSSIL_CELL :
                  new HexCell(cellId, 0.9 * cellRadius, [x, y]);
+          extendCellForSimulation(cell);
           board[r][c] = cell;
           cells.push(cell);
           x += stepX;
@@ -118,6 +119,21 @@ define(function (require) {
         y += stepY;
       }
     }
+
+    function extendCellForSimulation(cell) {
+      cell.getAliveNeightboursCount = getAliveNeightboursCount;
+
+      function getAliveNeightboursCount() {
+        var aliveCount = 0,
+            neighbourhood = self.getNeighbourhood(this.id);
+        for (var i = 0, l = neighbourhood.length; i < l; i++) {
+          if (neighbourhood[i].alive) {
+            aliveCount++;
+          }
+        }
+        return aliveCount;
+      }
+    };
 
     // Consider a hexagon as:
     // A top triangle:     /\
