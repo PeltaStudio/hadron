@@ -17,7 +17,7 @@ define(function (require) {
       drawer.clear();
     }
 
-    function reveal(entity, interpolationValue, model) {
+    function reveal(entity, interpolationValue) {
       var renderMethod = entity.render;
       if (typeof renderMethod === 'function') {
         renderMethod.call(

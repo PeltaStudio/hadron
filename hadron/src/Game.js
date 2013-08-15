@@ -8,6 +8,7 @@ define(function (require) {
     simulationDelta: 10
   };
 
+  // TODO: Rename to HadronSimulation or something like that
   function Game(customOptions) {
 
     checkOptions(customOptions);
@@ -72,7 +73,7 @@ define(function (require) {
         accumulator += timeToSimulate;
         var dt = options.simulationDelta;
         while (accumulator >= dt) {
-          rootModel.as(control, t, dt, rootModel);
+          rootModel.as(control, t, dt);
           control.runUpdateQueue();
           t += dt;
           accumulator -= dt;
@@ -80,7 +81,7 @@ define(function (require) {
 
         var interpolationValue = accumulator / dt;
         render.clearCanvas(); // FIXME: See RenderAspect notes
-        rootModel.as(render, interpolationValue, rootModel);
+        rootModel.as(render, interpolationValue);
         render.runRenderQueue();
       } catch (error) {
         pause();
@@ -88,7 +89,6 @@ define(function (require) {
         throw error;
       }
     }
-
 
     return {
       start: start,

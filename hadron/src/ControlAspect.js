@@ -13,7 +13,7 @@ define(function (require) {
       return item.priority || Infinity;
     };
 
-    function reveal(entity, t, dt, model) {
+    function reveal(entity, t, dt) {
       var simulateMethod = entity.simulate;
       if (typeof entity.simulate === 'function') {
         simulateMethod.call(entity, t, dt, updateManager);

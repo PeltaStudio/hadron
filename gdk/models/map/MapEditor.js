@@ -1,36 +1,110 @@
 define(function (require) {
   'use strict';
 
+  var DEFAULT_CELL_SIZE = 100;
+
   var S = require('hadron/scaffolding'),
       Model = require('hadron/Model'),
-      Tile = require('hadron/models/map/Tile'),
-      Camera = require('hadron/models/cameras/Camera');
+      Camera = require('hadron/models/cameras/Camera'),
+      WorldMetrics = require('hadron/models/map/WorldMetrics'),
+      TiledMap = require('hadron/models/map/TiledMap'),
+      ScreenAxis = require('models/helpers/ScreenAxis'),
+      IsometricGrid = require('models/helpers/IsometricGrid'),
+      CellHighlighter = require('models/helpers/CellHighlighter');
 
-  function MapBuilder(viewport, drawer) {
-    var self = this;
-    Model.call(this);
-    this.tile = new Tile([0, 0]);
-    this.mapViewport = new Camera(viewport, drawer);
-    this.mapViewport.maximize();
-    this.mapViewport.goToOrigin();
-    window.onresize = function() {
-      self.mapViewport.maximize();
-      self.mapViewport.goToOrigin();
-    };
+  function MapEditor() {
+    Model.apply(self, arguments);
+
+    this.setupMap();
+    this.setupCamera();
+    this.setupGizmos();
+    this.metrics = new WorldMetrics(DEFAULT_CELL_SIZE);
+    this.pointedCell = [0, 0];
   }
-  S.inherit(MapBuilder, Model);
+  S.inherit(MapEditor, Model);
 
-  MapBuilder.prototype.getComponents = function (aspect) {
-    return [this.tile];
+  MapEditor.prototype.setupMap = function () {
+    var cellSize = DEFAULT_CELL_SIZE;
+    this.map = new TiledMap(cellSize);
   };
 
-  MapBuilder.prototype.render = function (alpha, drawer, h, rm) {
-    var clipArea = this.mapViewport.getViewport();
-    rm.addRenderProcedure(function() {
-      drawer.showIsometricGrid(100, clipArea);
-      drawer.showScreenAxis(clipArea);
-    });
+  MapEditor.prototype.setupCamera = function () {
+    var camera = new Camera();
+    camera.setPosition([0, 0]);
+    camera.resize(500, 500);
+    S.to(this).addGet('camera', function () { return camera; });
   };
 
-  return MapBuilder;
+  MapEditor.prototype.setupGizmos = function () {
+    var self = this;
+    self.grid = new IsometricGrid();
+    self.screenAxis = new ScreenAxis();
+    self.pointedCellGizmo = new CellHighlighter();
+
+    extendGizmosForRendering();
+
+    function extendGizmosForRendering() {
+      self.screenAxis.getVisualizationArea = getVisualizationArea;
+
+      self.grid.getVisualizationArea = getVisualizationArea;
+      self.grid.getCellSize = getCellSize;
+
+      self.pointedCellGizmo.getPosition = getPointedCellPosition;
+      self.pointedCellGizmo.getCellSize = getCellSize;
+
+      function getVisualizationArea() {
+        return self.camera.getVisualizationArea();
+      }
+
+      function getCellSize() {
+        return self.map.cellSize;
+      }
+
+      function getPointedCellPosition() {
+        return self.metrics.getTargetCoordinates(self.pointedCell);
+      }
+    }
+  };
+
+  MapEditor.prototype.getComponents = function (aspect) {
+    return [this.map, this.screenAxis, this.grid, this.pointedCellGizmo]; // this.screenAxis, this.intersectionGizmos
+  };
+
+  MapEditor.prototype.resizeViewport = function (newWidth, newHeight) {
+    return this.camera.resize(newWidth, newHeight);
+  };
+
+  MapEditor.prototype.goToOrigin = function () {
+    return this.camera.setPosition([0,0]);
+  };
+
+  MapEditor.prototype.render = function (alpha, drawer, h, rm) {
+    var self = this;
+    applyCameraTransformation();
+
+    function applyCameraTransformation() {
+      var position = self.camera.getPosition(),
+          X = position[0], Y = position[1];
+
+      drawer.setTransform(
+        1, 0, 0, 1,
+        X + self.camera.semiWidth,
+        Y + self.camera.semiHeight
+      );
+    }
+  };
+
+  MapEditor.prototype.getViewportSize = function () {
+    return {
+      width: this.camera.width,
+      height: this.camera.height
+    };
+  };
+
+  MapEditor.prototype.setPointer = function (cameraCoords) {
+    var targetCoordinates = this.camera.getTargetCoordinates(cameraCoords);
+    this.pointedCell = this.metrics.getWorldCoordinates(targetCoordinates);
+  };
+
+  return MapEditor;
 });

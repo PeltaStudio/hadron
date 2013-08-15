@@ -2,6 +2,7 @@ define(function (require) {
   'use strict';
 
   var T = require('hadron/toolkit'),
+      S = require('hadron/scaffolding'),
       Model = require('hadron/Model'),
       Hexagon = require('Hexagon'),
       HexCell = require('HexCell'),
@@ -203,9 +204,7 @@ define(function (require) {
       }
     }
   }
-
-  GameOfLife.prototype = Object.create(Model.prototype);
-  GameOfLife.prototype.constructor = GameOfLife;
+  S.inherit(GameOfLife, Model);
 
   return GameOfLife;
 });

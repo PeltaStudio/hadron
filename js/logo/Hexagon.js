@@ -1,7 +1,8 @@
 define(function (require) {
   'use strict';
 
-  var Model = require('hadron/Model');
+  var S = require('hadron/scaffolding'),
+      Model = require('hadron/Model');
 
   var step = Math.PI / 3;
 
@@ -13,9 +14,7 @@ define(function (require) {
     this.position = position || [0, 0];
     this.rotation = 0;
   }
-
-  Hexagon.prototype = Object.create(Model.prototype);
-  Hexagon.prototype.constructor = Hexagon;
+  S.inherit(Hexagon, Model);
 
   Hexagon.prototype.render = function (alpha, drawer) {
     var ctx = drawer.getContext('2d');
