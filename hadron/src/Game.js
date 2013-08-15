@@ -19,7 +19,7 @@ define(function (require) {
         control = customOptions.control,
         options = getCustomizedOptions(customOptions);
 
-    var t, newTime, currentTime, pauseTime, accumulator, fps;
+    var t, newTime, currentTime, pauseTime, accumulator, startTime, fps;
 
     Object.defineProperty(this, 'rootModel', { value: rootModel });
 
@@ -85,12 +85,17 @@ define(function (require) {
         rootModel.as(render, interpolationValue);
         render.runRenderQueue();
 
-        fps = 1000/(Date.now() - newTime);
+        updateFPS();
       } catch (error) {
         pause();
         console.log(error.message + '\n' + error.stack);
         throw error;
       }
+    }
+
+    function updateFPS() {
+      fps = 1000/(Date.now() - startTime);
+      startTime = Date.now();
     }
 
     return {

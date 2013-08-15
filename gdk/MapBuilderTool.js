@@ -8,7 +8,7 @@ define(function (require) {
   'use strict';
 
   var S = require('hadron/scaffolding'),
-      MapEditor = require('models/map/MapEditor'),
+      MapEditor = require('models/MapEditor'),
       ControlAspect = require('hadron/ControlAspect'),
       RenderAspect = require('hadron/RenderAspect'),
       IsometricDrawer = require('hadron/rendering/canvas2d/IsometricDrawer'),
@@ -72,11 +72,14 @@ define(function (require) {
 
   MapBuilderTool.prototype.setupInfoArea = function () {
     var self = this;
-    var updateFPS, mapEditorInfoArea, fpsHolder;
+    var updateFPS, mapEditorInfoArea, fpsHolder, avgFPS = 0, counter = 0;
     fpsHolder = document.querySelector('#fps-info + dd');
     updateFPS = setInterval(function () {
       var fps = self.mapEditorSimulation.fps;
-      fpsHolder.textContent = fps.toFixed(2);
+      avgFPS = (avgFPS * counter + fps)/(counter + 1);
+      counter++;
+
+      fpsHolder.textContent = avgFPS.toFixed(2);
     }, 1000);
   };
 
