@@ -19,7 +19,7 @@ define(function (require) {
         control = customOptions.control,
         options = getCustomizedOptions(customOptions);
 
-    var t, newTime, currentTime, pauseTime, accumulator;
+    var t, newTime, currentTime, pauseTime, accumulator, fps;
 
     Object.defineProperty(this, 'rootModel', { value: rootModel });
 
@@ -61,6 +61,7 @@ define(function (require) {
     http://gafferongames.com/game-physics/fix-your-timestep/
     */
     function gameStep(forcedSimulationTime) {
+
       try {
         newTime = Date.now();
         var frameTime = newTime - currentTime;
@@ -83,6 +84,8 @@ define(function (require) {
         render.clearCanvas(); // FIXME: See RenderAspect notes
         rootModel.as(render, interpolationValue);
         render.runRenderQueue();
+
+        fps = 1000/(Date.now() - newTime);
       } catch (error) {
         pause();
         console.log(error.message + '\n' + error.stack);
@@ -95,7 +98,10 @@ define(function (require) {
       reset: reset,
       pause: pause,
       resume: resume,
-      step: step
+      step: step,
+      get fps() {
+        return fps;
+      }
     };
   };
 

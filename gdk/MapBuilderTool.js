@@ -19,6 +19,7 @@ define(function (require) {
   MapBuilderTool.prototype.init = function () {
     this.setupEditor();
     this.setupControl();
+    this.setupInfoArea();
   };
 
   MapBuilderTool.prototype.setupEditor = function () {
@@ -39,7 +40,8 @@ define(function (require) {
 
     S.to(self)
       .addGet('mapEditorCanvas', function() { return mapEditorCanvas; })
-      .addGet('mapEditor', function () { return mapEditor; });
+      .addGet('mapEditor', function () { return mapEditor; })
+      .addGet('mapEditorSimulation', function () { return mapEditorSimulation; })
     ;
 
     self.updateViewport();
@@ -66,6 +68,16 @@ define(function (require) {
   MapBuilderTool.prototype.setupControl = function () {
     var self = this;
     window.onresize = this.updateViewport.bind(this);
+  };
+
+  MapBuilderTool.prototype.setupInfoArea = function () {
+    var self = this;
+    var updateFPS, mapEditorInfoArea, fpsHolder;
+    fpsHolder = document.querySelector('#fps-info + dd');
+    updateFPS = setInterval(function () {
+      var fps = self.mapEditorSimulation.fps;
+      fpsHolder.textContent = fps.toFixed(2);
+    }, 1000);
   };
 
   MapBuilderTool.prototype.updateViewport = function () {

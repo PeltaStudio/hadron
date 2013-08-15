@@ -5,12 +5,37 @@
 
 html {
   overflow: hidden;
+  font-family: sans;
 }
 
 #tool-area {
   overflow: hidden;
+  position: relative;
 }
 
 #map-editor-canvas {
   background-color: #DDD;
+}
+
+#map-editor-info {
+  padding: 1rem;
+  border-radius: 20px;
+  background-color: hsla(0, 0%, 0%, 0.6);
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  color: white;
+}
+
+#map-editor-info dt {
+  font-weight: bold;
+  display: inline;
+}
+
+#map-editor-info dt:after {
+  content: ":";
+}
+
+#map-editor-info dd {
+  display: inline;
 }

@@ -1,5 +1,5 @@
 requirejs.config({
-  baseUrl: '/gdk',
+  baseUrl: './gdk',
   urlArgs: 'bust=' + Date.now(),
   paths: {
     hadron: '../hadron/src'
