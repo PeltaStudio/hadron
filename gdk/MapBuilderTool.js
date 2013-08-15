@@ -80,7 +80,7 @@ define(function (require) {
       counter++;
 
       fpsHolder.textContent = avgFPS.toFixed(2);
-    }, 1000);
+    }, 50);
   };
 
   MapBuilderTool.prototype.updateViewport = function () {
