@@ -11,8 +11,8 @@ define(function (require) {
 
   // Ad-hoc completely dead (no render / no behaviour) cell
   FOSSIL_CELL = new HexCell([-1, -1], 0, [0,0], false);
-  FOSSIL_CELL.render = void 0;
-  FOSSIL_CELL.simulate = void 0;
+  FOSSIL_CELL.render = undefined;
+  FOSSIL_CELL.simulate = undefined;
 
   selectDirection = {
     N: function (cellId) { return [
@@ -53,7 +53,8 @@ define(function (require) {
 
     setupFrame();
     setupBoard();
-    setupInitialConfiguration();
+    var sample =  [true,true,true,false,false,false,true,false,false,true,true,false,true,true,false,true,true,true,true,false,false,false,false,true,true,true,true,true,false,false,false,false,true,false,false,false,false,true,true,true,true,true,true,true,true,true,false,false,true,false,true,true,false,false,true,false,false,true,true,true,false,true,false,true,false,true,true,true,false,false,false,false,true,false,true,false,false,true,false,true,false,true,true,true,false,false,false,true,true,false,true,true,false,false,true,true,true,true,false,false,false,true,true,true,true,true,true,false,false,true,false,false,true,true,false,true,false,false,true,false,false,false,false,true,false,true,true,false,false,true,false,true,false,false,false,true,false,true,true,false,true,false,false,true,false,false,true,true,false,true,true,true,true,false,false,true,true,true,false,false,false,true,false,true,false,false,false,true,true,true,false,false,false,true,true,false,true,false,true,true,true,false,false,true,true,false,false,false,false,false,true,false,true,true,true,false,true,false,false,false,false,true,false,true,true,true,true,false,true,false,false,false,false,true,true,true,false,true,false,false,true,true,true,true,false,false,true,false,true,true,true,false,true,false,false,false,false,false,false,true,true,false,false,true,false,false,false,false,false,true,true,false,false,false,false,false,true,true,false,false,true,true,false,true,false,false,true,true,false,false,false];
+    setupInitialConfiguration(sample);
 
     self.getComponents = getComponents;
     self.getNeighbourhood = getNeighbourhood;
@@ -192,16 +193,19 @@ define(function (require) {
       }
     }
 
-    function setupInitialConfiguration() {
-      var cell;
+    function setupInitialConfiguration(sample) {
+      var cell, isAlive, initialConfig = [];
       for (var r = 0, rc = board.length; r < rc; r++) {
         for (var c = 0, cc = board[r].length; c < cc; c++) {
           cell = board[r][c];
           if (cell !== FOSSIL_CELL) {
-            cell.alive = Math.random() < 0.5;
+            isAlive = sample ? sample.shift() : (Math.random() < 0.5);
+            initialConfig.push(isAlive);
+            cell.alive = isAlive;
           }
         }
       }
+      console.log(initialConfig + '');
     }
   }
   S.inherit(GameOfLife, Model);
