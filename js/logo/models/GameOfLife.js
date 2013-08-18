@@ -4,15 +4,15 @@ define(function (require) {
   var T = require('hadron/toolkit'),
       S = require('hadron/scaffolding'),
       Model = require('hadron/Model'),
-      Hexagon = require('Hexagon'),
-      HexCell = require('HexCell'),
+      Hexagon = require('models/Hexagon'),
+      HexCell = require('models/HexCell'),
       FOSSIL_CELL,
       selectDirection;
 
   // Ad-hoc completely dead (no render / no behaviour) cell
   FOSSIL_CELL = new HexCell([-1, -1], 0, [0,0], false);
-  FOSSIL_CELL.render = void 0;
-  FOSSIL_CELL.simulate = void 0;
+  FOSSIL_CELL.render = undefined;
+  FOSSIL_CELL.simulate = undefined;
 
   selectDirection = {
     N: function (cellId) { return [
@@ -55,10 +55,10 @@ define(function (require) {
     setupBoard();
     setupInitialConfiguration();
 
-    self.getComponents = getComponents;
+    self.getSubmodels = getSubmodels;
     self.getNeighbourhood = getNeighbourhood;
 
-    function getComponents() {
+    function getSubmodels() {
       return [background].concat(cells);
     }
 
@@ -126,7 +126,7 @@ define(function (require) {
 
       function getAliveNeightboursCount() {
         var aliveCount = 0,
-            neighbourhood = self.getNeighbourhood(this.id);
+            neighbourhood = self.getNeighbourhood(this.cellId);
         for (var i = 0, l = neighbourhood.length; i < l; i++) {
           if (neighbourhood[i].alive) {
             aliveCount++;

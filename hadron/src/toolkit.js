@@ -64,7 +64,7 @@ define(function (require) {
 
   Object.defineProperty(assert, 'isAspect', {
     value: function isAspect(obj, errorMessage) {
-      errorMessage = 
+      errorMessage =
         errorMessage ||
         (obj + ' is not an aspect. It requires a method named `reveal`.');
       assert(typeof obj.reveal === 'function', errorMessage);
@@ -110,10 +110,23 @@ define(function (require) {
     sortedList.splice(i, 0, item);
   }
 
+  function isApplicable(obj) {
+    return obj && typeof obj.apply === 'function';
+  }
+
+  function capitalize(string) {
+    return string[0].toUpperCase() + string.substring(1);
+  }
+
+  function noop() {}
+
   return {
     SortedArray: SortedArray,
     assert: assert,
     clone: clone,
-    extend: extend
+    extend: extend,
+    isApplicable: isApplicable,
+    capitalize: capitalize,
+    noop: noop
   };
 });

@@ -15,12 +15,13 @@ define(function (require) {
 
     var runningGameId = null,
         rootModel = customOptions.rootModel,
-        render = customOptions.render,
-        control = customOptions.control,
+        assembler = customOptions.assembler,
         options = getCustomizedOptions(customOptions);
 
-    var t, newTime, currentTime, pauseTime, accumulator, startTime, fps;
+    var t, newTime, currentTime, pauseTime, accumulator, startTime, fps,
+        simulationQueue = [];
 
+    assembler.assembleModels();
     Object.defineProperty(this, 'rootModel', { value: rootModel });
 
     function start() {
@@ -74,22 +75,43 @@ define(function (require) {
         accumulator += timeToSimulate;
         var dt = options.simulationDelta;
         while (accumulator >= dt) {
-          rootModel.as(control, t, dt);
-          control.runUpdateQueue();
+          simulate(rootModel, t, dt, newTask);
+          runSimulation();
           t += dt;
           accumulator -= dt;
         }
 
         var interpolationValue = accumulator / dt;
-        render.clearCanvas(); // FIXME: See RenderAspect notes
-        rootModel.as(render, interpolationValue);
-        render.runRenderQueue();
+        clear(rootModel, interpolationValue);
+        render(rootModel, interpolationValue);
 
         updateFPS();
       } catch (error) {
         pause();
         console.log(error.message + '\n' + error.stack);
         throw error;
+      }
+    }
+
+    function render(model, interpolationValue) {
+      model.traverse('render', 'getRenderSubmodels', [interpolationValue]);
+    };
+
+    function clear(model, interpolationValue) {
+      model.traverse('clear', 'getClearSubmodels', [interpolationValue]);
+    };
+
+    function simulate(model, t, dt, newTask) {
+      model.traverse('simulate', 'getSimulateSubmodels', [t, dt, newTask]);
+    };
+
+    function newTask(f) {
+      simulationQueue.push(f);
+    }
+
+    function runSimulation() {
+      while (simulationQueue.length) {
+        simulationQueue.shift()();
       }
     }
 
@@ -114,11 +136,8 @@ define(function (require) {
     T.assert.isDefined(customOptions.rootModel,
       'The `rootModel` key is mandatory!');
 
-    T.assert.isDefined(customOptions.render,
-      'The `render` key is mandatory!');
-
-    T.assert.isDefined(customOptions.control,
-      'The `control` key is mandatory!');
+    T.assert.isDefined(customOptions.assembler,
+      'The `assembler` key is mandatory!');
   };
 
   function getCustomizedOptions(customOptions) {

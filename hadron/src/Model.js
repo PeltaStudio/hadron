@@ -1,22 +1,55 @@
 define(function (require) {
   'use strict';
 
+  var NEXT_ID = 1;
+
   var T = require('hadron/toolkit');
 
-  function Model() { }
+  function Model() {
+    Object.defineProperty(this, 'id', { value: NEXT_ID++ });
+  }
 
-  Model.prototype.as = function (aspect) {
-    T.assert.isAspect(aspect);
-    var components, args = [].slice.call(arguments, 0);
-    args[0] = this;
-    aspect.reveal.apply(aspect, args);
-    components = this.getComponents(aspect);
-    for (var i = 0, l = components.length; i < l; i++) {
-      components[i].as.apply(components[i], arguments);
+  Model.prototype.traverse =
+  function (methodName, submodelsGetterName, methodArgs) {
+
+    var submodels,
+        submodelsMethod,
+        method = this[methodName];
+
+    if (T.isApplicable(method)) {
+      method.apply(this, methodArgs);
+    }
+
+    // get submodules
+    submodels = [];
+    submodelsMethod = this[submodelsGetterName];
+    if (T.isApplicable(submodelsMethod)) {
+      submodels = submodelsMethod.apply(this) || [];
+    }
+
+    // traverse submodules
+    for (var i = 0, submodel; submodel = submodels[i]; i++) {
+      submodel.traverse.apply(submodel, arguments);
     }
   };
 
-  Model.prototype.getComponents = function (aspect) {
+  Model.prototype.render = T.noop;
+  Model.prototype.clear = T.noop;
+  Model.prototype.simulate = T.noop;
+
+  Model.prototype.getRenderSubmodels = function () {
+    return this.getSubmodels();
+  };
+
+  Model.prototype.getClearSubmodels = function () {
+    return this.getSubmodels();
+  };
+
+  Model.prototype.getSimulateSubmodels = function () {
+    return this.getSubmodels();
+  };
+
+  Model.prototype.getSubmodels = function () {
     return [];
   };
 
