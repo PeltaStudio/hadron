@@ -2,8 +2,7 @@ define(function (require) {
   'use strict';
 
   var S = require('hadron/scaffolding'),
-      Model = require('hadron/Model'),
-      Camera = require('hadron/models/cameras/Camera');
+      Model = require('hadron/Model');
 
   function TiledMap(cellSize) {
     S.to(this)
@@ -12,7 +11,7 @@ define(function (require) {
   }
   S.inherit(TiledMap, Model);
 
-  TiledMap.prototype.getComponents = function (aspect) {
+  TiledMap.prototype.getSubmodels = function (aspect) {
     return []; // this.columnSet, this.effectOverlay...
   };
 

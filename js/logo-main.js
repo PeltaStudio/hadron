@@ -8,17 +8,15 @@ requirejs.config({
 
 var game;
 
-requirejs(
-  [
-    'hadron/toolkit',
-    'hadron/RenderAspect',
-    'hadron/ControlAspect',
-    'hadron/Game',
-    'GameOfLife'
-  ],
-  function (T, RenderAspect, ControlAspect, Game, GameOfLife) {
+define(function (require) {
+
+    var T = require('hadron/toolkit'),
+        Assembler = require('Assembler'),
+        Game = require('hadron/Game'),
+        GameOfLife = require('models/GameOfLife');
 
     var hadronLogo = document.getElementById('hadron-logo'),
+        drawer = hadronLogo.getContext('2d'),
         canvasCenter;
 
     var logoComputedStyle = window.getComputedStyle(hadronLogo);
@@ -27,15 +25,10 @@ requirejs(
     canvasCenter = [hadronLogo.width/2, hadronLogo.height/2];
 
     var gameOfLife = new GameOfLife(10, 8, canvasCenter),
-        controlAspect = new ControlAspect(), renderAspect;
-
-    hadronLogo.clear = function () { this.width = this.width; };
-    renderAspect = new RenderAspect(hadronLogo);
 
     game = new Game({
       rootModel: gameOfLife,
-      control: controlAspect,
-      render: renderAspect
+      assembler: new Assembler(hadronLogo),
     });
     game.start();
   }

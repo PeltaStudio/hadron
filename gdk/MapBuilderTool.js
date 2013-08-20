@@ -9,9 +9,7 @@ define(function (require) {
 
   var S = require('hadron/scaffolding'),
       MapEditor = require('models/MapEditor'),
-      ControlAspect = require('hadron/ControlAspect'),
-      RenderAspect = require('hadron/RenderAspect'),
-      IsometricDrawer = require('hadron/rendering/canvas2d/IsometricDrawer'),
+      GDKAssembler = require('GDKAssembler'),
       Game = require('hadron/Game');
 
   function MapBuilderTool() { }
@@ -25,16 +23,13 @@ define(function (require) {
   MapBuilderTool.prototype.setupEditor = function () {
     var self = this;
     var mapEditorCanvas = document.getElementById('map-editor-canvas'),
-        target = mapEditorCanvas.getContext('2d'),
-        mapEditorDrawer = new IsometricDrawer(target),
         mapEditor = new MapEditor(),
         mapEditorSimulation;
 
     // FIXME: look for a better name. Problem can be with Game.
     mapEditorSimulation = new Game({
       rootModel: mapEditor,
-      control: new ControlAspect(),
-      render: new RenderAspect(mapEditorDrawer)
+      assembler: new GDKAssembler(mapEditorCanvas),
     });
     mapEditorSimulation.start();
 

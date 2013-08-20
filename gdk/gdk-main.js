@@ -7,8 +7,8 @@ requirejs.config({
 });
 
 define(function (require) {
-    var MapBuilderTool = require('MapBuilderTool');
+  var MapBuilderTool = require('MapBuilderTool');
 
-    var mapBuilderTool = new MapBuilderTool();
-    mapBuilderTool.init();
+  var mapBuilderTool = new MapBuilderTool();
+  mapBuilderTool.init();
 });
