@@ -14,14 +14,13 @@ define(function (require) {
     checkOptions(customOptions);
 
     var runningGameId = null,
-        rootModel = customOptions.rootModel,
-        assembler = customOptions.assembler,
-        options = getCustomizedOptions(customOptions);
+        options = getCustomizedOptions(customOptions),
+        rootModel = options.rootModel,
+        renderSystem = options.renderSystem;
 
     var t, newTime, currentTime, pauseTime, accumulator, startTime, fps,
         simulationQueue = [];
 
-    assembler.assembleModels();
     Object.defineProperty(this, 'rootModel', { value: rootModel });
 
     function start() {
@@ -82,8 +81,8 @@ define(function (require) {
         }
 
         var interpolationValue = accumulator / dt;
-        clear(rootModel, interpolationValue);
-        render(rootModel, interpolationValue);
+        clear(rootModel, renderSystem, interpolationValue);
+        render(rootModel, renderSystem, interpolationValue);
 
         updateFPS();
       } catch (error) {
@@ -93,12 +92,14 @@ define(function (require) {
       }
     }
 
-    function render(model, interpolationValue) {
-      model.traverse('render', 'getRenderSubmodels', [interpolationValue]);
+    function render(model, renderSystem, interpolationValue) {
+      model.traverse('render', 'getRenderSubmodels',
+                                            [renderSystem, interpolationValue]);
     };
 
-    function clear(model, interpolationValue) {
-      model.traverse('clear', 'getClearSubmodels', [interpolationValue]);
+    function clear(model, renderSystem, interpolationValue) {
+      model.traverse('clear', 'getClearSubmodels',
+                                            [renderSystem, interpolationValue]);
     };
 
     function simulate(model, t, dt, newTask) {
@@ -136,8 +137,8 @@ define(function (require) {
     T.assert.isDefined(customOptions.rootModel,
       'The `rootModel` key is mandatory!');
 
-    T.assert.isDefined(customOptions.assembler,
-      'The `assembler` key is mandatory!');
+    T.assert.isDefined(customOptions.renderSystem,
+      'The `renderSystem` key is mandatory!');
   };
 
   function getCustomizedOptions(customOptions) {

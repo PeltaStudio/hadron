@@ -3,12 +3,10 @@ define(function (require) {
 
   var step = Math.PI / 3;
 
-  function HexagonRender(drawer) {
-    this.drawer = drawer;
-  }
+  function HexagonRender() { }
 
   HexagonRender.prototype.apply = function (model, args) {
-    var ctx = this.drawer,
+    var ctx = args[0],
         startPoint = [
           model.position[0],
           model.position[1] - model.size

@@ -6,7 +6,7 @@ requirejs.config({
   }
 });
 
-var game;
+var simulation;
 
 define(function (require) {
 
@@ -17,19 +17,22 @@ define(function (require) {
 
     var hadronLogo = document.getElementById('hadron-logo'),
         drawer = hadronLogo.getContext('2d'),
-        canvasCenter;
+        logoComputedStyle, canvasCenter,
+        gameOfLife, assembler;
 
-    var logoComputedStyle = window.getComputedStyle(hadronLogo);
+    assembler = new Assembler(hadronLogo);
+    assembler.assembleModels();
+
+    logoComputedStyle = window.getComputedStyle(hadronLogo);
     hadronLogo.width = parseInt(logoComputedStyle.width, 10);
     hadronLogo.height = parseInt(logoComputedStyle.height, 10);
     canvasCenter = [hadronLogo.width/2, hadronLogo.height/2];
 
-    var gameOfLife = new GameOfLife(10, 8, canvasCenter),
-
-    game = new Game({
+    gameOfLife = new GameOfLife(10, 8, canvasCenter),
+    simulation = new Game({
       rootModel: gameOfLife,
-      assembler: new Assembler(hadronLogo),
+      renderSystem: drawer,
     });
-    game.start();
+    simulation.start();
   }
 );

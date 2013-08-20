@@ -20,16 +20,14 @@ define(function (require) {
   S.inherit(LogoAssembler, Assembler);
 
   LogoAssembler.prototype.assembleModels = function () {
-    var self = this;
-    var canvas = this.canvas,
-        drawer = canvas.getContext('2d');
+    var canvas = this.canvas;
 
     this.assembleModel(Hexagon, {
-      render: new HexagonRender(drawer),
+      render: new HexagonRender(),
     });
 
     this.assembleModel(HexCell, {
-      render: new HexCellRender(drawer),
+      render: new HexCellRender(),
       simulate: new HexCellSimulator()
     });
 
