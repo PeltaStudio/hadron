@@ -66,7 +66,7 @@ define(function (require) {
     }
   };
 
-  MapEditor.prototype.getComponents = function (aspect) {
+  MapEditor.prototype.getSubmodels = function (aspect) {
     return [this.map, this.screenAxis, this.grid, this.pointedCellGizmo]; // this.screenAxis, this.intersectionGizmos
   };
 
@@ -76,22 +76,6 @@ define(function (require) {
 
   MapEditor.prototype.goToOrigin = function () {
     return this.camera.setPosition([0,0]);
-  };
-
-  MapEditor.prototype.render = function (alpha, drawer, h, rm) {
-    var self = this;
-    applyCameraTransformation();
-
-    function applyCameraTransformation() {
-      var position = self.camera.getPosition(),
-          X = position[0], Y = position[1];
-
-      drawer.setTransform(
-        1, 0, 0, 1,
-        X + self.camera.semiWidth,
-        Y + self.camera.semiHeight
-      );
-    }
   };
 
   MapEditor.prototype.getViewportSize = function () {
