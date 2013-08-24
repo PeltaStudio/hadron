@@ -10,6 +10,7 @@ define(function (require) {
   var S = require('hadron/scaffolding'),
       MapEditor = require('models/MapEditor'),
       GDKAssembler = require('GDKAssembler'),
+      IsometricDrawer = require('hadron/renders/canvas2d/IsometricDrawer'),
       Game = require('hadron/Game');
 
   function MapBuilderTool() { }
@@ -24,12 +25,15 @@ define(function (require) {
     var self = this;
     var mapEditorCanvas = document.getElementById('map-editor-canvas'),
         mapEditor = new MapEditor(),
-        mapEditorSimulation;
+        mapEditorSimulation, assembler;
+
+    assembler = new GDKAssembler(mapEditorCanvas);
+    assembler.assembleModels();
 
     // FIXME: look for a better name. Problem can be with Game.
     mapEditorSimulation = new Game({
       rootModel: mapEditor,
-      assembler: new GDKAssembler(mapEditorCanvas),
+      renderSystem:  new IsometricDrawer(mapEditorCanvas.getContext('2d'))
     });
     mapEditorSimulation.start();
 
@@ -75,7 +79,7 @@ define(function (require) {
       counter++;
 
       fpsHolder.textContent = avgFPS.toFixed(2);
-    }, 50);
+    }, 1000);
   };
 
   MapBuilderTool.prototype.updateViewport = function () {

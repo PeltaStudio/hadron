@@ -1,12 +1,10 @@
 define(function (require) {
   'use strict';
 
-  function ScreenAxisRender(drawer) {
-    this.drawer = drawer;
-  }
+  function ScreenAxisRender() { }
 
-  ScreenAxisRender.prototype.apply = function (model, alpha) {
-    var drawer = this.drawer, renderArea;
+  ScreenAxisRender.prototype.apply = function (model, args) {
+    var drawer = args[0], renderArea;
     if (!model.enabled) return;
 
     renderArea = model.getVisualizationArea();

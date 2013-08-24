@@ -1,12 +1,10 @@
 define(function (require) {
   'use strict';
 
-  function IsometricGridRender(drawer) {
-    this.drawer = drawer;
-  }
+  function IsometricGridRender() { }
 
-  IsometricGridRender.prototype.apply = function (model) {
-    var drawer = this.drawer,
+  IsometricGridRender.prototype.apply = function (model, args) {
+    var drawer = args[0],
         size, renderArea, top, bottom, left, right;
 
     if (!model.enabled) return;

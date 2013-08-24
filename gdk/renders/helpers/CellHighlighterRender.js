@@ -1,12 +1,10 @@
 define(function(require) {
   'use strict';
 
-  function CellHighlighterRender(drawer) {
-    this.drawer = drawer;
-  }
+  function CellHighlighterRender() { }
 
-  CellHighlighterRender.prototype.apply = function (model) {
-    var drawer = this.drawer,
+  CellHighlighterRender.prototype.apply = function (model, args) {
+    var drawer = args[0],
         position = model.getPosition(),
         gizmo = drawer.getIsoCube(model.getCellSize(), 0, {
           faceColor: false,

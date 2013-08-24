@@ -1,12 +1,10 @@
 define(function (require) {
   'use strict';
 
-  function MapEditorRender(drawer) {
-    this.drawer = drawer;
-  }
+  function MapEditorRender() { }
 
-  MapEditorRender.prototype.apply = function (model) {
-    var drawer = this.drawer;
+  MapEditorRender.prototype.apply = function (model, args) {
+    var drawer = args[0];
     applyCameraTransformation();
 
     function applyCameraTransformation() {

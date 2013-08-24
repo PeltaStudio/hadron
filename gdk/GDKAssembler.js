@@ -19,32 +19,32 @@ define(function (require) {
   var noop = T.noop;
 
   function GDKAssembler(canvas) {
-    HadronAssembler.call(this, canvas);
+    HadronAssembler.apply(this, arguments);
+    this.canvas = canvas;
   }
   S.inherit(GDKAssembler, HadronAssembler);
 
   GDKAssembler.prototype.assembleModels = function () {
     HadronAssembler.prototype.assembleModels.call(this);
 
-    var canvas = this.canvas,
-        drawer = this.drawer;
+    var canvas = this.canvas;
 
     this.assembleModel(MapEditor, {
-      render: new MapEditorRender(drawer),
+      render: new MapEditorRender(),
       clear: clear,
       getClearSubmodels: noop
     });
 
     this.assembleModel(CellHighlighter, {
-      render: new CellHighlighterRender(drawer)
+      render: new CellHighlighterRender()
     });
 
     this.assembleModel(IsometricGrid, {
-      render: new IsometricGridRender(drawer)
+      render: new IsometricGridRender()
     });
 
     this.assembleModel(ScreenAxis, {
-      render: new ScreenAxisRender(drawer)
+      render: new ScreenAxisRender()
     });
 
     function clear() { canvas.width = canvas.width; }
