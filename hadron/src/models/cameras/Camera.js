@@ -3,7 +3,7 @@ define(function (require) {
 
   var T = require('hadron/toolkit'),
       S = require('hadron/scaffolding'),
-      Model = require('hadron/Model');
+      Model = require('hadron/models/Model');
 
   // TODO: Consider change the name to a more concise one in favor of a more
   // abstract implementation for Camera.

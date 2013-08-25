@@ -1,11 +1,14 @@
 define(function (require) {
   'use strict';
 
-  function IsometricGridRender() { }
+  var S = require('hadron/scaffolding'),
+      Render = require('hadron/renders/Render');
 
-  IsometricGridRender.prototype.apply = function (model, args) {
-    var drawer = args[0],
-        size, renderArea, top, bottom, left, right;
+  function IsometricGridRender() { }
+  S.inherit(IsometricGridRender, Render);
+
+  IsometricGridRender.prototype.render = function (model, drawer) {
+    var size, renderArea, top, bottom, left, right;
 
     if (!model.enabled) return;
 

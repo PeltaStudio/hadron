@@ -1,10 +1,14 @@
 define(function (require) {
   'use strict';
 
-  function ScreenAxisRender() { }
+  var S = require('hadron/scaffolding'),
+      Render = require('hadron/renders/Render');
 
-  ScreenAxisRender.prototype.apply = function (model, args) {
-    var drawer = args[0], renderArea;
+  function ScreenAxisRender() { }
+  S.inherit(ScreenAxisRender, Render);
+
+  ScreenAxisRender.prototype.render = function (model, drawer) {
+    var renderArea;
     if (!model.enabled) return;
 
     renderArea = model.getVisualizationArea();

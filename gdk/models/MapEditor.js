@@ -4,7 +4,7 @@ define(function (require) {
   var DEFAULT_CELL_SIZE = 100;
 
   var S = require('hadron/scaffolding'),
-      Model = require('hadron/Model'),
+      Model = require('hadron/models/Model'),
       Camera = require('hadron/models/cameras/Camera'),
       WorldMetrics = require('hadron/models/map/WorldMetrics'),
       TiledMap = require('hadron/models/map/TiledMap'),

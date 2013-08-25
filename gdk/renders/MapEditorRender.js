@@ -1,10 +1,13 @@
 define(function (require) {
   'use strict';
 
-  function MapEditorRender() { }
+  var S = require('hadron/scaffolding'),
+      Render = require('hadron/renders/Render');
 
-  MapEditorRender.prototype.apply = function (model, args) {
-    var drawer = args[0];
+  function MapEditorRender() { }
+  S.inherit(MapEditorRender, Render);
+
+  MapEditorRender.prototype.render = function (model, drawer) {
     applyCameraTransformation();
 
     function applyCameraTransformation() {

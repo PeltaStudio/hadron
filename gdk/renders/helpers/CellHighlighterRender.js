@@ -1,11 +1,14 @@
 define(function(require) {
   'use strict';
 
-  function CellHighlighterRender() { }
+  var S = require('hadron/scaffolding'),
+      Render = require('hadron/renders/Render');
 
-  CellHighlighterRender.prototype.apply = function (model, args) {
-    var drawer = args[0],
-        position = model.getPosition(),
+  function CellHighlighterRender() { }
+  S.inherit(CellHighlighterRender, Render);
+
+  CellHighlighterRender.prototype.render = function (model, drawer) {
+    var position = model.getPosition(),
         gizmo = drawer.getIsoCube(model.getCellSize(), 0, {
           faceColor: false,
           lineColor: '#333',

@@ -2,7 +2,7 @@ define(function (require) {
   'use strict';
 
   var S = require('hadron/scaffolding'),
-      Model = require('hadron/Model');
+      Model = require('hadron/models/Model');
 
   function Tile() {
     Model.apply(this, arguments);
