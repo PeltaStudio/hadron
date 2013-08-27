@@ -22,7 +22,7 @@ define(function (require) {
     HadronAssembler.apply(this, arguments);
     this.canvas = canvas;
   }
-  S.inherit(GDKAssembler, HadronAssembler);
+  S.theClass(GDKAssembler).inheritsFrom(HadronAssembler);
 
   GDKAssembler.prototype.assembleModels = function () {
     HadronAssembler.prototype.assembleModels.call(this);

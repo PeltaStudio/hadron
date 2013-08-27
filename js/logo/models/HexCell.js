@@ -9,7 +9,7 @@ define(function (require) {
     this.cellId = cellId;
     this.alive = alive || false;
   }
-  S.inherit(HexCell, Hexagon);
+  S.theClass(HexCell).inheritsFrom(Hexagon);
 
   return HexCell;
 });

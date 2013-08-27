@@ -2,7 +2,7 @@ define(function (require) {
   'use strict';
 
   var S = require('hadron/scaffolding'),
-      Model = require('hadron/Model');
+      Model = require('hadron/models/Model');
 
   function Hexagon(size, position) {
     Model.apply(this, arguments);
@@ -12,7 +12,7 @@ define(function (require) {
     this.position = position || [0, 0];
     this.rotation = 0;
   }
-  S.inherit(Hexagon, Model);
+  S.theClass(Hexagon).inheritsFrom(Model);
 
   return Hexagon;
 });

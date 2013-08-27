@@ -5,7 +5,7 @@ define(function(require) {
       Render = require('hadron/renders/Render');
 
   function CellHighlighterRender() { }
-  S.inherit(CellHighlighterRender, Render);
+  S.theClass(CellHighlighterRender).inheritsFrom(Render);
 
   CellHighlighterRender.prototype.render = function (model, drawer) {
     var position = model.getPosition(),

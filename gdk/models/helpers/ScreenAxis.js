@@ -7,7 +7,7 @@ define(function (require) {
   function ScreenAxis() {
     this.enabled = true;
   }
-  S.inherit(ScreenAxis, Model);
+  S.theClass(ScreenAxis).inheritsFrom(Model);
 
   return ScreenAxis;
 });

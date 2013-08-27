@@ -15,7 +15,7 @@ define(function (require) {
   function HadronAssembler() {
     Assembler.apply(this, arguments);
   }
-  S.inherit(HadronAssembler, Assembler);
+  S.theClass(HadronAssembler).inheritsFrom(Assembler);
 
   HadronAssembler.prototype.assembleModels = function () {
   };

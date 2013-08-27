@@ -5,7 +5,7 @@ define(function (require) {
       Render = require('hadron/renders/Render');
 
   function ScreenAxisRender() { }
-  S.inherit(ScreenAxisRender, Render);
+  S.theClass(ScreenAxisRender).inheritsFrom(Render);
 
   ScreenAxisRender.prototype.render = function (model, drawer) {
     var renderArea;

@@ -37,10 +37,10 @@ define(function (require) {
     });
     mapEditorSimulation.start();
 
-    S.to(self)
-      .addGet('mapEditorCanvas', function() { return mapEditorCanvas; })
-      .addGet('mapEditor', function () { return mapEditor; })
-      .addGet('mapEditorSimulation', function () { return mapEditorSimulation; })
+    S.theObject(self)
+      .has('mapEditorCanvas', mapEditorCanvas)
+      .has('mapEditor', mapEditor)
+      .has('mapEditorSimulation', mapEditorSimulation)
     ;
 
     self.updateViewport();

@@ -3,7 +3,7 @@ define(function (require) {
 
   var T = require('hadron/toolkit'),
       S = require('hadron/scaffolding'),
-      Model = require('hadron/Model'),
+      Model = require('hadron/models/Model'),
       Hexagon = require('models/Hexagon'),
       HexCell = require('models/HexCell'),
       FOSSIL_CELL,
@@ -208,7 +208,7 @@ define(function (require) {
       console.log(initialConfig + '');
     }
   }
-  S.inherit(GameOfLife, Model);
+  S.theClass(GameOfLife).inheritsFrom(Model);
 
   return GameOfLife;
 });

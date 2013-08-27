@@ -10,7 +10,7 @@ define(function (require) {
     this.height = this.size;
     this.position = [0, 0, 0]; // X and Z are discretized but Y is continuous
   }
-  S.inherit(Tile, Model);
+  S.theClass(Tile).inheritsFrom(Model);
 
   return Tile;
 });

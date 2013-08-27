@@ -7,7 +7,7 @@ define(function (require) {
   function HexCellRender(drawer) {
     HexagonRender.call(this, drawer);
   }
-  S.inherit(HexCellRender, HexagonRender);
+  S.theClass(HexCellRender).inheritsFrom(HexagonRender);
 
   HexCellRender.prototype.apply = function (model, args) {
     model.fillColor = model.alive ? 'black' : 'white';

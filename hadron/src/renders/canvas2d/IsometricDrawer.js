@@ -23,11 +23,11 @@ define(function (require) {
       SCALE = Math.sqrt(10/16);
 
   function Drawer(target) {
-    S.to(target)
-      .add(clear)
-      .add(getIsoCube)
-      .add(setIsometricProjection)
-      .add(setDimetricProjection)
+    S.the(target)
+      .has(clear)
+      .has(getIsoCube)
+      .has(setIsometricProjection)
+      .has(setDimetricProjection)
     ;
     return target;
   }

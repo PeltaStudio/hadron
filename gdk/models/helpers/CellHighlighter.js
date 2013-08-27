@@ -5,7 +5,7 @@ define(function(require) {
       Model = require('hadron/models/Model');
 
   function CellHighlighter() { }
-  S.inherit(CellHighlighter, Model);
+  S.theClass(CellHighlighter).inheritsFrom(Model);
 
   return CellHighlighter;
 });

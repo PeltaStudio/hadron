@@ -12,13 +12,13 @@ define(function (require) {
         XAxis = [bigR, smallR],
         ZAxis = [-bigR, smallR];
 
-    S.to(this)
-      .addGet('cellSize', function () { return cellSize; })
-      .addGet('bigR', function () { return bigR; })
-      .addGet('smallR', function () { return smallR; })
-      .addGet('XAxis', function () { return XAxis; })
-      .addGet('ZAxis', function () { return ZAxis; })
-      .addGet('PROJECTED_SIZE', function () { return PROJECTED_SIZE; })
+    S.theObject(this)
+      .has('cellSize', cellSize)
+      .has('bigR', bigR)
+      .has('smallR', smallR)
+      .has('XAxis', XAxis)
+      .has('ZAxis', ZAxis)
+      .has('PROJECTED_SIZE', PROJECTED_SIZE)
     ;
   }
 

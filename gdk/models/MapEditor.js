@@ -21,7 +21,7 @@ define(function (require) {
     this.metrics = new WorldMetrics(DEFAULT_CELL_SIZE);
     this.pointedCell = [0, 0];
   }
-  S.inherit(MapEditor, Model);
+  S.theClass(MapEditor).inheritsFrom(Model);
 
   MapEditor.prototype.setupMap = function () {
     var cellSize = DEFAULT_CELL_SIZE;
@@ -32,7 +32,7 @@ define(function (require) {
     var camera = new Camera();
     camera.setPosition([0, 0]);
     camera.resize(500, 500);
-    S.to(this).addGet('camera', function () { return camera; });
+    S.theObject(this).has('camera', camera);
   };
 
   MapEditor.prototype.setupGizmos = function () {

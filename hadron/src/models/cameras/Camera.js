@@ -15,7 +15,7 @@ define(function (require) {
     this.resize(width, height);
     this.setPosition(position);
   }
-  S.inherit(Camera, Model);
+  S.theClass(Camera).inheritsFrom(Model);
 
   Camera.prototype.resize = function (width, height) {
     this.width = width;

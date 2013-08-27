@@ -5,11 +5,9 @@ define(function (require) {
       Model = require('hadron/models/Model');
 
   function TiledMap(cellSize) {
-    S.to(this)
-      .addGet('cellSize', function() { return cellSize; });
-    ;
+    S.theObject(this).has('cellSize', cellSize);
   }
-  S.inherit(TiledMap, Model);
+  S.theClass(TiledMap).inheritsFrom(Model);
 
   TiledMap.prototype.getSubmodels = function (aspect) {
     return []; // this.columnSet, this.effectOverlay...

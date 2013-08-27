@@ -17,7 +17,7 @@ define(function (require) {
     Assembler.call(this);
     this.canvas = canvas;
   }
-  S.inherit(LogoAssembler, Assembler);
+  S.theClass(LogoAssembler).inheritsFrom(Assembler);
 
   LogoAssembler.prototype.assembleModels = function () {
     var canvas = this.canvas;

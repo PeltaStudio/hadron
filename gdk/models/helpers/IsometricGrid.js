@@ -7,7 +7,7 @@ define(function (require) {
   function IsometricGrid() {
     this.enabled = true;
   }
-  S.inherit(IsometricGrid, Model);
+  S.theClass(IsometricGrid).inheritsFrom(Model);
 
   return IsometricGrid;
 });

@@ -5,7 +5,7 @@ define(function (require) {
       Render = require('hadron/renders/Render');
 
   function MapEditorRender() { }
-  S.inherit(MapEditorRender, Render);
+  S.theClass(MapEditorRender).inheritsFrom(Render);
 
   MapEditorRender.prototype.render = function (model, drawer) {
     applyCameraTransformation();

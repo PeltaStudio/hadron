@@ -5,7 +5,7 @@ define(function (require) {
       Render = require('hadron/renders/Render');
 
   function IsometricGridRender() { }
-  S.inherit(IsometricGridRender, Render);
+  S.theClass(IsometricGridRender).inheritsFrom(Render);
 
   IsometricGridRender.prototype.render = function (model, drawer) {
     var size, renderArea, top, bottom, left, right;
