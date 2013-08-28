@@ -1,4 +1,4 @@
-define(function (require) {
+define(function(require) {
   'use strict';
 
   var S = require('hadron/scaffolding'),
@@ -7,7 +7,7 @@ define(function (require) {
   function ScreenAxisRender() { }
   S.theClass(ScreenAxisRender).inheritsFrom(Render);
 
-  ScreenAxisRender.prototype.render = function (model, drawer) {
+  ScreenAxisRender.prototype.render = function(model, drawer) {
     var renderArea;
     if (!model.enabled) return;
 

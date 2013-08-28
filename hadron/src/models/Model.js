@@ -1,4 +1,4 @@
-define(function (require) {
+define(function(require) {
   'use strict';
 
   var NEXT_ID = 1;
@@ -11,7 +11,7 @@ define(function (require) {
   }
 
   Model.prototype.traverse =
-  function (methodName, submodelsGetterName, methodArgs) {
+  function(methodName, submodelsGetterName, methodArgs) {
 
     var submodels,
         submodelsMethod,
@@ -36,27 +36,27 @@ define(function (require) {
 
   Model.prototype.simulate = T.noop;
 
-  Model.prototype.getSimulateSubmodels = function () {
+  Model.prototype.getSimulateSubmodels = function() {
     return this.getSubmodels();
   };
 
   Model.prototype.clear = T.noop;
 
-  Model.prototype.getClearSubmodels = function () {
+  Model.prototype.getClearSubmodels = function() {
     return this.getSubmodels();
   };
 
   Model.prototype.render = T.noop;
 
-  Model.prototype.getRenderSubmodels = function () {
+  Model.prototype.getRenderSubmodels = function() {
     return this.getSubmodels();
   };
 
-  Model.prototype.getSubmodels = function () {
+  Model.prototype.getSubmodels = function() {
     return [];
   };
 
-  Model.prototype.setupAsynchronousBehaviours = function () {
+  Model.prototype.setupAsynchronousBehaviours = function() {
     if (T.isApplicable(this.simulate.setupAsync)) {
       this.render.setupAsync.apply(this, []);
     }
@@ -68,11 +68,11 @@ define(function (require) {
     }
   };
 
-  Model.prototype.dispatchEvent = function (type, event) {
+  Model.prototype.dispatchEvent = function(type, event) {
     this.runListeners(type, event);
   };
 
-  Model.prototype.runListeners = function (type, event) {
+  Model.prototype.runListeners = function(type, event) {
     var listeners = this._listeners[type] || [];
     event.type = type;
     event.target = this;
@@ -83,7 +83,7 @@ define(function (require) {
     });
   };
 
-  Model.prototype.addEventListener = function (type, callback) {
+  Model.prototype.addEventListener = function(type, callback) {
     var listeners = this._listeners,
         typeListeners = listeners[type] = listeners[type] || [];
 
@@ -92,7 +92,7 @@ define(function (require) {
     }
   };
 
-  Model.prototype.removeEventListener = function (type, callback) {
+  Model.prototype.removeEventListener = function(type, callback) {
     var listeners = this._listeners,
         typeListeners = listeners[type] = listeners[type] || [],
         position = typeListeners.indexOf(callback);

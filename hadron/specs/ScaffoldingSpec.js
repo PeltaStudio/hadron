@@ -1,11 +1,11 @@
-define(function (require) {
+define(function(require) {
   'use strict';
 
   var S = require('hadron/scaffolding');
 
-  describe('The the(clarative) scaffolding library', function () {
+  describe('The the(clarative) scaffolding library', function() {
 
-    describe('The object constructor', function () {
+    describe('The object constructor', function() {
 
       it('has both the() and theObject() constructor as aliases.', function() {
         expect(S.the).toBe(S.theObject);
@@ -153,9 +153,9 @@ define(function (require) {
 
     });
 
-    describe('The class constructor', function () {
+    describe('The class constructor', function() {
 
-      it('allows classical inheritance.', function () {
+      it('allows classical inheritance.', function() {
         function Klass() {}
         function SubKlass() {}
 
@@ -168,7 +168,7 @@ define(function (require) {
         expect(Object.getPrototypeOf(o)).toBe(SubKlass.prototype);
       });
 
-      it('allows adding read-only functions to the prototype.', function () {
+      it('allows adding read-only functions to the prototype.', function() {
         function Klass() {}
         function f() { return this; }
 
@@ -181,7 +181,7 @@ define(function (require) {
       });
 
       it('allows adding named read-only functions to the prototype.',
-                                                                function () {
+                                                                function() {
         function Klass() {}
         function f() { return this; }
 
@@ -194,7 +194,7 @@ define(function (require) {
       });
 
       it('allows adding named read-only values to the prototype.',
-                                                                function () {
+                                                                function() {
         function Klass() {}
 
         S.theClass(Klass).has('value', 42);

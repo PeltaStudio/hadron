@@ -1,4 +1,4 @@
-define(function (require) {
+define(function(require) {
   'use strict';
 
   var TICK_TIME = 1000;
@@ -7,7 +7,7 @@ define(function (require) {
     this.remainToTick = {};
   }
 
-  HexCellSimulator.prototype.apply = function (model, args) {
+  HexCellSimulator.prototype.apply = function(model, args) {
     var self = this;
     var t = args[0], dt = args[1], newTask = args[2],
         aliveCount, isTimeToTick;
@@ -17,13 +17,13 @@ define(function (require) {
 
     aliveCount = model.getAliveNeightboursCount();
     if (model.alive && (aliveCount < 2 || aliveCount > 3)) {
-      newTask(function () {
+      newTask(function() {
         model.alive = false;
       });
     }
 
     else if (!model.alive && aliveCount === 3) {
-      newTask(function () {
+      newTask(function() {
         model.alive = true;
       });
     }

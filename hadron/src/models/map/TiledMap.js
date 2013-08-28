@@ -1,4 +1,4 @@
-define(function (require) {
+define(function(require) {
   'use strict';
 
   var S = require('hadron/scaffolding'),
@@ -9,7 +9,7 @@ define(function (require) {
   }
   S.theClass(TiledMap).inheritsFrom(Model);
 
-  TiledMap.prototype.getSubmodels = function (aspect) {
+  TiledMap.prototype.getSubmodels = function(aspect) {
     return []; // this.columnSet, this.effectOverlay...
   };
 

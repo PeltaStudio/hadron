@@ -4,7 +4,7 @@
  * upon an extended version of the Hadron main isometric render engine
  * inlcuding extensions for specific aiding gizmos.
  */
-define(function (require) {
+define(function(require) {
   'use strict';
 
   var S = require('hadron/scaffolding'),
@@ -15,13 +15,13 @@ define(function (require) {
 
   function MapBuilderTool() { }
 
-  MapBuilderTool.prototype.init = function () {
+  MapBuilderTool.prototype.init = function() {
     this.setupEditor();
     this.setupControl();
     this.setupInfoArea();
   };
 
-  MapBuilderTool.prototype.setupEditor = function () {
+  MapBuilderTool.prototype.setupEditor = function() {
     var self = this;
     var mapEditorCanvas = document.getElementById('map-editor-canvas'),
         mapEditor = new MapEditor(),
@@ -33,15 +33,15 @@ define(function (require) {
     // FIXME: look for a better name. Problem can be with Game.
     mapEditorSimulation = new Game({
       rootModel: mapEditor,
-      renderSystem:  new IsometricDrawer(mapEditorCanvas.getContext('2d'))
+      renderSystem: new IsometricDrawer(mapEditorCanvas.getContext('2d'))
     });
     mapEditorSimulation.start();
 
     S.theObject(self)
       .has('mapEditorCanvas', mapEditorCanvas)
       .has('mapEditor', mapEditor)
-      .has('mapEditorSimulation', mapEditorSimulation)
-    ;
+      .has('mapEditorSimulation', mapEditorSimulation);
+
 
     self.updateViewport();
     self.mapEditor.goToOrigin();
@@ -55,34 +55,34 @@ define(function (require) {
         evt.clientX - rect.left,
         evt.clientY - rect.top
       ];
-      var viewportSize = self.mapEditor.getViewportSize()
+      var viewportSize = self.mapEditor.getViewportSize();
       var cameraCoords = [
         canvasCoords[0] / canvas.width * viewportSize.width,
-        canvasCoords[1] / canvas.height * viewportSize.height,
+        canvasCoords[1] / canvas.height * viewportSize.height
       ];
       self.mapEditor.setPointer(cameraCoords);
     };
   };
 
-  MapBuilderTool.prototype.setupControl = function () {
+  MapBuilderTool.prototype.setupControl = function() {
     var self = this;
     window.onresize = this.updateViewport.bind(this);
   };
 
-  MapBuilderTool.prototype.setupInfoArea = function () {
+  MapBuilderTool.prototype.setupInfoArea = function() {
     var self = this;
     var updateFPS, mapEditorInfoArea, fpsHolder, avgFPS = 0, counter = 0;
     fpsHolder = document.querySelector('#fps-info + dd');
-    updateFPS = setInterval(function () {
+    updateFPS = setInterval(function() {
       var fps = self.mapEditorSimulation.fps;
-      avgFPS = (avgFPS * counter + fps)/(counter + 1);
+      avgFPS = (avgFPS * counter + fps) / (counter + 1);
       counter++;
 
       fpsHolder.textContent = avgFPS.toFixed(2);
     }, 1000);
   };
 
-  MapBuilderTool.prototype.updateViewport = function () {
+  MapBuilderTool.prototype.updateViewport = function() {
     var newWidth = document.documentElement.offsetWidth,
         newHeight = document.documentElement.clientHeight;
 

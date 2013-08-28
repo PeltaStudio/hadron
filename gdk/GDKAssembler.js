@@ -1,4 +1,4 @@
-define(function (require) {
+define(function(require) {
   'use strict';
 
   var T = require('hadron/toolkit'),
@@ -24,7 +24,7 @@ define(function (require) {
   }
   S.theClass(GDKAssembler).inheritsFrom(HadronAssembler);
 
-  GDKAssembler.prototype.assembleModels = function () {
+  GDKAssembler.prototype.assembleModels = function() {
     HadronAssembler.prototype.assembleModels.call(this);
 
     var canvas = this.canvas;

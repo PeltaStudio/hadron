@@ -7,7 +7,7 @@ define(function(require) {
   function CellHighlighterRender() { }
   S.theClass(CellHighlighterRender).inheritsFrom(Render);
 
-  CellHighlighterRender.prototype.render = function (model, drawer) {
+  CellHighlighterRender.prototype.render = function(model, drawer) {
     var position = model.getPosition(),
         gizmo = drawer.getIsoCube(model.getCellSize(), 0, {
           faceColor: false,

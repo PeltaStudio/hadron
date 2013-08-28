@@ -1,4 +1,4 @@
-define(function (require) {
+define(function(require) {
   'use strict';
 
   var T = require('hadron/toolkit');
@@ -117,7 +117,7 @@ define(function (require) {
     }
 
     function updateFPS() {
-      fps = 1000/(Date.now() - startTime);
+      fps = 1000 / (Date.now() - startTime);
       startTime = Date.now();
     }
 

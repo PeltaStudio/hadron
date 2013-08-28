@@ -1,11 +1,11 @@
-define(function (require) {
+define(function(require) {
   'use strict';
 
   var step = Math.PI / 3;
 
   function HexagonRender() { }
 
-  HexagonRender.prototype.apply = function (model, args) {
+  HexagonRender.prototype.apply = function(model, args) {
     var ctx = args[0],
         startPoint = [
           model.position[0],

@@ -1,4 +1,4 @@
-define(function (require) {
+define(function(require) {
   'use strict';
 
   var T = require('hadron/toolkit'),
@@ -17,7 +17,7 @@ define(function (require) {
   }
   S.theClass(Camera).inheritsFrom(Model);
 
-  Camera.prototype.resize = function (width, height) {
+  Camera.prototype.resize = function(width, height) {
     this.width = width;
     this.height = height;
     this.semiWidth = width / 2;
@@ -26,24 +26,24 @@ define(function (require) {
     return this;
   };
 
-  Camera.prototype.setPosition = function (newPosition) {
+  Camera.prototype.setPosition = function(newPosition) {
     this._position = newPosition;
     this._isVisualizationAreaOutOfDate = true;
     return this;
   };
 
-  Camera.prototype.getPosition = function () {
+  Camera.prototype.getPosition = function() {
     return T.clone(this._position);
   };
 
-  Camera.prototype.getVisualizationArea = function () {
+  Camera.prototype.getVisualizationArea = function() {
     if (this._isVisualizationAreaOutOfDate) {
       this.updateVisualizationArea();
     }
     return T.clone(this._visualizationArea);
   };
 
-  Camera.prototype.updateVisualizationArea = function () {
+  Camera.prototype.updateVisualizationArea = function() {
     var position = this.getPosition(),
         semiWidth = this.semiWidth,
         semiHeight = this.semiHeight;
@@ -57,7 +57,7 @@ define(function (require) {
     this._isVisualizationAreaOutOfDate = false;
   };
 
-  Camera.prototype.getTargetCoordinates = function (cameraCoordinates) {
+  Camera.prototype.getTargetCoordinates = function(cameraCoordinates) {
     var visualizationArea = this.getVisualizationArea();
     return [
       visualizationArea.left + cameraCoordinates[0],

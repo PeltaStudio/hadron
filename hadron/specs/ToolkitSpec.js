@@ -1,11 +1,11 @@
-define(function (require) {
+define(function(require) {
   'use strict';
 
   var T = require('hadron/toolkit');
 
-  describe('The tookit library', function () {
+  describe('The tookit library', function() {
 
-    describe('The assert() library', function () {
+    describe('The assert() library', function() {
 
       it('has a simple assert() which throws a custom exception.', function() {
         function passingTest() {
@@ -59,7 +59,7 @@ define(function (require) {
     it('has an isApplicable() function to check if an object can be applyed' +
                                                   'as a function.', function() {
       var notApplicable = {};
-      var applicable = { apply: function () {} };
+      var applicable = { apply: function() {} };
       function f() {}
 
       expect(T.isApplicable(f)).toBe(true);

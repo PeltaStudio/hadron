@@ -1,4 +1,4 @@
-define(function (require) {
+define(function(require) {
   'use strict';
 
   var T = require('hadron/toolkit'),
@@ -19,11 +19,11 @@ define(function (require) {
   }
   S.theClass(LogoAssembler).inheritsFrom(Assembler);
 
-  LogoAssembler.prototype.assembleModels = function () {
+  LogoAssembler.prototype.assembleModels = function() {
     var canvas = this.canvas;
 
     this.assembleModel(Hexagon, {
-      render: new HexagonRender(),
+      render: new HexagonRender()
     });
 
     this.assembleModel(HexCell, {

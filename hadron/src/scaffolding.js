@@ -1,5 +1,5 @@
 
-define(function (require) {
+define(function(require) {
   'use strict';
 
   function the(object) {
@@ -21,7 +21,7 @@ define(function (require) {
         return this;
       },
 
-      hasGet: function (a1, a2) {
+      hasGet: function(a1, a2) {
         var getter, name;
         if (typeof a1 === 'function') {
           getter = a1;
@@ -35,7 +35,7 @@ define(function (require) {
         return this;
       },
 
-      hasSet: function (a1, a2) {
+      hasSet: function(a1, a2) {
         var setter, name;
         if (typeof a1 === 'function') {
           setter = a1;
@@ -54,7 +54,7 @@ define(function (require) {
   function theClass(klass) {
     var prototype = the(klass.prototype);
     return {
-      has: function () {
+      has: function() {
         prototype.has.apply(prototype, arguments);
         return this;
       },

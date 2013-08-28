@@ -1,5 +1,5 @@
-define(function (require) {
-  'use strict'
+define(function(require) {
+  'use strict';
 
   function extend() {
     var target = arguments[0],

@@ -6,7 +6,7 @@ requirejs.config({
   }
 });
 
-define(function (require) {
+define(function(require) {
   var MapBuilderTool = require('MapBuilderTool');
 
   var mapBuilderTool = new MapBuilderTool();

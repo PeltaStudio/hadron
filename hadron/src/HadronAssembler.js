@@ -1,4 +1,4 @@
-define(function (require) {
+define(function(require) {
   'use strict';
 
   var T = require('hadron/toolkit'),
@@ -17,7 +17,7 @@ define(function (require) {
   }
   S.theClass(HadronAssembler).inheritsFrom(Assembler);
 
-  HadronAssembler.prototype.assembleModels = function () {
+  HadronAssembler.prototype.assembleModels = function() {
   };
 
   return HadronAssembler;

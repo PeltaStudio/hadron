@@ -1,4 +1,4 @@
-define(function (require) {
+define(function(require) {
   'use strict';
 
   var S = require('hadron/scaffolding'),
@@ -6,8 +6,8 @@ define(function (require) {
 
   function Hexagon(size, position) {
     Model.apply(this, arguments);
-    this.fillColor = "transparent";
-    this.lineColor = "black";
+    this.fillColor = 'transparent';
+    this.lineColor = 'black';
     this.size = size || 150;
     this.position = position || [0, 0];
     this.rotation = 0;

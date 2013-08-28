@@ -1,4 +1,4 @@
-define(function (require) {
+define(function(require) {
   'use strict';
 
   var S = require('hadron/scaffolding'),
@@ -9,7 +9,7 @@ define(function (require) {
   }
   S.theClass(HexCellRender).inheritsFrom(HexagonRender);
 
-  HexCellRender.prototype.apply = function (model, args) {
+  HexCellRender.prototype.apply = function(model, args) {
     model.fillColor = model.alive ? 'black' : 'white';
     HexagonRender.prototype.apply.call(this, model, args);
   };

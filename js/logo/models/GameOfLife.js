@@ -1,4 +1,4 @@
-define(function (require) {
+define(function(require) {
   'use strict';
 
   var T = require('hadron/toolkit'),
@@ -10,34 +10,34 @@ define(function (require) {
       selectDirection;
 
   // Ad-hoc completely dead (no render / no behaviour) cell
-  FOSSIL_CELL = new HexCell([-1, -1], 0, [0,0], false);
+  FOSSIL_CELL = new HexCell([-1, -1], 0, [0, 0], false);
   FOSSIL_CELL.render = undefined;
   FOSSIL_CELL.simulate = undefined;
 
   selectDirection = {
-    N: function (cellId) { return [
+    N: function(cellId) { return [
       cellId[0] - 2,
       cellId[1]
     ]; },
-    NE: function (cellId) { return [
+    NE: function(cellId) { return [
       cellId[0] - 1,
-      cellId[1] + (1 - cellId[0]%2)
+      cellId[1] + (1 - cellId[0] % 2)
     ]; },
-    SE: function (cellId) { return [
+    SE: function(cellId) { return [
       cellId[0] + 1,
-      cellId[1] + (1 - cellId[0]%2)
+      cellId[1] + (1 - cellId[0] % 2)
     ]; },
-    S: function (cellId) { return [
+    S: function(cellId) { return [
       cellId[0] + 2,
       cellId[1]
     ]; },
-    SW: function (cellId) { return [
+    SW: function(cellId) { return [
       cellId[0] + 1,
-      cellId[1] - cellId[0]%2
+      cellId[1] - cellId[0] % 2
     ]; },
-    NW: function (cellId) { return [
+    NW: function(cellId) { return [
       cellId[0] - 1,
-      cellId[1] - cellId[0]%2
+      cellId[1] - cellId[0] % 2
     ]; }
   };
 
@@ -99,9 +99,9 @@ define(function (require) {
       rows = ((side * 2 - 1) * 2) - 1;
 
       stepX = 3 * cellRadius;
-      stepY = Math.sqrt(3)/2 * cellRadius;
-      oddRowStartingX = center[0] - (3/2 * cellRadius * (side - 1));
-      evenRowStartingX = center[0] - (3/2 * cellRadius * (side - 2));
+      stepY = Math.sqrt(3) / 2 * cellRadius;
+      oddRowStartingX = center[0] - (3 / 2 * cellRadius * (side - 1));
+      evenRowStartingX = center[0] - (3 / 2 * cellRadius * (side - 2));
 
       y = center[1] - START_OF_THE_FILL_AREA;
       for (var r = 0; r < rows; r++) {
@@ -168,7 +168,7 @@ define(function (require) {
           return true;
         }
 
-        index = isRowEven ? r/2 : (r - 1)/2;
+        index = isRowEven ? r / 2 : (r - 1) / 2;
         if (isRowEven) {
           leftBoundary = middle - index;
           rightBoundary = middle + index;

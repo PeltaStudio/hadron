@@ -1,4 +1,4 @@
-define(function (require) {
+define(function(require) {
   'use strict';
 
   var DEFAULT_CELL_SIZE = 100;
@@ -23,19 +23,19 @@ define(function (require) {
   }
   S.theClass(MapEditor).inheritsFrom(Model);
 
-  MapEditor.prototype.setupMap = function () {
+  MapEditor.prototype.setupMap = function() {
     var cellSize = DEFAULT_CELL_SIZE;
     this.map = new TiledMap(cellSize);
   };
 
-  MapEditor.prototype.setupCamera = function () {
+  MapEditor.prototype.setupCamera = function() {
     var camera = new Camera();
     camera.setPosition([0, 0]);
     camera.resize(500, 500);
     S.theObject(this).has('camera', camera);
   };
 
-  MapEditor.prototype.setupGizmos = function () {
+  MapEditor.prototype.setupGizmos = function() {
     var self = this;
     self.grid = new IsometricGrid();
     self.screenAxis = new ScreenAxis();
@@ -66,26 +66,26 @@ define(function (require) {
     }
   };
 
-  MapEditor.prototype.getSubmodels = function (aspect) {
+  MapEditor.prototype.getSubmodels = function(aspect) {
     return [this.map, this.screenAxis, this.grid, this.pointedCellGizmo]; // this.screenAxis, this.intersectionGizmos
   };
 
-  MapEditor.prototype.resizeViewport = function (newWidth, newHeight) {
+  MapEditor.prototype.resizeViewport = function(newWidth, newHeight) {
     return this.camera.resize(newWidth, newHeight);
   };
 
-  MapEditor.prototype.goToOrigin = function () {
-    return this.camera.setPosition([0,0]);
+  MapEditor.prototype.goToOrigin = function() {
+    return this.camera.setPosition([0, 0]);
   };
 
-  MapEditor.prototype.getViewportSize = function () {
+  MapEditor.prototype.getViewportSize = function() {
     return {
       width: this.camera.width,
       height: this.camera.height
     };
   };
 
-  MapEditor.prototype.setPointer = function (cameraCoords) {
+  MapEditor.prototype.setPointer = function(cameraCoords) {
     var targetCoordinates = this.camera.getTargetCoordinates(cameraCoords);
     this.pointedCell = this.metrics.getWorldCoordinates(targetCoordinates);
   };

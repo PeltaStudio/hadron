@@ -1,15 +1,15 @@
-define(function (require) {
+define(function(require) {
   'use strict';
 
-  var T = require('hadron/toolkit')
+  var T = require('hadron/toolkit');
 
   var noop = T.noop;
 
   function Assembler() { }
 
-  Assembler.prototype.assembleModels = function () { };
+  Assembler.prototype.assembleModels = function() { };
 
-  Assembler.prototype.assembleModel = function (modelClass, specification) {
+  Assembler.prototype.assembleModel = function(modelClass, specification) {
     modelClass.prototype.render = specification.render || noop;
     if (specification.getRenderSubmodels) {
       modelClass.prototype.getRenderSubmodels =

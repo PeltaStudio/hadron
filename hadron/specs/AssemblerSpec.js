@@ -1,9 +1,9 @@
-define(function (require) {
+define(function(require) {
   'use strict';
 
   var Assembler = require('hadron/Assembler');
 
-  describe('Assembler instances', function () {
+  describe('Assembler instances', function() {
 
     it('can use assembleModel() to join a model class with the facets.',
                                                                    function() {
@@ -16,7 +16,7 @@ define(function (require) {
             getClearSubmodels: sinon.spy(),
 
             render: sinon.spy(),
-            getRenderSubmodels: sinon.spy(),
+            getRenderSubmodels: sinon.spy()
           };
 
       function TestClass() {}

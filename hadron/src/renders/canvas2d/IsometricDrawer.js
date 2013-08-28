@@ -3,32 +3,32 @@
  * context of a canvas. The IsometricDrawer is the Hadron main drawer and is
  ^ in charge of provide isometric drawing utilities.
  */
-define(function (require) {
+define(function(require) {
   'use strict';
 
   var S = require('hadron/scaffolding'),
       T = require('hadron/toolkit');
 
-  var G_30 = Math.PI/6,
-      COS_30 = Math.cos(Math.PI/6),
+  var G_30 = Math.PI / 6,
+      COS_30 = Math.cos(Math.PI / 6),
       SIN_30 = 0.5,
       TAN_30 = Math.tan(G_30);
 
-  var G_60 = Math.PI/3,
+  var G_60 = Math.PI / 3,
       COS_60 = Math.cos(G_60),
       SIN_60 = Math.sin(G_60);
 
   var ROOT_2 = Math.sqrt(2),
-      SEMI_ROOT_2 = ROOT_2/2,
-      SCALE = Math.sqrt(10/16);
+      SEMI_ROOT_2 = ROOT_2 / 2,
+      SCALE = Math.sqrt(10 / 16);
 
   function Drawer(target) {
     S.the(target)
       .has(clear)
       .has(getIsoCube)
       .has(setIsometricProjection)
-      .has(setDimetricProjection)
-    ;
+      .has(setDimetricProjection);
+
     return target;
   }
 
@@ -46,7 +46,7 @@ define(function (require) {
   // Remember transformation are applied from bottom to top.
   function setDimetricProjection() {
     this.scale(1, 0.5); // Scale
-    this.rotate(-Math.PI/4); // Rotate
+    this.rotate(-Math.PI / 4); // Rotate
   }
 
   function getIsoCube(size, height, options) {
@@ -117,7 +117,7 @@ define(function (require) {
       darkestColor = T.clone(faceColor);
       darkestColor = brightestColor[2] * 0.1;
 
-      switch(lightSource) {
+      switch (lightSource) {
         case 'top':
           top = brightestColor;
           front = mediumColor;
@@ -139,7 +139,7 @@ define(function (require) {
         case 'back':
           top = right = front = darkestColor;
           break;
-      };
+      }
 
       return {
         top: getHSLA(top),

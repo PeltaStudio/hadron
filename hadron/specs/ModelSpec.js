@@ -1,16 +1,16 @@
-define(function (require) {
+define(function(require) {
   'use strict';
 
   var Model = require('hadron/models/Model');
 
-  describe('Model instances', function () {
+  describe('Model instances', function() {
 
     it('have a traverse() method to implement a simple visitor.', function() {
       var model = new Model(),
           submodel = {
             traverse: sinon.spy()
           },
-          methodArgs = [1,2,3],
+          methodArgs = [1, 2, 3],
           submodels = [submodel, submodel];
       model.test = sinon.spy();
       model.getTestSubmodels = sinon.stub().returns(submodels);
@@ -31,9 +31,9 @@ define(function (require) {
           .alwaysCalledWith('test', 'getTestSubmodels', methodArgs)).toBe(true);
     });
 
-    describe('Event methods', function () {
+    describe('Event methods', function() {
 
-      it('allow to add callbacks without repetitions.', function () {
+      it('allow to add callbacks without repetitions.', function() {
         var model = new Model();
         function callback() {}
 
@@ -45,7 +45,7 @@ define(function (require) {
         expect(model._listeners['anytype'][0]).toBe(callback);
       });
 
-      it('allow to remove a callback.', function () {
+      it('allow to remove a callback.', function() {
         var model = new Model();
         function callback() {}
 
@@ -56,7 +56,7 @@ define(function (require) {
         expect(model._listeners['anytype'].length).toEqual(0);
       });
 
-      it('allow to dispatch an event of a given type.', function () {
+      it('allow to dispatch an event of a given type.', function() {
         var model = new Model(),
             event = { details: {} },
             receivedEvent = null;
