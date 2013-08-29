@@ -1,7 +1,9 @@
 define(function(require) {
   'use strict';
 
-  var NEXT_ID = 1;
+  var NEXT_ID = 1,
+      IS_PRECALL = false,
+      IS_POSTCALL = true;
 
   var T = require('hadron/toolkit');
 
@@ -15,9 +17,14 @@ define(function(require) {
 
     var submodels,
         submodelsMethod,
-        method = this[methodName];
+        method = this[methodName],
+        isMethodApplicable = T.isApplicable(method);
 
-    if (T.isApplicable(method)) {
+    methodArgs = [null].concat(methodArgs);
+
+    // pre-call
+    if (isMethodApplicable) {
+      methodArgs[0] = IS_PRECALL;
       method.apply(this, methodArgs);
     }
 
@@ -31,6 +38,12 @@ define(function(require) {
     // traverse submodules
     for (var i = 0, submodel; submodel = submodels[i]; i++) {
       submodel.traverse.apply(submodel, arguments);
+    }
+
+    // post-call
+    if (isMethodApplicable) {
+      methodArgs[0] = IS_POSTCALL;
+      method.apply(this, methodArgs);
     }
   };
 

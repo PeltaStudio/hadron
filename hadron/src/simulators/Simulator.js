@@ -3,14 +3,18 @@ define(function(require) {
 
   var T = require('hadron/toolkit');
 
+  var NOOP = T.noop;
+
   function Simulator() { }
 
   Simulator.prototype.apply = function(model, args) {
-    var newArgs = [model].concat(args);
-    this.simulate.apply(this, newArgs);
+    var isPostCall = args[0],
+        newArgs = [model].concat(args.slice(1));
+    this[isPostCall ? 'postSimulate' : 'simulate'].apply(this, newArgs);
   };
 
-  Simulator.prototype.simulate = T.noop;
+  Simulator.prototype.simulate = NOOP;
+  Simulator.prototype.postSimulate = NOOP;
 
   return Simulator;
 });

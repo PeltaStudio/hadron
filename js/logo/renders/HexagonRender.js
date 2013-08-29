@@ -1,13 +1,16 @@
 define(function(require) {
   'use strict';
 
+  var S = require('hadron/scaffolding'),
+      Render = require('hadron/renders/Render');
+
   var step = Math.PI / 3;
 
   function HexagonRender() { }
+  S.theClass(HexagonRender).inheritsFrom(Render);
 
-  HexagonRender.prototype.apply = function(model, args) {
-    var ctx = args[0],
-        startPoint = [
+  HexagonRender.prototype.render = function(model, ctx) {
+    var startPoint = [
           model.position[0],
           model.position[1] - model.size
         ], nextPoint;

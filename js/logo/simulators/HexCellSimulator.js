@@ -1,16 +1,19 @@
 define(function(require) {
   'use strict';
 
+  var S = require('hadron/scaffolding'),
+      Simulator = require('hadron/simulators/Simulator');
+
   var TICK_TIME = 1000;
 
   function HexCellSimulator() {
     this.remainToTick = {};
   }
+  S.theClass(HexCellSimulator).inheritsFrom(Simulator);
 
-  HexCellSimulator.prototype.apply = function(model, args) {
+  HexCellSimulator.prototype.simulate = function(model, t, dt, newTask) {
     var self = this;
-    var t = args[0], dt = args[1], newTask = args[2],
-        aliveCount, isTimeToTick;
+    var aliveCount, isTimeToTick;
 
     updateTimeToTick();
     if (!isTimeToTick) return;

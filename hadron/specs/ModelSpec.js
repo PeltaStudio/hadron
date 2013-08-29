@@ -11,15 +11,17 @@ define(function(require) {
             traverse: sinon.spy()
           },
           methodArgs = [1, 2, 3],
-          submodels = [submodel, submodel];
+          submodels = [submodel, submodel],
+          IS_PRECALL = false, IS_POSTCALL = true;
       model.test = sinon.spy();
       model.getTestSubmodels = sinon.stub().returns(submodels);
 
       model.traverse('test', 'getTestSubmodels', methodArgs);
 
-      // call the model method with methodArgs
-      expect(model.test.calledOnce).toBe(true);
-      expect(model.test.calledWith.apply(model.test, methodArgs)).toBe(true);
+      // call the model method with precall flag and methodArgs
+      expect(model.test.calledTwice).toBe(true);
+      expect(model.test.getCall(0).args)
+        .toEqual([IS_PRECALL].concat(methodArgs));
 
       // retrieve the submodels
       expect(model.getTestSubmodels.calledOnce).toBe(true);
@@ -29,6 +31,10 @@ define(function(require) {
       expect(
         submodel.traverse
           .alwaysCalledWith('test', 'getTestSubmodels', methodArgs)).toBe(true);
+
+      // call the model method with postcall flag and methodArgs
+      expect(model.test.getCall(1).args)
+        .toEqual([IS_POSTCALL].concat(methodArgs));
     });
 
     describe('Event methods', function() {
