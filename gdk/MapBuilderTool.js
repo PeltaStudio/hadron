@@ -10,7 +10,7 @@ define(function(require) {
   var S = require('hadron/scaffolding'),
       MapEditor = require('models/MapEditor'),
       GDKAssembler = require('GDKAssembler'),
-      IsometricDrawer = require('hadron/renders/canvas2d/IsometricDrawer'),
+      RenderSystem = require('hadron/render_system/RenderSystem'),
       Game = require('hadron/Game');
 
   function MapBuilderTool() { }
@@ -23,30 +23,29 @@ define(function(require) {
 
   MapBuilderTool.prototype.setupEditor = function() {
     var self = this;
-    var mapEditorCanvas = document.getElementById('map-editor-canvas'),
+    var mapEditorWindow = document.getElementById('map-editor-canvas'),
         mapEditor = new MapEditor(),
         mapEditorSimulation, assembler;
 
-    assembler = new GDKAssembler(mapEditorCanvas);
+    assembler = new GDKAssembler(mapEditorWindow);
     assembler.assembleModels();
 
     // FIXME: look for a better name. Problem can be with Game.
     mapEditorSimulation = new Game({
       rootModel: mapEditor,
-      renderSystem: new IsometricDrawer(mapEditorCanvas.getContext('2d'))
+      renderSystem: new RenderSystem(mapEditorWindow)
     });
     mapEditorSimulation.start();
 
     S.theObject(self)
-      .has('mapEditorCanvas', mapEditorCanvas)
+      .has('mapEditorWindow', mapEditorWindow)
       .has('mapEditor', mapEditor)
       .has('mapEditorSimulation', mapEditorSimulation);
 
-
     self.updateViewport();
-    self.mapEditor.goToOrigin();
+//    self.mapEditor.goToOrigin();
 
-    mapEditorCanvas.onmousemove = updateViewportPointer;
+//    mapEditorWindow.onmousemove = updateViewportPointer;
 
     function updateViewportPointer(evt) {
       var canvas = evt.target;
@@ -87,10 +86,10 @@ define(function(require) {
         newHeight = document.documentElement.clientHeight;
 
     // maximize canvas
-    this.mapEditorCanvas.width = newWidth;
-    this.mapEditorCanvas.height = newHeight;
+    this.mapEditorWindow.width = newWidth;
+    this.mapEditorWindow.height = newHeight;
 
-    this.mapEditor.resizeViewport(newWidth, newHeight);
+    this.mapEditor.resizeWindow(newWidth, newHeight);
   };
 
   return MapBuilderTool;

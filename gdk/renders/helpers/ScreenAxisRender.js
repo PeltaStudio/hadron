@@ -7,11 +7,14 @@ define(function(require) {
   function ScreenAxisRender() { }
   S.theClass(ScreenAxisRender).inheritsFrom(Render);
 
-  ScreenAxisRender.prototype.render = function(model, drawer) {
-    var renderArea;
+  ScreenAxisRender.prototype.render = function(model, render) {
+    var renderArea, gfx, drawer;
     if (!model.enabled) return;
 
-    renderArea = model.getVisualizationArea();
+    gfx = render.gfx;
+    drawer = gfx.drawer;
+    renderArea = gfx.getVisualizationArea();
+
     drawer.save();
     drawer.beginPath();
     drawer.strokeStyle = 'red';

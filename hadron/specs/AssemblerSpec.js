@@ -1,38 +1,37 @@
-define(function(require) {
+(function() {
   'use strict';
 
-  var Assembler = require('hadron/Assembler');
+  var context = newContext();
+  context(['hadron/Assembler'], function(Assembler) {
 
-  describe('Assembler instances', function() {
+    describe('Assembler instances', function() {
 
-    it('can use assembleModel() to join a model class with the facets.',
-                                                                   function() {
-      var assembler = new Assembler(),
-          specification = {
-            simulate: sinon.spy(),
-            getSimulateSubmodels: sinon.spy(),
+      it('can use assembleModel() to join a model class with the facets.',
+                                                                    function() {
+        var assembler = new Assembler(),
+            specification = {
+              simulate: sinon.spy(),
+              getSimulateSubmodels: sinon.spy(),
 
-            clear: sinon.spy(),
-            getClearSubmodels: sinon.spy(),
+              clear: sinon.spy(),
+              getClearSubmodels: sinon.spy(),
 
-            render: sinon.spy(),
-            getRenderSubmodels: sinon.spy()
-          };
+              render: sinon.spy(),
+              getRenderSubmodels: sinon.spy()
+            };
 
-      function TestClass() {}
+        function TestClass() {}
 
-      assembler.assembleModel(TestClass, specification);
+        assembler.assembleModel(TestClass, specification);
 
-      for (var methodName in specification)
-        if (specification.hasOwnProperty(methodName)) {
-        expect(TestClass.prototype[methodName])
-          .toBe(specification[methodName]);
-      }
+        for (var methodName in specification)
+          if (specification.hasOwnProperty(methodName)) {
+          expect(TestClass.prototype[methodName])
+            .toBe(specification[methodName]);
+        }
+      });
+
     });
 
   });
-
-  return {
-    name: 'AssemblerSpec'
-  };
-});
+}());

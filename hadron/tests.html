@@ -10,6 +10,7 @@
   <script type="text/javascript" src="lib/jasmine-1.3.1/jasmine-html.js"></script>
   <script type="text/javascript" src="lib/sinon.js"></script>
   <script type="text/javascript" src="lib/require.js"></script>
+  <script type="text/javascript" src="lib/context.js"></script>
 
   <script type="text/javascript">
     (function() {
@@ -24,23 +25,11 @@
         return htmlReporter.specFilter(spec);
       };
 
-      require.config({
-        paths: {
-          'specs': './specs',
-          'hadron': './src'
-        }
+      newContext.configurePaths({
+        'hadron': './src'
       });
 
-      window.onload = function() {
-        require([
-          'specs/ModelSpec',
-          'specs/AssemblerSpec',
-          'specs/ScaffoldingSpec',
-          'specs/ToolkitSpec',
-          'specs/RenderSpec',
-          'specs/SimulatorSpec'
-        ], execJasmine);
-      };
+      window.onload = execJasmine;
 
       function execJasmine() {
         jasmineEnv.execute();
@@ -48,6 +37,15 @@
 
     })();
   </script>
+
+  <script type="text/javascript" src="specs/RenderSystemSpec.js"></script>
+  <script type="text/javascript" src="specs/GraphicSystemSpec.js"></script>
+  <script type="text/javascript" src="specs/AssemblerSpec.js"></script>
+  <script type="text/javascript" src="specs/ModelSpec.js"></script>
+  <script type="text/javascript" src="specs/RenderSpec.js"></script>
+  <script type="text/javascript" src="specs/ScaffoldingSpec.js"></script>
+  <script type="text/javascript" src="specs/SimulatorSpec.js"></script>
+  <script type="text/javascript" src="specs/ToolkitSpec.js"></script>
 
 </head>
 
