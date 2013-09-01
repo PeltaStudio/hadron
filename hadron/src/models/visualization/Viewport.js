@@ -25,11 +25,18 @@ define(function(require) {
         position = viewport.position;
 
     gfx.restoreBuffer();
+    gfx.drawer.save();
+    gfx.drawer.fillStyle = '#DDD';
+    gfx.drawer.fillRect(
+      position[0], position[1],
+      viewport.width, viewport.height
+    );
     gfx.drawer.drawImage(
       buffer,
       position[0], position[1],
       viewport.width, viewport.height
     );
+    gfx.drawer.restore();
   };
 
   function Viewport(width, height, position) {
