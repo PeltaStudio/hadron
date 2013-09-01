@@ -4,9 +4,10 @@ define(function(require) {
   var S = require('hadron/scaffolding'),
       T = require('hadron/toolkit'),
       Render = require('hadron/renders/Render'),
+      Simulator = require('hadron/simulators/Simulator'),
       Model = require('hadron/models/Model');
 
-  function SceneRender() { }
+  function SceneRender() { Render.call(this); }
   S.theClass(SceneRender).inheritsFrom(Render);
 
   SceneRender.prototype.render = function(scene, system) {
@@ -30,15 +31,32 @@ define(function(require) {
     });
   };
 
+  function SceneControl() { Simulator.call(this); }
+  S.theClass(SceneControl).inheritsFrom(Simulator);
+
+  SceneControl.prototype.setupAsync = function() {
+    var scene = this;
+    scene.camera.addEventListener('pointermove', updateTargetPointer);
+
+    function updateTargetPointer(evt) {
+      scene.target.setPointer([evt.worldX, evt.worldY]);
+    }
+  };
+
   function Scene(target, camera) {
+    Model.call(this);
+
     var message = 'parameter `target` is mandatory and can not be null.';
     T.assert.isDefined(target, message);
 
     S.theObject(this).has('target', target);
     S.theObject(this).has('camera', camera || new Camera());
+
+    this.setupAsynchronousBehaviours();
   }
   S.theClass(Scene).inheritsFrom(Model);
 
+  Scene.prototype.simulate = new SceneControl();
   Scene.prototype.render = new SceneRender();
   Scene.prototype.getSubmodels = function() {
     return [this.target];

@@ -6,6 +6,8 @@ define(function(require) {
       Model = require('hadron/models/Model');
 
   function Camera(position, width, height) {
+    Model.call(this);
+
     position = position || [];
     width = width === undefined ? 500 : width;
     height = height === undefined ? 500 : height;
@@ -32,13 +34,13 @@ define(function(require) {
     return T.clone(this._position);
   };
 
-/*  Camera.prototype.getTargetCoordinates = function(cameraCoordinates) {
-    var visualizationArea = this.getVisualizationArea();
-    return [
-      visualizationArea.left + cameraCoordinates[0],
-      visualizationArea.top + cameraCoordinates[1]
-    ];
-  };*/
+  Camera.prototype.setPointer = function(coordinates) {
+    // TODO: Apply zoom factor
+    this.dispatchEvent('pointermove', {
+      worldX: coordinates[0] + this._position[0] - this.semiWidth,
+      worldY: coordinates[1] + this._position[1] - this.semiHeight
+    });
+  };
 
   return Camera;
 });

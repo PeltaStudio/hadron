@@ -43,23 +43,17 @@ define(function(require) {
       .has('mapEditorSimulation', mapEditorSimulation);
 
     self.updateViewport();
-//    self.mapEditor.goToOrigin();
 
-//    mapEditorWindow.onmousemove = updateViewportPointer;
+    mapEditorWindow.onmousemove = updateWindowPointer;
 
-    function updateViewportPointer(evt) {
+    function updateWindowPointer(evt) {
       var canvas = evt.target;
       var rect = canvas.getBoundingClientRect();
       var canvasCoords = [
         evt.clientX - rect.left,
         evt.clientY - rect.top
       ];
-      var viewportSize = self.mapEditor.getViewportSize();
-      var cameraCoords = [
-        canvasCoords[0] / canvas.width * viewportSize.width,
-        canvasCoords[1] / canvas.height * viewportSize.height
-      ];
-      self.mapEditor.setPointer(cameraCoords);
+      self.mapEditor.setPointer(canvasCoords);
     };
   };
 

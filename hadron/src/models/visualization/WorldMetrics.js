@@ -3,33 +3,41 @@ define(function(require) {
 
   var S = require('hadron/scaffolding');
 
+  var metricCache = { };
+
   function WorldMetrics(cellSize) {
-    var DIMETRIC_ANGLE = Math.atan(0.5),
-        SCALATION_FACTOR = Math.sqrt(10) / 4,
-        PROJECTED_SIZE = cellSize * SCALATION_FACTOR,
-        bigR = Math.cos(DIMETRIC_ANGLE) * PROJECTED_SIZE,
-        smallR = Math.sin(DIMETRIC_ANGLE) * PROJECTED_SIZE,
-        XAxis = [bigR, smallR],
-        ZAxis = [-bigR, smallR];
+    if (!metricCache[cellSize]) {
 
-    S.theObject(this)
-      .has('cellSize', cellSize)
-      .has('bigR', bigR)
-      .has('smallR', smallR)
-      .has('XAxis', XAxis)
-      .has('ZAxis', ZAxis)
-      .has('PROJECTED_SIZE', PROJECTED_SIZE);
+      var DIMETRIC_ANGLE = Math.atan(0.5),
+          SCALATION_FACTOR = Math.sqrt(10) / 4,
+          PROJECTED_SIZE = cellSize * SCALATION_FACTOR,
+          bigR = Math.cos(DIMETRIC_ANGLE) * PROJECTED_SIZE,
+          smallR = Math.sin(DIMETRIC_ANGLE) * PROJECTED_SIZE,
+          XAxis = [bigR, smallR],
+          ZAxis = [-bigR, smallR];
 
+      S.theObject(this)
+        .has('cellSize', cellSize)
+        .has('bigR', bigR)
+        .has('smallR', smallR)
+        .has('XAxis', XAxis)
+        .has('ZAxis', ZAxis)
+        .has('PROJECTED_SIZE', PROJECTED_SIZE);
+
+      metricCache[cellSize] = this;
+    }
+
+    return metricCache[cellSize];
   }
 
-  WorldMetrics.prototype.getTargetCoordinates = function(cellPosition) {
+  WorldMetrics.prototype.getWorldCoordinates = function(cellPosition) {
     var x = cellPosition[0], z = cellPosition[1];
     return [(x - z) * this.bigR, (x + z) * this.smallR];
   };
 
-  WorldMetrics.prototype.getWorldCoordinates = function(targetPosition) {
+  WorldMetrics.prototype.getMapCoordinates = function(worldPosition) {
     var self = this;
-    var x = targetPosition[0], y = targetPosition[1],
+    var x = worldPosition[0], y = worldPosition[1],
         intersectionWithX, intersectionWithZ, indexX, indexZ;
 
     intersectionWithX = [x / 2 + y, x / 4 + y / 2];

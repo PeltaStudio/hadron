@@ -5,11 +5,14 @@ define(function(require) {
       IS_PRECALL = false,
       IS_POSTCALL = true;
 
-  var T = require('hadron/toolkit');
+  var T = require('hadron/toolkit'),
+      S = require('hadron/scaffolding');
 
   function Model() {
-    Object.defineProperty(this, 'id', { value: NEXT_ID++ });
-    Object.defineProperty(this, '_listeners', { value: [] });
+    S.theObject(this)
+      .has('id', NEXT_ID++)
+      .has('_listeners', [])
+    ;
   }
 
   Model.prototype.traverse =
@@ -71,10 +74,10 @@ define(function(require) {
 
   Model.prototype.setupAsynchronousBehaviours = function() {
     if (T.isApplicable(this.simulate.setupAsync)) {
-      this.render.setupAsync.apply(this, []);
+      this.simulate.setupAsync.apply(this, []);
     }
     if (T.isApplicable(this.clear.setupAsync)) {
-      this.render.setupAsync.apply(this, []);
+      this.clear.setupAsync.apply(this, []);
     }
     if (T.isApplicable(this.render.setupAsync)) {
       this.render.setupAsync.apply(this, []);

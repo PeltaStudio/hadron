@@ -22,11 +22,32 @@ define(function(require) {
   };
 
   MultiportWindow.prototype.getSubmodels = function() {
-    var submodels = [];
+    var name, submodels = [];
     for (name in this._viewports) {
       submodels.push(this._viewports[name]);
     }
     return submodels;
+  };
+
+  MultiportWindow.prototype.setPointer = function(coordinates) {
+    var name, viewport, selectedViewport;
+    for (name in this._viewports) {
+      viewport = this._viewports[name];
+      if (coordinates[0] >= viewport.position[0] &&
+          coordinates[0] < viewport.position[0] + viewport.width &&
+          coordinates[1] >= viewport.position[1] &&
+          coordinates[1] < viewport.position[1] + viewport.height) {
+
+        selectedViewport = viewport;
+        break;
+      }
+    }
+    if (selectedViewport) {
+      selectedViewport.setPointer([
+        coordinates[0] - viewport.position[0],
+        coordinates[1] - viewport.position[1]
+      ]);
+    }
   };
 
   return MultiportWindow;

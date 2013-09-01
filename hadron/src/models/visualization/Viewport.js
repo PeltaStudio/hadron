@@ -40,6 +40,16 @@ define(function(require) {
   }
   S.theClass(Viewport).inheritsFrom(Model);
 
+  Viewport.prototype.setPointer = function(coordinates) {
+    var factorX = this.scene.camera.width / this.width,
+        factorY = this.scene.camera.height / this.height;
+
+    this.scene.camera.setPointer([
+      coordinates[0] * factorX,
+      coordinates[1] * factorY
+    ]);
+  };
+
   Viewport.prototype.render = new ViewportRender();
   Viewport.prototype.getRenderSubmodels = function() {
     return [this.scene];
