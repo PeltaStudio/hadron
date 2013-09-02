@@ -18,7 +18,8 @@ define(function(require) {
         rootModel = options.rootModel,
         renderSystem = options.renderSystem;
 
-    var t, newTime, currentTime, pauseTime, accumulator, startTime, fps,
+    var t, newTime, avgFrameTime = 0, currentTime,
+        pauseTime, accumulator, startTime,
         simulationQueue = [];
 
     Object.defineProperty(this, 'rootModel', { value: rootModel });
@@ -33,7 +34,7 @@ define(function(require) {
     function reset(newOffset) {
       pause();
       t = newOffset || 0;
-      currentTime = Date.now();
+      currentTime = undefined;
       accumulator = 0;
     }
 
@@ -59,17 +60,24 @@ define(function(require) {
     /*
     Based on article: Fix your timestep! by Glenn Fiedler
     http://gafferongames.com/game-physics/fix-your-timestep/
+
+    Calculating FPS according to:
+    http://stackoverflow.com/questions/4787431/check-fps-in-js#answer-5111475
     */
     function gameStep(forcedSimulationTime) {
+      var frameTime;
 
       try {
         newTime = Date.now();
-        var frameTime = newTime - currentTime;
+        currentTime === undefined && (currentTime = newTime);
+        frameTime = newTime - currentTime;
+        avgFrameTime += (frameTime - avgFrameTime) / 20;
+        currentTime = newTime;
+
         var timeToSimulate = Math.min(
-          forcedSimulationTime !== void 0 ? forcedSimulationTime : frameTime,
+          forcedSimulationTime !== undefined ? forcedSimulationTime : frameTime,
           options.maxSimulationTime
         );
-        currentTime = newTime;
 
         accumulator += timeToSimulate;
         var dt = options.simulationDelta;
@@ -84,7 +92,7 @@ define(function(require) {
         clear(rootModel, renderSystem, interpolationValue);
         render(rootModel, renderSystem, interpolationValue);
 
-        updateFPS();
+        startTime = Date.now();
       } catch (error) {
         pause();
         console.log(error.message + '\n' + error.stack);
@@ -116,19 +124,14 @@ define(function(require) {
       }
     }
 
-    function updateFPS() {
-      fps = 1000 / (Date.now() - startTime);
-      startTime = Date.now();
-    }
-
     return {
       start: start,
       reset: reset,
       pause: pause,
       resume: resume,
       step: step,
-      get fps() {
-        return fps;
+      get frameTime() {
+        return avgFrameTime;
       }
     };
   };

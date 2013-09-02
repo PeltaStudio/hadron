@@ -64,14 +64,11 @@ define(function(require) {
 
   MapBuilderTool.prototype.setupInfoArea = function() {
     var self = this;
-    var updateFPS, mapEditorInfoArea, fpsHolder, avgFPS = 0, counter = 0;
+    var updateFPS, mapEditorInfoArea, fpsHolder, avgFrameTime = 0;
     fpsHolder = document.querySelector('#fps-info + dd');
     updateFPS = setInterval(function() {
-      var fps = self.mapEditorSimulation.fps;
-      avgFPS = (avgFPS * counter + fps) / (counter + 1);
-      counter++;
-
-      fpsHolder.textContent = avgFPS.toFixed(2);
+      var frameTime = self.mapEditorSimulation.frameTime;
+      fpsHolder.textContent = (1000/frameTime).toFixed(1);
     }, 1000);
   };
 

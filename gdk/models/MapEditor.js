@@ -22,7 +22,6 @@ define(function(require) {
     assistedMap.addEventListener('pointermove', moveCellGizmo);
 
     function moveCellGizmo(evt) {
-      console.log([evt.mapX, evt.mapZ] + '');
       assistedMap.pointedCellGizmo.position = [evt.mapX, evt.mapZ];
     }
   }
