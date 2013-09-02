@@ -6,13 +6,35 @@ define(function(require) {
       IS_POSTCALL = true;
 
   var T = require('hadron/toolkit'),
-      S = require('hadron/scaffolding');
+      S = require('hadron/scaffolding'),
+      Render = require('hadron/renders/Render'),
+      Simulator = require('hadron/simulators/Simulator');
+
+  function setupFacets(model, args) {
+    var isAFacetConstructor, baseClass, facetPrototype, newFacet,
+        facets = {
+          'simulate': Simulator,
+          'clear': function() {}, // TODO: Add base class for Cleaner
+          'render': Render
+        };
+    for (var facet in facets) if (facets.hasOwnProperty(facet)) {
+      baseClass = facets[facet];
+      facetPrototype = model[facet].prototype
+      isAFacetConstructor = facetPrototype instanceof baseClass;
+      if (isAFacetConstructor) {
+        newFacet = Object.create(facetPrototype);
+        model[facet].apply(newFacet, args)
+        model[facet] = newFacet;
+      }
+    }
+  }
 
   function Model() {
     S.theObject(this)
       .has('id', NEXT_ID++)
       .has('_listeners', [])
     ;
+    setupFacets(this, arguments);
   }
 
   Model.prototype.traverse =
