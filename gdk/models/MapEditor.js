@@ -65,8 +65,8 @@ define(function(require) {
       .scene = scene
     ;
 
-    this._viewportManager.newViewport('another', 300, 300)
-    .scene = new Scene(target, new Camera([-100, -100], 300, 300));
+/*    this._viewportManager.newViewport('another', 300, 300)
+    .scene = new Scene(target, new Camera([-100, -100], 300, 300));*/
 
     Model.apply(this, arguments);
   }

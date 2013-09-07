@@ -18,20 +18,16 @@ define(function(require) {
 
   var noop = T.noop;
 
-  function GDKAssembler(canvas) {
+  function GDKAssembler() {
     HadronAssembler.apply(this, arguments);
-    this.canvas = canvas;
   }
   S.theClass(GDKAssembler).inheritsFrom(HadronAssembler);
 
   GDKAssembler.prototype.assembleModels = function() {
     HadronAssembler.prototype.assembleModels.call(this);
 
-    var canvas = this.canvas;
-
     this.assembleModel(MapEditor, {
-      render: new MapEditorRender(),
-      clear: clear
+      render: new MapEditorRender()
     });
 
     this.assembleModel(CellHighlighter, {
@@ -45,8 +41,6 @@ define(function(require) {
     this.assembleModel(ScreenAxis, {
       render: new ScreenAxisRender()
     });
-
-    function clear() { canvas.width = canvas.width; }
   };
 
   return GDKAssembler;
