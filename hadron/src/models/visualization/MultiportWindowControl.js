@@ -3,23 +3,21 @@ define(function(require) {
 
   var S = require('hadron/scaffolding'),
       Model = require('hadron/Model'),
-      Render = require('hadron/models/visualization/MultiportWindowRender'),
       Viewport = require('hadron/models/visualization/Viewport');
 
   var gfx = require('hadron/gfx/GraphicSystem');
 
+  // TODO: Let this class to create the viewport
   function MultiportWindow(mainBufferName) {
+    S.theObject(this).has('windowBuffer', gfx.getBuffer(mainBufferName));
     S.theObject(this).has('_viewports', Object.create(null));
-
-    Model.apply(this, arguments);
   }
   S.theClass(MultiportWindow).inheritsFrom(Model);
-
-  MultiportWindow.prototype.render = Render;
 
   MultiportWindow.prototype.newViewport =
   function(name, width, height, position) {
     var newViewport = new Viewport(width, height, position);
+    gfx.setBuffer(newViewport.id, this.windowBuffer);
     this._viewports[name] = newViewport;
     return newViewport;
   };
@@ -55,6 +53,12 @@ define(function(require) {
         coordinates[1] - viewport.position[1]
       ]);
     }
+  };
+
+  MultiportWindow.prototype.clear = function() {
+    var buffer = this.windowBuffer,
+        drawer = buffer.drawer;
+    drawer.clearRect(0, 0, buffer.width, buffer.height);
   };
 
   return MultiportWindow;

@@ -1,64 +1,21 @@
 define(function(require) {
   'use strict';
 
-  var DEFAULT_CELL_SIZE = 100;
-
   var S = require('hadron/scaffolding'),
       Model = require('hadron/Model'),
       Simulator = require('hadron/Simulator'),
       Camera = require('hadron/models/visualization/Camera'),
       Scene = require('hadron/models/visualization/Scene'),
       MultiportWindow = require('hadron/models/visualization/MultiportWindow'),
-      WorldMetrics =  require('hadron/models/visualization/WorldMetrics'),
-      ScreenAxis = require('helpers/ScreenAxis'),
-      IsometricGrid = require('helpers/IsometricGrid'),
-      CellHighlighter = require('helpers/CellHighlighter');
-
-  function AssistedMapControl(assistedMap) {
-    Simulator.call(this)
-
-    assistedMap.addEventListener('pointermove', moveCellGizmo);
-
-    function moveCellGizmo(evt) {
-      assistedMap.pointedCellGizmo.position = [evt.mapX, evt.mapZ];
-    }
-  };
-  S.theClass(AssistedMapControl).inheritsFrom(Simulator);
-
-  function AssistedMap() {
-    this.setupGizmos();
-    Model.call(this);
-  }
-  S.theClass(AssistedMap).inheritsFrom(Model);
-
-  AssistedMap.prototype.simulate = AssistedMapControl;
-
-  AssistedMap.prototype.setupGizmos = function() {
-    this.screenAxis = new ScreenAxis();
-    this.grid = new IsometricGrid(DEFAULT_CELL_SIZE);
-    this.pointedCellGizmo = new CellHighlighter(DEFAULT_CELL_SIZE);
-  };
-
-  AssistedMap.prototype.getSubmodels = function() {
-    return [this.grid, this.pointedCellGizmo, this.screenAxis];
-  };
-
-  AssistedMap.prototype.setPointer = function(coordinates) {
-    var metrics = new WorldMetrics(DEFAULT_CELL_SIZE),
-        mapPosition = metrics.getMapCoordinates(coordinates);
-
-    this.dispatchEvent('pointermove', {
-      mapX: mapPosition[0],
-      mapZ: mapPosition[1]
-    })
-  };
+      AssistedMap = require('editors/AssistedMap');
 
   function MapEditor() {
     var target = new AssistedMap(),
         camera = new Camera([0, 0]),
         scene = new Scene(target, camera);
 
-    S.theObject(this).has('_viewportManager', new MultiportWindow('window'));
+    var viewportManager = new MultiportWindow('map-editor');
+    S.theObject(this).has('_viewportManager', viewportManager);
 
     this._viewportManager
       .newViewport('main')
@@ -82,6 +39,10 @@ define(function(require) {
 
   MapEditor.prototype.getSubmodels = function(aspect) {
     return [this._viewportManager];
+  };
+
+  MapEditor.prototype.getMapEditorBuffer = function() {
+    return this._viewportManager.render.windowBuffer;
   };
 
   return MapEditor;

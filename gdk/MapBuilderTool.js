@@ -23,8 +23,8 @@ define(function(require) {
 
   MapBuilderTool.prototype.setupEditor = function() {
     var self = this;
-    var mapEditorWindow = gfx.newBuffer('window'),
-        mapEditor = new MapEditor(),
+    var mapEditor = new MapEditor(),
+        mapEditorWindow = mapEditor.getMapEditorBuffer(),
         mapEditorSimulation;
 
     // Attach the buffer (canvas) to the DOM
