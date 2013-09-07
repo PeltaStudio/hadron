@@ -1,43 +1,51 @@
 (function() {
   'use strict';
 
+  function IsometricDrawerFake() { }
+
   var context = newContext({
-    'hadron/render_system/graphics/IsometricDrawer': function dummy() { }
+    'hadron/gfx/IsometricDrawer': IsometricDrawerFake
   });
-  context(['hadron/render_system/graphics/GraphicSystem'],
-                                                      function(GraphicSystem) {
+  context(['hadron/gfx/GraphicSystem'], function(gfx) {
 
-    describe('GraphicSystem instances', function() {
+    describe('GraphicSystem singleton', function() {
 
-      it('allows to create new buffers.', function() {
-        var system = new GraphicSystem(),
-            formerBuffer, newBuffer,
-            formerDrawer, newDrawer;
+      describe('Buffers', function() {
 
-        formerBuffer = system.buffer;
-        formerDrawer = system.drawer;
-        system.newBuffer(100, 100);
-        newBuffer = system.buffer;
-        newDrawer = system.drawer;
+        it('are canvas elements created by `newBuffer()`.', function() {
+          var buffer = gfx.newBuffer('buffer', 100, 100);
+          expect(buffer.tagName).toBe('CANVAS');
+        });
 
-        expect(formerBuffer).not.toBe(newBuffer);
-        expect(formerDrawer).not.toBe(newDrawer);
+        it('have an IsometricDrawer property `drawer`.', function() {
+          var buffer = gfx.newBuffer('buffer', 100, 100);
+          expect(buffer.drawer).toBeDefined();
+          expect(buffer.drawer.constructor).toBe(IsometricDrawerFake);
+        });
+
       });
 
-      it('allows to restore the former buffer.', function() {
-        var system = new GraphicSystem(),
-            formerBuffer, newBuffer,
-            formerDrawer, newDrawer;
+      it('allows to retrieve a named buffer.', function() {
+        var newBuffer = gfx.newBuffer('test'),
+            buffer = gfx.getBuffer('test');
 
-        formerBuffer = system.buffer;
-        formerDrawer = system.drawer;
-        system.newBuffer(100, 100);
-        system.restoreBuffer();
-        newBuffer = system.buffer;
-        newDrawer = system.drawer;
+        expect(buffer).toBe(newBuffer);
+      });
 
-        expect(formerBuffer).toBe(newBuffer);
-        expect(formerDrawer).toBe(newDrawer);
+      it('allows to set a named buffer.', function() {
+        var newBuffer = gfx.newBuffer('new'), buffer;
+        gfx.setBuffer('test', newBuffer);
+        buffer = gfx.getBuffer('test');
+        expect(buffer).toBe(newBuffer);
+      });
+
+      it('allows to destroy a named buffer.', function() {
+        var deleted, buffer;
+        gfx.newBuffer('test');
+        deleted = gfx.destroyBuffer('test');
+        buffer = gfx.getBuffer('test');
+        expect(buffer).toBeNull();
+        expect(deleted).toBe(true);
       });
 
     });
