@@ -4,17 +4,20 @@ define(function(require) {
   var S = require('hadron/scaffolding'),
       Render = require('hadron/renders/Render');
 
+  var gfx = require('hadron/gfx/GraphicSystem');
+
   function IsometricGridRender() { }
   S.theClass(IsometricGridRender).inheritsFrom(Render);
 
-  IsometricGridRender.prototype.render = function(model, system) {
+  IsometricGridRender.prototype.render = function(model) {
     var size, renderArea, top, bottom, left, right,
-        gfx = system.gfx, drawer = gfx.drawer;
+        drawer = gfx.drawer;
 
     if (!model.enabled) return;
 
     size = model.cellSize;
     renderArea = gfx.getVisualizationArea();
+    if (!renderArea) return;
     top = Math.floor(renderArea.top / size) * size * 3;
     bottom = Math.ceil(renderArea.bottom / size) * size * 3;
     left = Math.floor(renderArea.left / size) * size * 3;

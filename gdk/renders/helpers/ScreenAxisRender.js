@@ -4,16 +4,18 @@ define(function(require) {
   var S = require('hadron/scaffolding'),
       Render = require('hadron/renders/Render');
 
+  var gfx = require('hadron/gfx/GraphicSystem');
+
   function ScreenAxisRender() { }
   S.theClass(ScreenAxisRender).inheritsFrom(Render);
 
-  ScreenAxisRender.prototype.render = function(model, render) {
-    var renderArea, gfx, drawer;
+  ScreenAxisRender.prototype.render = function(model) {
+    var renderArea, drawer;
     if (!model.enabled) return;
 
-    gfx = render.gfx;
     drawer = gfx.drawer;
     renderArea = gfx.getVisualizationArea();
+    if (!renderArea) return;
 
     drawer.save();
     drawer.beginPath();

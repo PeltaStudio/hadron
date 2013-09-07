@@ -14,26 +14,24 @@ define(function(require) {
       IsometricGrid = require('models/helpers/IsometricGrid'),
       CellHighlighter = require('models/helpers/CellHighlighter');
 
-  function AssistedMapControl() { Simulator.call(this) };
-  S.theClass(AssistedMapControl).inheritsFrom(Simulator);
+  function AssistedMapControl(assistedMap) {
+    Simulator.call(this)
 
-  AssistedMapControl.prototype.setupAsync = function() {
-    var assistedMap = this;
     assistedMap.addEventListener('pointermove', moveCellGizmo);
 
     function moveCellGizmo(evt) {
       assistedMap.pointedCellGizmo.position = [evt.mapX, evt.mapZ];
     }
-  }
+  };
+  S.theClass(AssistedMapControl).inheritsFrom(Simulator);
 
   function AssistedMap() {
-    Model.call(this);
     this.setupGizmos();
-    this.setupAsynchronousBehaviours();
+    Model.call(this);
   }
   S.theClass(AssistedMap).inheritsFrom(Model);
 
-  AssistedMap.prototype.simulate = new AssistedMapControl();
+  AssistedMap.prototype.simulate = AssistedMapControl;
 
   AssistedMap.prototype.setupGizmos = function() {
     this.screenAxis = new ScreenAxis();
@@ -56,12 +54,11 @@ define(function(require) {
   };
 
   function MapEditor() {
-    Model.call(this);
     var target = new AssistedMap(),
         camera = new Camera([0, 0]),
         scene = new Scene(target, camera);
 
-    S.theObject(this).has('_viewportManager', new MultiportWindow());
+    S.theObject(this).has('_viewportManager', new MultiportWindow('window'));
 
     this._viewportManager
       .newViewport('main')
@@ -70,6 +67,8 @@ define(function(require) {
 
     this._viewportManager.newViewport('another', 300, 300)
     .scene = new Scene(target, new Camera([-100, -100], 300, 300));
+
+    Model.apply(this, arguments);
   }
   S.theClass(MapEditor).inheritsFrom(Model);
 

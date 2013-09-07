@@ -6,11 +6,11 @@ define(function(require) {
       Model = require('hadron/models/Model');
 
   function Camera(position, width, height) {
-    Model.call(this);
-
     position = position || [];
     width = width === undefined ? 500 : width;
     height = height === undefined ? 500 : height;
+
+    Model.apply(this, arguments);
 
     this.resize(width, height);
     this.setPosition(position);
@@ -22,11 +22,21 @@ define(function(require) {
     this.height = height;
     this.semiWidth = width / 2;
     this.semiHeight = height / 2;
+    this.dispatchEvent('resize', {
+      width: this.width,
+      height: this.height,
+      semiWidth: this.semiWidth,
+      semiHeight: this.semiHeight
+    });
     return this;
   };
 
   Camera.prototype.setPosition = function(newPosition) {
     this._position = newPosition;
+    this.dispatchEvent('move', {
+      worldX: newPosition[0],
+      worldY: newPosition[1]
+    });
     return this;
   };
 

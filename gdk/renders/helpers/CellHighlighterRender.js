@@ -5,13 +5,15 @@ define(function(require) {
       WorldMetrics = require('hadron/models/visualization/WorldMetrics'),
       Render = require('hadron/renders/Render');
 
+  var gfx = require('hadron/gfx/GraphicSystem');
+
   function CellHighlighterRender() { }
   S.theClass(CellHighlighterRender).inheritsFrom(Render);
 
-  CellHighlighterRender.prototype.render = function(model, system) {
+  CellHighlighterRender.prototype.render = function(model) {
     var metrics = new WorldMetrics(model.cellSize),
         worldPosition = metrics.getWorldCoordinates(model.position),
-        drawer = system.gfx.drawer,
+        drawer = gfx.drawer,
         gizmo = drawer.getIsoCube(model.cellSize, 0, {
           faceColor: false,
           lineColor: '#333',

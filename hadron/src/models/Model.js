@@ -23,7 +23,7 @@ define(function(require) {
       isAFacetConstructor = facetPrototype instanceof baseClass;
       if (isAFacetConstructor) {
         newFacet = Object.create(facetPrototype);
-        model[facet].apply(newFacet, args)
+        model[facet].apply(newFacet, [model].concat(args))
         model[facet] = newFacet;
       }
     }
@@ -32,9 +32,9 @@ define(function(require) {
   function Model() {
     S.theObject(this)
       .has('id', NEXT_ID++)
-      .has('_listeners', [])
+      .has('_listeners', {})
     ;
-    setupFacets(this, arguments);
+    setupFacets(this, [].slice.call(arguments, 0));
   }
 
   Model.prototype.traverse =
@@ -92,18 +92,6 @@ define(function(require) {
 
   Model.prototype.getSubmodels = function() {
     return [];
-  };
-
-  Model.prototype.setupAsynchronousBehaviours = function() {
-    if (T.isApplicable(this.simulate.setupAsync)) {
-      this.simulate.setupAsync.apply(this, []);
-    }
-    if (T.isApplicable(this.clear.setupAsync)) {
-      this.clear.setupAsync.apply(this, []);
-    }
-    if (T.isApplicable(this.render.setupAsync)) {
-      this.render.setupAsync.apply(this, []);
-    }
   };
 
   Model.prototype.dispatchEvent = function(type, event) {

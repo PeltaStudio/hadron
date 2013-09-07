@@ -10,8 +10,9 @@ define(function(require) {
   var S = require('hadron/scaffolding'),
       MapEditor = require('models/MapEditor'),
       GDKAssembler = require('GDKAssembler'),
-      RenderSystem = require('hadron/render_system/RenderSystem'),
       Game = require('hadron/Game');
+
+  var gfx = require('hadron/gfx/GraphicSystem');
 
   function MapBuilderTool() { }
 
@@ -23,17 +24,19 @@ define(function(require) {
 
   MapBuilderTool.prototype.setupEditor = function() {
     var self = this;
-    var mapEditorWindow = document.getElementById('map-editor-canvas'),
+    var mapEditorWindow = gfx.newBuffer('window'),
         mapEditor = new MapEditor(),
         mapEditorSimulation, assembler;
 
     assembler = new GDKAssembler(mapEditorWindow);
     assembler.assembleModels();
 
+    // Attach the buffer (canvas) to the DOM
+    document.getElementById('map-editor-canvas').appendChild(mapEditorWindow);
+
     // FIXME: look for a better name. Problem can be with Game.
     mapEditorSimulation = new Game({
-      rootModel: mapEditor,
-      renderSystem: new RenderSystem(mapEditorWindow)
+      rootModel: mapEditor
     });
     mapEditorSimulation.start();
 

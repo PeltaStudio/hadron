@@ -15,8 +15,7 @@ define(function(require) {
 
     var runningGameId = null,
         options = getCustomizedOptions(customOptions),
-        rootModel = options.rootModel,
-        renderSystem = options.renderSystem;
+        rootModel = options.rootModel;
 
     var t, newTime, avgFrameTime = 0, currentTime,
         pauseTime, accumulator, startTime,
@@ -89,8 +88,8 @@ define(function(require) {
         }
 
         var interpolationValue = accumulator / dt;
-        clear(rootModel, renderSystem, interpolationValue);
-        render(rootModel, renderSystem, interpolationValue);
+        clear(rootModel, interpolationValue);
+        render(rootModel, interpolationValue);
 
         startTime = Date.now();
       } catch (error) {
@@ -100,14 +99,12 @@ define(function(require) {
       }
     }
 
-    function render(model, renderSystem, interpolationValue) {
-      model.traverse('render', 'getRenderSubmodels',
-                                            [renderSystem, interpolationValue]);
+    function render(model, interpolationValue) {
+      model.traverse('render', 'getRenderSubmodels', [interpolationValue]);
     };
 
     function clear(model, renderSystem, interpolationValue) {
-      model.traverse('clear', 'getClearSubmodels',
-                                            [renderSystem, interpolationValue]);
+      model.traverse('clear', 'getClearSubmodels', [interpolationValue]);
     };
 
     function simulate(model, t, dt, newTask) {
@@ -139,9 +136,6 @@ define(function(require) {
   function checkOptions(customOptions) {
     T.assert.isDefined(customOptions.rootModel,
       'The `rootModel` key is mandatory!');
-
-    T.assert.isDefined(customOptions.renderSystem,
-      'The `renderSystem` key is mandatory!');
   };
 
   function getCustomizedOptions(customOptions) {

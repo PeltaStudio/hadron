@@ -5,7 +5,11 @@ define(function(require) {
       Model = require('hadron/models/Model'),
       Viewport = require('hadron/models/visualization/Viewport');
 
-  function MultiportWindow() {
+  var gfx = require('hadron/gfx/GraphicSystem');
+
+  // TODO: Let this class to create the viewport
+  function MultiportWindow(mainBufferName) {
+    S.theObject(this).has('windowBuffer', gfx.getBuffer(mainBufferName));
     S.theObject(this).has('_viewports', Object.create(null));
   }
   S.theClass(MultiportWindow).inheritsFrom(Model);
@@ -13,6 +17,7 @@ define(function(require) {
   MultiportWindow.prototype.newViewport =
   function(name, width, height, position) {
     var newViewport = new Viewport(width, height, position);
+    gfx.setBuffer(newViewport.id, this.windowBuffer);
     this._viewports[name] = newViewport;
     return newViewport;
   };
@@ -48,6 +53,12 @@ define(function(require) {
         coordinates[1] - viewport.position[1]
       ]);
     }
+  };
+
+  MultiportWindow.prototype.clear = function() {
+    var buffer = this.windowBuffer,
+        drawer = buffer.drawer;
+    drawer.clearRect(0, 0, buffer.width, buffer.height);
   };
 
   return MultiportWindow;

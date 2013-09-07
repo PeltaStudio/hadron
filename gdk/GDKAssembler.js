@@ -31,8 +31,7 @@ define(function(require) {
 
     this.assembleModel(MapEditor, {
       render: new MapEditorRender(),
-      clear: clear,
-      getClearSubmodels: noop
+      clear: clear
     });
 
     this.assembleModel(CellHighlighter, {

@@ -5,38 +5,29 @@ define(function(require) {
       Render = require('hadron/renders/Render'),
       Model = require('hadron/models/Model');
 
+  var gfx = require('hadron/gfx/GraphicSystem');
+
   function ViewportRender() { }
   S.theClass(ViewportRender).inheritsFrom(Render);
 
-  ViewportRender.prototype.render = function(viewport, system) {
+  ViewportRender.prototype.postRender = function(viewport) {
     if (!viewport.scene) return;
-
-    var gfx = system.gfx,
-        camera = viewport.scene.camera;
-
-    gfx.newBuffer(camera.width, camera.height);
-  };
-
-  ViewportRender.prototype.postRender = function(viewport, system) {
-    if (!viewport.scene) return;
-
-    var gfx = system.gfx,
-        buffer = gfx.buffer,
+    var sceneBuffer = viewport.scene.render.getBuffer(),
+        windowDrawer = gfx.getBuffer(viewport.id).drawer,
         position = viewport.position;
 
-    gfx.restoreBuffer();
-    gfx.drawer.save();
-    gfx.drawer.fillStyle = '#DDD';
-    gfx.drawer.fillRect(
+    windowDrawer.save();
+    windowDrawer.fillStyle = '#DDD';
+    windowDrawer.fillRect(
       position[0], position[1],
       viewport.width, viewport.height
     );
-    gfx.drawer.drawImage(
-      buffer,
+    windowDrawer.drawImage(
+      sceneBuffer,
       position[0], position[1],
       viewport.width, viewport.height
     );
-    gfx.drawer.restore();
+    windowDrawer.restore();
   };
 
   function Viewport(width, height, position) {
@@ -44,6 +35,7 @@ define(function(require) {
     this.height = height || 300;
     this.position = position || [0, 0];
     this.scene = null;
+    Model.apply(this, arguments);
   }
   S.theClass(Viewport).inheritsFrom(Model);
 
@@ -59,6 +51,9 @@ define(function(require) {
 
   Viewport.prototype.render = new ViewportRender();
   Viewport.prototype.getRenderSubmodels = function() {
+    return [this.scene];
+  };
+  Viewport.prototype.getClearSubmodels = function() {
     return [this.scene];
   };
 
