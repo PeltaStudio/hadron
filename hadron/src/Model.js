@@ -7,8 +7,8 @@ define(function(require) {
 
   var T = require('hadron/toolkit'),
       S = require('hadron/scaffolding'),
-      Render = require('hadron/renders/Render'),
-      Simulator = require('hadron/simulators/Simulator');
+      Render = require('hadron/Render'),
+      Simulator = require('hadron/Simulator');
 
   function setupFacets(model, args) {
     var isAFacetConstructor, baseClass, facetPrototype, newFacet,

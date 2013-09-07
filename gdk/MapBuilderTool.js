@@ -8,8 +8,7 @@ define(function(require) {
   'use strict';
 
   var S = require('hadron/scaffolding'),
-      MapEditor = require('models/MapEditor'),
-      GDKAssembler = require('GDKAssembler'),
+      MapEditor = require('editors/MapEditor'),
       Game = require('hadron/Game');
 
   var gfx = require('hadron/gfx/GraphicSystem');
@@ -26,10 +25,7 @@ define(function(require) {
     var self = this;
     var mapEditorWindow = gfx.newBuffer('window'),
         mapEditor = new MapEditor(),
-        mapEditorSimulation, assembler;
-
-    assembler = new GDKAssembler(mapEditorWindow);
-    assembler.assembleModels();
+        mapEditorSimulation;
 
     // Attach the buffer (canvas) to the DOM
     document.getElementById('map-editor-canvas').appendChild(mapEditorWindow);

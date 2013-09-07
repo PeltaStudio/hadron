@@ -2,7 +2,7 @@ define(function(require) {
   'use strict';
 
   var S = require('hadron/scaffolding'),
-      Model = require('hadron/models/Model'),
+      Model = require('hadron/Model'),
       Viewport = require('hadron/models/visualization/Viewport');
 
   var gfx = require('hadron/gfx/GraphicSystem');

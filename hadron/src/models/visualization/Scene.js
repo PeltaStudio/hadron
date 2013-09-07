@@ -3,9 +3,9 @@ define(function(require) {
 
   var S = require('hadron/scaffolding'),
       T = require('hadron/toolkit'),
-      Render = require('hadron/renders/Render'),
-      Simulator = require('hadron/simulators/Simulator'),
-      Model = require('hadron/models/Model');
+      Render = require('hadron/Render'),
+      Simulator = require('hadron/Simulator'),
+      Model = require('hadron/Model');
 
   var gfx = require('hadron/gfx/GraphicSystem');
 

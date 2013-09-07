@@ -3,7 +3,7 @@ define(function(require) {
 
   var S = require('hadron/scaffolding'),
       WorldMetrics = require('hadron/models/visualization/WorldMetrics'),
-      Render = require('hadron/renders/Render');
+      Render = require('hadron/Render');
 
   var gfx = require('hadron/gfx/GraphicSystem');
 

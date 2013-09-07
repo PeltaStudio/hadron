@@ -4,15 +4,15 @@ define(function(require) {
   var DEFAULT_CELL_SIZE = 100;
 
   var S = require('hadron/scaffolding'),
-      Model = require('hadron/models/Model'),
-      Simulator = require('hadron/simulators/Simulator'),
+      Model = require('hadron/Model'),
+      Simulator = require('hadron/Simulator'),
       Camera = require('hadron/models/visualization/Camera'),
       Scene = require('hadron/models/visualization/Scene'),
       MultiportWindow = require('hadron/models/visualization/MultiportWindow'),
       WorldMetrics =  require('hadron/models/visualization/WorldMetrics'),
-      ScreenAxis = require('models/helpers/ScreenAxis'),
-      IsometricGrid = require('models/helpers/IsometricGrid'),
-      CellHighlighter = require('models/helpers/CellHighlighter');
+      ScreenAxis = require('helpers/ScreenAxis'),
+      IsometricGrid = require('helpers/IsometricGrid'),
+      CellHighlighter = require('helpers/CellHighlighter');
 
   function AssistedMapControl(assistedMap) {
     Simulator.call(this)
@@ -64,9 +64,6 @@ define(function(require) {
       .newViewport('main')
       .scene = scene
     ;
-
-/*    this._viewportManager.newViewport('another', 300, 300)
-    .scene = new Scene(target, new Camera([-100, -100], 300, 300));*/
 
     Model.apply(this, arguments);
   }

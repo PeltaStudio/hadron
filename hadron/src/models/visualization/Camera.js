@@ -3,7 +3,7 @@ define(function(require) {
 
   var T = require('hadron/toolkit'),
       S = require('hadron/scaffolding'),
-      Model = require('hadron/models/Model');
+      Model = require('hadron/Model');
 
   function Camera(position, width, height) {
     position = position || [];
