@@ -2,7 +2,7 @@
   'use strict';
 
   var context = newContext();
-  context(['hadron/renders/Render'], function(Render) {
+  context(['hadron/Render'], function(Render) {
 
     describe('Render instances', function() {
 

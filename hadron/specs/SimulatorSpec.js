@@ -2,7 +2,7 @@
   'use strict';
 
   var context = newContext();
-  context(['hadron/simulators/Simulator'], function(Simulator){
+  context(['hadron/Simulator'], function(Simulator){
 
     describe('Simulator instances', function() {
 

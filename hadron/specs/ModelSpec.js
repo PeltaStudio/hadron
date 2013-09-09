@@ -1,9 +1,40 @@
 (function() {
   'use strict';
 
-  var context = newContext();
-  context(['hadron/models/Model'], function(Model) {
+  var context = newContext({
+    'hadron/Render': Object,
+    'hadron/Simulator': Object
+  });
+
+  context(['hadron/Model'], function(Model) {
     describe('Model instances', function() {
+
+      it('when created, creates its render and simulator passing ' +
+         'the model and the model constructor\'s parameters.', function() {
+        var MyModel = function () { Model.apply(this, arguments); },
+            model, simulate, clear, render, args;
+
+        MyModel.prototype = Object.create(Model.prototype),
+        simulate = MyModel.prototype.simulate = sinon.spy(),
+        clear = MyModel.prototype.clear = sinon.spy(),
+        render = MyModel.prototype.render = sinon.spy(),
+
+        model = new MyModel(1, 2, 3);
+        args = [model, 1, 2, 3];
+
+        expect(simulate.calledWithNew()).toBe(true);
+        expect(simulate.calledOnce).toBe(true);
+        expect(simulate.calledWithExactly(model, 1, 2, 3)).toBe(true);
+
+        // TODO: There is no facet yet (see Model.js)
+        //expect(clear.calledWithNew()).toBe(true);
+        //expect(clear.calledOnce).toBe(true);
+        //expect(clear.calledWithExactly(model, 1, 2, 3)).toBe(true);
+
+        expect(render.calledWithNew()).toBe(true);
+        expect(render.calledOnce).toBe(true);
+        expect(render.calledWithExactly(model, 1, 2, 3)).toBe(true);
+      });
 
       it('have a traverse() method to implement a simple visitor.', function() {
         var model = new Model(),
@@ -30,7 +61,8 @@
         expect(submodel.traverse.callCount).toEqual(submodels.length);
         expect(
           submodel.traverse
-            .alwaysCalledWith('test', 'getTestSubmodels', methodArgs)).toBe(true);
+            .alwaysCalledWith('test', 'getTestSubmodels', methodArgs)
+        ).toBe(true);
 
         // call the model method with postcall flag and methodArgs
         expect(model.test.getCall(1).args)

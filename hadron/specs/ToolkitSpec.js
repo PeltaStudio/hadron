@@ -4,7 +4,7 @@
   var context = newContext();
   context(['hadron/toolkit'], function(T) {
 
-    describe('The tookit library', function() {
+    describe('The toolkit library', function() {
 
       describe('The assert() library', function() {
 
