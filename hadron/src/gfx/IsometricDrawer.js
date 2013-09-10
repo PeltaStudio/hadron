@@ -1,5 +1,5 @@
 /*
- * A drawer is the component for drawing into a rendering target such as 2D
+ * A drawer is the component for drawing into a rendering context such as 2D
  * context of a canvas. The IsometricDrawer is the Hadron main drawer and is
  ^ in charge of provide isometric drawing utilities.
  */
@@ -22,31 +22,18 @@ define(function(require) {
       SEMI_ROOT_2 = ROOT_2 / 2,
       SCALE = Math.sqrt(10 / 16);
 
-  function Drawer(target) {
-    S.the(target)
-      .has(clear)
+  function Drawer(context) {
+    S.the(context)
       .has(getIsoCube)
-      .has(setIsometricProjection)
       .has(setDimetricProjection);
 
-    return target;
+    return context;
   }
 
-  function clear() {
-    this.clearRect(-10000, -10000, 20000, 20000);
-  }
-
-  function setIsometricProjection() {
-    this.rotate(-G_30); // Rotate
-    this.transform(1, 0, TAN_30, 1, 0, 0); // Skew
-    this.transform(1, 0, 0, COS_30, 0, 0); // Scale
-  }
-
-  // Based on SSR (Scale, Skew, Rotate).
   // Remember transformation are applied from bottom to top.
   function setDimetricProjection() {
-    this.scale(1, 0.5); // Scale
-    this.rotate(-Math.PI / 4); // Rotate
+    this.scale(1, 0.5);
+    this.rotate(-Math.PI / 4);
   }
 
   function getIsoCube(size, height, options) {
