@@ -3,25 +3,30 @@ define(function(require) {
 
   var S = require('hadron/scaffolding');
 
+  var DIMETRIC_ANGLE = Math.atan(0.5),
+      SCALATION_FACTOR = Math.sqrt(10) / 4;
+
   var metricCache = { };
 
   function WorldMetrics(cellSize) {
     if (!metricCache[cellSize]) {
 
-      var DIMETRIC_ANGLE = Math.atan(0.5),
-          SCALATION_FACTOR = Math.sqrt(10) / 4,
-          PROJECTED_SIZE = cellSize * SCALATION_FACTOR,
-          bigR = Math.cos(DIMETRIC_ANGLE) * PROJECTED_SIZE,
-          smallR = Math.sin(DIMETRIC_ANGLE) * PROJECTED_SIZE,
-          XAxis = [bigR, smallR],
-          ZAxis = [-bigR, smallR];
+      var PROJECTED_SIZE = cellSize * SCALATION_FACTOR,
+          H_RADIUS = Math.cos(DIMETRIC_ANGLE) * PROJECTED_SIZE,
+          V_RADIUS = Math.sin(DIMETRIC_ANGLE) * PROJECTED_SIZE,
+          X_AXIS = [H_RADIUS, V_RADIUS],
+          Z_AXIS = [-H_RADIUS, V_RADIUS];
 
       S.theObject(this)
-        .has('cellSize', cellSize)
-        .has('bigR', bigR)
-        .has('smallR', smallR)
-        .has('XAxis', XAxis)
-        .has('ZAxis', ZAxis)
+        .has('DIMETRIC_ANGLE', DIMETRIC_ANGLE)
+        .has('SCALATION_FACTOR', SCALATION_FACTOR)
+        .has('CELL_SIZE', cellSize)
+        .has('H_RADIUS', H_RADIUS)
+        .has('V_RADIUS', V_RADIUS)
+        .has('H_DIAGONAL', 2 * H_RADIUS)
+        .has('V_DIAGONAL', 2 * V_RADIUS)
+        .has('X_AXIS', X_AXIS)
+        .has('Z_AXIS', Z_AXIS)
         .has('PROJECTED_SIZE', PROJECTED_SIZE);
 
       metricCache[cellSize] = this;
@@ -32,7 +37,7 @@ define(function(require) {
 
   WorldMetrics.prototype.getWorldCoordinates = function(cellPosition) {
     var x = cellPosition[0], z = cellPosition[1];
-    return [(x - z) * this.bigR, (x + z) * this.smallR];
+    return [(x - z) * this.H_RADIUS, (x + z) * this.V_RADIUS];
   };
 
   WorldMetrics.prototype.getMapCoordinates = function(worldPosition) {
@@ -41,10 +46,10 @@ define(function(require) {
         intersectionWithX, intersectionWithZ, indexX, indexZ;
 
     intersectionWithX = [x / 2 + y, x / 4 + y / 2];
-    indexX = getIndex(intersectionWithX, self.XAxis);
+    indexX = getIndex(intersectionWithX, self.X_AXIS);
 
     intersectionWithZ = [x / 2 - y, -x / 4 + y / 2];
-    indexZ = getIndex(intersectionWithZ, self.ZAxis);
+    indexZ = getIndex(intersectionWithZ, self.Z_AXIS);
 
     return [indexX, indexZ];
 
@@ -56,7 +61,7 @@ define(function(require) {
       else {
         s = -1;
       }
-      return Math.floor(s * d / self.PROJECTED_SIZE) + 1;
+      return Math.ceil(s * d / self.PROJECTED_SIZE);
     }
 
     function sameSign(a, b) {
