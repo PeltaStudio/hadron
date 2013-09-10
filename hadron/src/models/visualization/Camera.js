@@ -6,7 +6,7 @@ define(function(require) {
       Model = require('hadron/Model');
 
   function Camera(position, width, height) {
-    position = position || [];
+    position = position || [0, 0];
     width = width === undefined ? 500 : width;
     height = height === undefined ? 500 : height;
 
