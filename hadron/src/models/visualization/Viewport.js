@@ -17,6 +17,10 @@ define(function(require) {
 
   Viewport.prototype.render = Render;
 
+  Viewport.prototype.getSubmodels = function() {
+    return [this.scene];
+  };
+
   Viewport.prototype.setPointer = function(coordinates) {
     var factorX = this.scene.camera.width / this.width,
         factorY = this.scene.camera.height / this.height;

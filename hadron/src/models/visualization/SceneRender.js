@@ -10,31 +10,20 @@ define(function(require) {
   function SceneRender(scene, target, camera) {
     Render.call(this);
 
-    var buffer = gfx.newBuffer(scene.id, camera.width, camera.height);
-    var drawer = buffer.drawer;
+    var buffer = gfx.newBuffer(scene.id, camera.width, camera.height),
+        drawer = buffer.drawer;
+
     S.theObject(this)
       .has('target', target)
       .has('camera', camera)
       .has('buffer', buffer)
     ;
 
+    scene.clear = clearScene.bind(this);
+
     camera.addEventListener('move', onCameraChange);
     camera.addEventListener('resize', onCameraChange);
     onCameraChange();
-
-    // FIXME: Refactor to extract this function
-    scene.clear = function() {
-      var b = gfx.getBuffer(this.id),
-          visualization = gfx.getVisualizationArea();
-
-      if (!visualization) return; //TODO: Strange?
-      b.drawer.clearRect(
-        visualization.left,
-        visualization.top,
-        visualization.right - visualization.left,
-        visualization.bottom - visualization.top
-      );
-    };
 
     function onCameraChange() {
       var position = camera.getPosition(),
@@ -46,11 +35,10 @@ define(function(require) {
       offsetX = -worldX + semiWidth;
       offsetY = -worldY + semiHeight;
 
-      // Resize buffer
       buffer.width = camera.width;
       buffer.height = camera.height;
 
-      // TODO: take in count zoom factor
+      // TODO: take into account zoom factor
       drawer.setTransform(1, 0, 0, 1, offsetX, offsetY);
 
       // FIXME: Move to the drawer?
@@ -71,6 +59,22 @@ define(function(require) {
 
   SceneRender.prototype.getBuffer = function() {
     return this.buffer;
+  };
+
+  function clearScene(scene) {
+    var visualization = gfx.getVisualizationArea();
+
+    if (!visualization) {
+      this.buffer.width = this.buffer.width;
+    }
+    else {
+      this.buffer.drawer.clearRect(
+        visualization.left,
+        visualization.top,
+        visualization.right - visualization.left,
+        visualization.bottom - visualization.top
+      );
+    }
   };
 
   return SceneRender;

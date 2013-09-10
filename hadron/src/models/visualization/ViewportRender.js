@@ -9,15 +9,6 @@ define(function(require) {
 
   function ViewportRender(viewport) {
     Render.apply(this, arguments);
-
-    // FIXME: Extract methods
-    viewport.getRenderSubmodels = function() {
-      return [this.scene];
-    };
-
-    viewport.getClearSubmodels = function() {
-      return [this.scene];
-    };
   }
   S.theClass(ViewportRender).inheritsFrom(Render);
 

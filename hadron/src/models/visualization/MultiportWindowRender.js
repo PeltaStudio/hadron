@@ -6,27 +6,26 @@ define(function(require) {
 
   var gfx = require('hadron/gfx/GraphicSystem');
 
-  // TODO: Let this class to create the viewport
   function MultiportWindowRender(multiportWindow, mainBufferName) {
     Render.apply(this, arguments);
 
     var windowBuffer = gfx.newBuffer(mainBufferName);
     S.theObject(this).has('windowBuffer', windowBuffer);
 
-    // FIXME: Extract the function
-    multiportWindow.clear = function() {
-      var buffer = windowBuffer,
-          drawer = buffer.drawer;
-      drawer.clearRect(0, 0, buffer.width, buffer.height);
-    };
+    multiportWindow.clear = clearMultiportWindow.bind(this);
   }
   S.theClass(MultiportWindowRender).inheritsFrom(Render);
 
   MultiportWindowRender.prototype.render = function(multiportWindow) {
-    // FIXME: Make this asynchronous (performance improvement?)
     for (var name in multiportWindow._viewports) {
       gfx.setBuffer(multiportWindow._viewports[name].id, this.windowBuffer);
     }
+  };
+
+  function clearMultiportWindow() {
+    var buffer = this.windowBuffer,
+        drawer = buffer.drawer;
+    drawer.clearRect(0, 0, buffer.width, buffer.height);
   };
 
   return MultiportWindowRender;

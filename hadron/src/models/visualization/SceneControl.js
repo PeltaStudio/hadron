@@ -9,6 +9,7 @@ define(function(require) {
     Simulator.apply(this, arguments);
 
     camera.addEventListener('pointermove', updateTargetPointer);
+
     function updateTargetPointer(evt) {
       scene.target.setPointer([evt.worldX, evt.worldY]);
     }
