@@ -2,7 +2,7 @@ define(function(require) {
   'use strict';
 
   var S = require('hadron/scaffolding'),
-      Simulator = require('hadron/simulators/Simulator');
+      Simulator = require('hadron/Simulator');
 
   var TICK_TIME = 1000;
 

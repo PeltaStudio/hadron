@@ -3,7 +3,7 @@ define(function(require) {
 
   var T = require('hadron/toolkit'),
       S = require('hadron/scaffolding'),
-      Model = require('hadron/models/Model'),
+      Model = require('hadron/Model'),
       Hexagon = require('models/Hexagon'),
       HexCell = require('models/HexCell'),
       FOSSIL_CELL,
@@ -43,7 +43,6 @@ define(function(require) {
 
   function GameOfLife(side, cellRadius, center) {
     var self = this;
-    Model.call(self);
 
     var BOARD_SIZE = 150,
         START_OF_THE_FILL_AREA = Math.sqrt(3) * cellRadius * (side - 1),
@@ -53,11 +52,13 @@ define(function(require) {
 
     setupFrame();
     setupBoard();
-//    var sample =  [true,true,true,false,false,false,true,false,false,true,true,false,true,true,false,true,true,true,true,false,false,false,false,true,true,true,true,true,false,false,false,false,true,false,false,false,false,true,true,true,true,true,true,true,true,true,false,false,true,false,true,true,false,false,true,false,false,true,true,true,false,true,false,true,false,true,true,true,false,false,false,false,true,false,true,false,false,true,false,true,false,true,true,true,false,false,false,true,true,false,true,true,false,false,true,true,true,true,false,false,false,true,true,true,true,true,true,false,false,true,false,false,true,true,false,true,false,false,true,false,false,false,false,true,false,true,true,false,false,true,false,true,false,false,false,true,false,true,true,false,true,false,false,true,false,false,true,true,false,true,true,true,true,false,false,true,true,true,false,false,false,true,false,true,false,false,false,true,true,true,false,false,false,true,true,false,true,false,true,true,true,false,false,true,true,false,false,false,false,false,true,false,true,true,true,false,true,false,false,false,false,true,false,true,true,true,true,false,true,false,false,false,false,true,true,true,false,true,false,false,true,true,true,true,false,false,true,false,true,true,true,false,true,false,false,false,false,false,false,true,true,false,false,true,false,false,false,false,false,true,true,false,false,false,false,false,true,true,false,false,true,true,false,true,false,false,true,true,false,false,false];
+    var sample =  [true,true,true,false,false,false,true,false,false,true,true,false,true,true,false,true,true,true,true,false,false,false,false,true,true,true,true,true,false,false,false,false,true,false,false,false,false,true,true,true,true,true,true,true,true,true,false,false,true,false,true,true,false,false,true,false,false,true,true,true,false,true,false,true,false,true,true,true,false,false,false,false,true,false,true,false,false,true,false,true,false,true,true,true,false,false,false,true,true,false,true,true,false,false,true,true,true,true,false,false,false,true,true,true,true,true,true,false,false,true,false,false,true,true,false,true,false,false,true,false,false,false,false,true,false,true,true,false,false,true,false,true,false,false,false,true,false,true,true,false,true,false,false,true,false,false,true,true,false,true,true,true,true,false,false,true,true,true,false,false,false,true,false,true,false,false,false,true,true,true,false,false,false,true,true,false,true,false,true,true,true,false,false,true,true,false,false,false,false,false,true,false,true,true,true,false,true,false,false,false,false,true,false,true,true,true,true,false,true,false,false,false,false,true,true,true,false,true,false,false,true,true,true,true,false,false,true,false,true,true,true,false,true,false,false,false,false,false,false,true,true,false,false,true,false,false,false,false,false,true,true,false,false,false,false,false,true,true,false,false,true,true,false,true,false,false,true,true,false,false,false];
     setupInitialConfiguration();
 
     self.getSubmodels = getSubmodels;
     self.getNeighbourhood = getNeighbourhood;
+
+    Model.call(self);
 
     function getSubmodels() {
       return [background].concat(cells);

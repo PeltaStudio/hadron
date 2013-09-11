@@ -11,17 +11,15 @@ var simulation;
 define(function (require) {
 
     var T = require('hadron/toolkit'),
-        Assembler = require('Assembler'),
         Game = require('hadron/Game'),
         GameOfLife = require('models/GameOfLife');
 
     var hadronLogo = document.getElementById('hadron-logo'),
-        drawer = hadronLogo.getContext('2d'),
         logoComputedStyle, canvasCenter,
         gameOfLife, assembler;
 
-    assembler = new Assembler(hadronLogo);
-    assembler.assembleModels();
+    window.buffer = hadronLogo;
+    window.drawer = hadronLogo.getContext('2d');
 
     logoComputedStyle = window.getComputedStyle(hadronLogo);
     hadronLogo.width = parseInt(logoComputedStyle.width, 10);
@@ -30,8 +28,7 @@ define(function (require) {
 
     gameOfLife = new GameOfLife(10, 8, canvasCenter),
     simulation = new Game({
-      rootModel: gameOfLife,
-      renderSystem: drawer,
+      rootModel: gameOfLife
     });
     simulation.start();
   }

@@ -4,14 +4,12 @@ define(function(require) {
   var S = require('hadron/scaffolding'),
       HexagonRender = require('renders/HexagonRender');
 
-  function HexCellRender(drawer) {
-    HexagonRender.call(this, drawer);
-  }
+  function HexCellRender() { HexagonRender.apply(this, arguments); }
   S.theClass(HexCellRender).inheritsFrom(HexagonRender);
 
-  HexCellRender.prototype.render = function(model, ctx) {
+  HexCellRender.prototype.render = function(model) {
     model.fillColor = model.alive ? 'black' : 'white';
-    HexagonRender.prototype.render.call(this, model, ctx);
+    HexagonRender.prototype.render.call(this, model);
   };
 
   return HexCellRender;
