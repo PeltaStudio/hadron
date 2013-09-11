@@ -54,7 +54,9 @@ define(function(require) {
         coordinates[0] - viewport.position[0],
         coordinates[1] - viewport.position[1]
       ]);
+      return selectedViewport;
     }
+    return undefined;
   };
 
   return MultiportWindow;
