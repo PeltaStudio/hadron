@@ -6,8 +6,6 @@ define(function(require) {
       Render = require('hadron/models/visualization/MultiportWindowRender'),
       Viewport = require('hadron/models/visualization/Viewport');
 
-  var gfx = require('hadron/gfx/GraphicSystem');
-
   function MultiportWindow(mainBufferName) {
     S.theObject(this).has('_viewports', Object.create(null));
 

@@ -6,10 +6,10 @@ define(function(require) {
 
   var gfx = require('hadron/gfx/GraphicSystem');
 
-  function MultiportWindowRender(multiportWindow, mainBufferName) {
+  function MultiportWindowRender(multiportWindow, windowBufferName) {
     Render.apply(this, arguments);
 
-    var windowBuffer = gfx.newBuffer(mainBufferName);
+    var windowBuffer = gfx.newBuffer(windowBufferName);
     S.theObject(this).has('windowBuffer', windowBuffer);
 
     multiportWindow.clear = clearMultiportWindow.bind(this);
