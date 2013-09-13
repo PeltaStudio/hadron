@@ -57,22 +57,10 @@
         expect(call2.args).toEqual(['v2', windowBufferFake]);
       });
 
-      it('add a `clear()` method to the model and clear by removing all in ' +
-         'the window buffer.', function() {
-        var mainBufferName = 'main', render, width = 800, height = 600,
-            windowBufferFake = {
-              width: width,
-              height: height,
-              drawer: { clearRect: sinon.spy() },
-            }, clearRect = windowBufferFake.drawer.clearRect;
+      it('add a `clear()` method to the model.', function() {
+        var render = new MultiportWindowRender(multiportWindow, 'main');
 
-        FakeGfx.newBuffer.returns(windowBufferFake);
-
-        render = new MultiportWindowRender(multiportWindow, mainBufferName);
-        multiportWindow.clear();
-
-        expect(clearRect.calledOnce).toBe(true);
-        expect(clearRect.calledWith(0, 0, width, height)).toBe(true);
+        expect(multiportWindow.clear).toBeDefined();
       });
 
     });
