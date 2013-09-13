@@ -8,8 +8,9 @@ as possible. Got it? Ok! That is a simulation.
 +++
 
 I want Hadron design to show just that and nothing more so if you see the
-annotated sources you'll see (apart of an inspired way to decouple the
-simulation from the frame rate) a simple game step with three steps:
+[annotated sources](hadron/docs/source/Game.html) you'll see
+(apart of an inspired way to decouple the simulation from the frame rate) a
+simple game step with three steps:
 
  1. **Simulation** - Read the model, take some decissions and change the model.
  2. **Clearing** - Foresee the area that will become dirty and clear it.
