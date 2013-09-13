@@ -8,13 +8,16 @@ define(function(require) {
   function SceneControl(scene, target, camera) {
     Simulator.apply(this, arguments);
 
-    camera.addEventListener('pointermove', updateTargetPointer);
+    S.theObject(this).has('target', target);
 
-    function updateTargetPointer(evt) {
-      scene.target.setPointer([evt.worldX, evt.worldY]);
-    }
+    this.updateTargetPointer = this.updateTargetPointer.bind(this);
+    camera.addEventListener('pointermove', this.updateTargetPointer);
   }
   S.theClass(SceneControl).inheritsFrom(Simulator);
+
+  SceneControl.prototype.updateTargetPointer = function(evt) {
+    this.target.setPointer([evt.worldX, evt.worldY]);
+  }
 
   return SceneControl;
 });

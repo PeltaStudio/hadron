@@ -2,18 +2,11 @@ define(function(require) {
   'use strict';
 
   var S = require('hadron/scaffolding'),
-      T = require('hadron/toolkit'),
       Render = require('hadron/models/visualization/SceneRender'),
       Control = require('hadron/models/visualization/SceneControl'),
       Model = require('hadron/Model');
 
   function Scene(target, camera) {
-    var message = 'parameter `target` is mandatory and can not be null.';
-    T.assert.isDefined(target, message);
-
-    message = 'parameter `camera` is mandatory and can not be null.';
-    T.assert.isDefined(camera, message);
-
     S.theObject(this).has('target', target);
     S.theObject(this).has('camera', camera);
 

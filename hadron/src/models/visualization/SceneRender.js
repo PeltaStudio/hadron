@@ -10,8 +10,7 @@ define(function(require) {
   function SceneRender(scene, target, camera) {
     Render.call(this);
 
-    var buffer = gfx.newBuffer(scene.id, camera.width, camera.height),
-        drawer = buffer.drawer;
+    var buffer = gfx.newBuffer(scene.id, camera.width, camera.height);
 
     S.theObject(this)
       .has('target', target)
@@ -19,36 +18,12 @@ define(function(require) {
       .has('buffer', buffer)
     ;
 
-    scene.clear = clearScene.bind(this);
+    scene.clear = this.clearScene.bind(this);
 
-    camera.addEventListener('move', onCameraChange);
-    camera.addEventListener('resize', onCameraChange);
-    onCameraChange();
-
-    function onCameraChange() {
-      var position = camera.getPosition(),
-          worldX = position[0], worldY = position[1],
-          semiWidth = camera.semiWidth,
-          semiHeight = camera.semiHeight,
-          offsetX, offsetY;
-
-      offsetX = -worldX + semiWidth;
-      offsetY = -worldY + semiHeight;
-
-      buffer.width = camera.width;
-      buffer.height = camera.height;
-
-      // TODO: take into account zoom factor
-      drawer.setTransform(1, 0, 0, 1, offsetX, offsetY);
-
-      // FIXME: Move to the drawer?
-      gfx.setVisualizationArea({
-        top: position[1] - semiHeight,
-        right: position[0] + semiWidth,
-        bottom: position[1] + semiHeight,
-        left: position[0] - semiWidth
-      });
-    }
+    this.onCameraChange = this.onCameraChange.bind(this);
+    camera.addEventListener('move', this.onCameraChange);
+    camera.addEventListener('resize', this.onCameraChange);
+    this.onCameraChange();
   }
   S.theClass(SceneRender).inheritsFrom(Render);
 
@@ -61,7 +36,35 @@ define(function(require) {
     return this.buffer;
   };
 
-  function clearScene(scene) {
+  SceneRender.prototype.onCameraChange = function() {
+    var buffer = this.buffer,
+        drawer = buffer.drawer,
+        camera = this.camera,
+        position = camera.getPosition(),
+        worldX = position[0], worldY = position[1],
+        semiWidth = camera.semiWidth,
+        semiHeight = camera.semiHeight,
+        offsetX, offsetY;
+
+    offsetX = -worldX + semiWidth;
+    offsetY = -worldY + semiHeight;
+
+    buffer.width = camera.width;
+    buffer.height = camera.height;
+
+    // TODO: take into account zoom factor
+    drawer.setTransform(1, 0, 0, 1, offsetX, offsetY);
+
+    // TODO: Move to the drawer
+    gfx.setVisualizationArea({
+      top: position[1] - semiHeight,
+      right: position[0] + semiWidth,
+      bottom: position[1] + semiHeight,
+      left: position[0] - semiWidth
+    });
+  };
+
+  SceneRender.prototype.clearScene = function(scene) {
     var visualization = gfx.getVisualizationArea();
 
     if (!visualization) {
