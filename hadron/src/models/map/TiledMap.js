@@ -4,14 +4,15 @@ define(function(require) {
   var T = require('hadron/toolkit'),
       S = require('hadron/scaffolding'),
       Model = require('hadron/Model'),
-      Render = require('hadron/models/visualization/TiledMapRender');
+      Render = require('hadron/models/map/TiledMapRender');
 
   function TiledMap(tileSize) {
     S.theObject(this)
       .has('tileSize', tileSize)
-      .has('topLeft', [0, 0])
-      .has('bottomRight', [0, 0])
       .has('_tiles', {});
+
+    this.topLeft = undefined;
+    this.bottomRight = undefined;
 
     Model.apply(this, arguments);
   }
@@ -24,28 +25,25 @@ define(function(require) {
         zIndex = this.getZIndex(tilePosition),
         naturalIndex = this.getNaturalIndex(tilePosition);
 
-    !this._tiled[zIndex] && (this._tiled[zIndex] = {});
+    !this._tiles[zIndex] && (this._tiles[zIndex] = {});
     this._tiles[zIndex][naturalIndex] = tile;
-    this.expandBoundingBox(tilePosition);
+    this.expandBoundingBox(zIndex, naturalIndex);
   };
 
   TiledMap.prototype.removeTile = function(tilePosition) {
-    var tilePosition = Array.isArray(tilePosition) ?
-                       tilePosition : tilePosition.position,
-        zIndex = this.getZIndex(tilePosition),
+    var zIndex = this.getZIndex(tilePosition),
         naturalIndex = this.getNaturalIndex(tilePosition);
 
-    !this._tiled[zIndex] && (this._tiled[zIndex] = {});
+    !this._tiles[zIndex] && (this._tiles[zIndex] = {});
     delete this._tiles[zIndex][naturalIndex];
     // TODO: constrainBoundingBox?
   };
 
   TiledMap.prototype.getTile = function(tilePosition) {
-    var tilePosition = tile.position,
-        zIndex = this.getZIndex(tilePosition),
+    var zIndex = this.getZIndex(tilePosition),
         naturalIndex = this.getNaturalIndex(tilePosition);
 
-    !this._tiled[zIndex] && (this._tiled[zIndex] = {});
+    !this._tiles[zIndex] && (this._tiles[zIndex] = {});
     return this._tiles[zIndex][naturalIndex] || null;
   };
 
@@ -57,11 +55,17 @@ define(function(require) {
     return position[0] - position[1];
   };
 
-  TiledMap.prototype.expandBoundingBox = function(position) {
-    this.topLeft[0] = Math.min(this.topLeft[0], position[0]);
-    this.topLeft[1] = Math.min(this.topLeft[1], position[1]);
-    this.bottomRight[0] = Math.max(this.bottomRight[0], position[0]);
-    this.bottomRight[1] = Math.max(this.bottomRight[1], position[1]);
+  TiledMap.prototype.expandBoundingBox = function(z, n) {
+    if (!this.minRow) {
+      this.minRow = this.maxRow = z;
+      this.minColumn = this.maxColumn = n;
+    }
+    else {
+      this.minRow = Math.min(this.minRow, z);
+      this.minColumn = Math.min(this.minColumn, n);
+      this.maxRow = Math.max(this.maxRow, z);
+      this.maxColumn = Math.max(this.maxColumn, n);
+    }
   };
 
   return TiledMap;

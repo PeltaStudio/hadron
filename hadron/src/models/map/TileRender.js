@@ -11,12 +11,12 @@ define(function(require) {
   function TileRender(tile, tileSize) {
     Render.apply(this, arguments);
     var bufferWidth = tile.metrics.H_DIAGONAL,
-        bufferHeight = tile.getHeight();
+        bufferHeight = this.getBufferHeight(tile);
 
     tile.getRenderSubmodels = this.getRenderSubmodels;
 
     S.theObject(this)
-      .has('buffer', gfx.newBuffer(tile.id, bufferWidth, bufferHeight));
+      .has('buffer', gfx.newBuffer(tile.id, bufferWidth));
 
   }
   S.theClass(TileRender).inheritsFrom(Render);
@@ -24,17 +24,23 @@ define(function(require) {
   TileRender.prototype.render = function(tile) {
     // TODO: Make async
     var buffer = this.buffer, drawer = buffer.drawer, sprite;
-    buffer.height = tile.getHeight();
-    tile.getRenderSubmodels().forEach(function(block) {
+    buffer.height = this.getBufferHeight(tile);
+    tile.blocks.forEach(function(block) {
       // TODO: Set the buffer for the future block instead and delegate into
       // the block to render.
       sprite = block.sprite;
+      drawer.save();
       drawer.drawImage(
         sprite,
-        tile.metrics.H_RADIUS,
+        0,
         buffer.height - block.bottom - sprite.height
       );
+      drawer.restore();
     });
+  };
+
+  TileRender.prototype.getBufferHeight = function(tile) {
+    return tile.getHeight() + tile.metrics.V_DIAGONAL;
   };
 
   TileRender.prototype.postRender = function(tile) {
@@ -48,9 +54,9 @@ define(function(require) {
     );
   };
 
-  TileRender.prototype.getRenderSubmodels = function() {
+/*  TileRender.prototype.getRenderSubmodels = function() {
     return this.blocks;
-  };
+  };*/
 
   return TileRender;
 });

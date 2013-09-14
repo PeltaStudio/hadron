@@ -15,16 +15,20 @@ define(function(require) {
 
   // TODO: This could be asyncrhonous and cached
   TiledMapRender.prototype.getRenderSubmodels = function() {
-    var minZ = this.getZIndex(this.topLeft),
-        maxZ = this.getZIndex(this.bottomRight),
-        minN = this.getNaturalIndex(this.topLeft),
-        maxN = this.getNaturalIndex(this.bottomRight),
-        submodels = [], tiles = this._tiles;
+    if (this.minRow === undefined) return [];
+
+    var minZ = this.minRow,
+        maxZ = this.maxRow,
+        minN = this.minColumn,
+        maxN = this.maxColumn,
+        submodels = [], tiles = this._tiles, tile;
 
     for (var z = minZ; z <= maxZ; z++) {
       for (var n = minN; n <= maxN; n++) {
         // TODO: Crop by visualization area
-        submodels.push(tiles[z][n]);
+        tile = tiles[z][n];
+        if (tile)
+          submodels.push(tile);
       }
     }
 

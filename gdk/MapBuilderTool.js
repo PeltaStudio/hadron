@@ -60,6 +60,16 @@ define(function(require) {
   MapBuilderTool.prototype.setupControl = function() {
     var self = this;
     window.onresize = this.updateViewport.bind(this);
+    window.addEventListener('keypress', function(evt) {
+      var keyCode = evt.keyCode || evt.which;
+      if ('t'.charCodeAt(0) === keyCode) {
+        self.mapEditor.doTestScenario({
+          getSprite: function(spriteId) {
+            return document.querySelector('#tile-palette img[data-sprite-id="' + spriteId + '"]');
+          }
+        });
+      }
+    });
   };
 
   MapBuilderTool.prototype.setupInfoArea = function() {
@@ -74,7 +84,7 @@ define(function(require) {
 
   MapBuilderTool.prototype.setupPanels = function() {
     var tilePalette = document.getElementById('tile-palette');
-    S.theObject(this).has('tilePalette', new Panel(tilePalette));
+    S.theObject(this).has('tilePalette', new Panel(tilePalette, this.mapEditor.metrics.H_DIAGONAL));
   };
 
   MapBuilderTool.prototype.updateViewport = function() {
@@ -88,12 +98,14 @@ define(function(require) {
     this.mapEditor.resizeWindow(newWidth, newHeight);
   };
 
-  function Panel(panel) {
+  var spriteId = 0;
+  function Panel(panel, imageWidth) {
     S.theObject(this)
       .has('panel', panel)
       .has('pinButton', panel.querySelector('.pin'))
       .has('addTileButton', panel.querySelector('.add-tile'))
-      .has('addTileInput', panel.querySelector('.add-tile + input'));
+      .has('addTileInput', panel.querySelector('.add-tile + input'))
+      .has('imageWidth', imageWidth);
 
     this.pinButton.addEventListener('click', this.togglePin.bind(this));
     this.addTileButton.addEventListener('click', this.selectFile.bind(this));
@@ -109,6 +121,7 @@ define(function(require) {
   };
 
   Panel.prototype.addImages = function(evt) {
+    var self = this;
     var files = [].slice.call(evt.target.files, 0), img, li, p, tileList,
         pathComponents,
         fragment = document.createDocumentFragment();
@@ -116,6 +129,8 @@ define(function(require) {
     files.forEach(function(file) {
       img = document.createElement('img');
       img.src = window.URL.createObjectURL(file);
+      img.dataset.spriteId = spriteId++;
+      img.width = self.imageWidth;
       p = document.createElement('p');
       p.textContent = file.name;
       p.classList.add('file-name');

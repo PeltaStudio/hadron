@@ -148,7 +148,7 @@ html {
 }
 
 #tile-palette .tile-list > li {
-  height: 4rem;
+  overflow: hidden;
   padding: 0.5rem;
   border-bottom: 0.15rem solid #DEDEDE;
 }
@@ -158,8 +158,6 @@ html {
 }
 
 #tile-palette .tile-list img {
-  height: 100%;
-  width: auto;
   float: left;
   margin-right: 0.5rem;
 }
