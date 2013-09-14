@@ -39,3 +39,131 @@ html {
 #map-editor-info dd {
   display: inline;
 }
+
+.panel {
+  font-size: 0.7rem;
+  position: fixed;
+  background: #EFEFEF;
+  border: 0.2rem solid #F7F7F7;
+  transition: -webkit-transform 400ms;
+}
+
+.panel button:hover {
+  cursor: pointer;
+}
+
+.right-panel {
+  right: 0;
+  border-radius: 0.7rem 0 0 0.7rem;
+  box-shadow: -0.2rem 0 0.2rem rgba(128, 128, 128, 0.5);
+  -webkit-transform: translateX(95%);
+}
+
+.panel.pinned {
+  -webkit-transform: translateX(0) !important;
+}
+
+.panel:hover {
+  -webkit-transform: translateX(0);
+}
+
+.panel header {
+  position: relative;
+  height: 1rem;
+  padding: 0.5rem 5%;
+  color: #777;
+  text-shadow: 0 0.1rem 0 white;
+  clear: both;
+  border-bottom: 0.15rem solid #DEDEDE;
+}
+
+.panel header:after {
+  content: '';
+  position: absolute;
+  top: 0; right: 0; bottom: -0.15rem; left: 0;
+  border-bottom: 0.1rem solid #FFF;
+  pointer-events: none;
+}
+
+.panel header h2 {
+  float: left;
+}
+
+.panel header button {
+  float: right;
+}
+
+.panel .pin {
+  width: 1rem;
+  height: 1rem;
+  border: 0.1rem solid #999;
+  background-color: transparent;
+  border-radius: 0.7rem;
+}
+
+.panel .pin:hover {
+  box-shadow: 0 0 0.4rem 0.1rem rgba(82, 168, 236, 0.8) !important;
+}
+
+.panel.pinned .pin {
+  background-color: #777;
+  box-shadow: 0.1rem 0.1rem 0 0rem #FFF;
+}
+
+#tile-palette {
+  top: 5%;
+  height: 90%;
+  width: 25%;
+}
+
+#tile-palette nav {
+  margin: 0.5rem 5%;
+}
+
+#tile-palette nav button {
+  padding: 0.2rem;
+}
+
+#tile-palette nav .add-tile {
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 0.1rem solid #999;
+  border-radius: 1rem;
+  background-color: transparent;
+  text-align: center;
+}
+
+#tile-palette nav .add-tile:hover {
+  color: #FFF;
+  background-color: #777;
+}
+
+#tile-palette .tile-list {
+  position: absolute;
+  top: 3.6rem; right: 0; bottom: 0; left: 0;
+  margin: 1rem 0 1rem 0.7rem;
+  border-radius: 0 0 0 0.5rem;
+  overflow: auto;
+  list-style: none;
+}
+
+#tile-palette .tile-list > li {
+  height: 4rem;
+  padding: 0.5rem;
+  border-bottom: 0.15rem solid #DEDEDE;
+}
+
+#tile-palette .tile-list > li:hover {
+  background-color: white;
+}
+
+#tile-palette .tile-list img {
+  height: 100%;
+  width: auto;
+  float: left;
+  margin-right: 0.5rem;
+}
+
+#tile-palette .tile-list > li .file-name {
+  font-weight: bold;
+}

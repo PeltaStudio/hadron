@@ -19,6 +19,7 @@ define(function(require) {
     this.setupEditor();
     this.setupControl();
     this.setupInfoArea();
+    this.setupPanels();
   };
 
   MapBuilderTool.prototype.setupEditor = function() {
@@ -71,6 +72,11 @@ define(function(require) {
     }, 1000);
   };
 
+  MapBuilderTool.prototype.setupPanels = function() {
+    var tilePalette = document.getElementById('tile-palette');
+    S.theObject(this).has('tilePalette', new Panel(tilePalette));
+  };
+
   MapBuilderTool.prototype.updateViewport = function() {
     var newWidth = document.documentElement.offsetWidth,
         newHeight = document.documentElement.clientHeight;
@@ -80,6 +86,47 @@ define(function(require) {
     this.mapEditorWindow.height = newHeight;
 
     this.mapEditor.resizeWindow(newWidth, newHeight);
+  };
+
+  function Panel(panel) {
+    S.theObject(this)
+      .has('panel', panel)
+      .has('pinButton', panel.querySelector('.pin'))
+      .has('addTileButton', panel.querySelector('.add-tile'))
+      .has('addTileInput', panel.querySelector('.add-tile + input'));
+
+    this.pinButton.addEventListener('click', this.togglePin.bind(this));
+    this.addTileButton.addEventListener('click', this.selectFile.bind(this));
+    this.addTileInput.addEventListener('change', this.addImages.bind(this));
+  }
+
+  Panel.prototype.togglePin = function(evt) {
+    this.panel.classList.toggle('pinned');
+  };
+
+  Panel.prototype.selectFile = function(evt) {
+    this.addTileInput.click();
+  };
+
+  Panel.prototype.addImages = function(evt) {
+    var files = [].slice.call(evt.target.files, 0), img, li, p, tileList,
+        pathComponents,
+        fragment = document.createDocumentFragment();
+
+    files.forEach(function(file) {
+      img = document.createElement('img');
+      img.src = window.URL.createObjectURL(file);
+      p = document.createElement('p');
+      p.textContent = file.name;
+      p.classList.add('file-name');
+      li = document.createElement('li');
+      li.appendChild(img);
+      li.appendChild(p);
+      fragment.appendChild(li);
+    });
+
+    tileList = this.panel.querySelector('.tile-list');
+    tileList.appendChild(fragment);
   };
 
   return MapBuilderTool;
