@@ -23,35 +23,23 @@ define(function(require) {
 
   TileRender.prototype.render = function(tile) {
     // TODO: Make async
-    var buffer = this.buffer, drawer = buffer.drawer, sprite;
-    buffer.height = this.getBufferHeight(tile);
-    tile.blocks.forEach(function(block) {
+    var sprite, blocks = tile.blocks,
+        worldPosition = tile.metrics.getWorldCoordinates(tile.position);
+
+    for (var i = 0, block; block = blocks[i]; i++) {
       // TODO: Set the buffer for the future block instead and delegate into
       // the block to render.
       sprite = block.sprite;
-      drawer.save();
-      drawer.drawImage(
+      gfx.drawer.drawImage(
         sprite,
-        0,
-        buffer.height - block.bottom - sprite.height
+        worldPosition[0] - sprite.width / 2,
+        worldPosition[1] - sprite.height - block.bottom
       );
-      drawer.restore();
-    });
+    }
   };
 
   TileRender.prototype.getBufferHeight = function(tile) {
     return tile.getHeight() + tile.metrics.V_DIAGONAL;
-  };
-
-  TileRender.prototype.postRender = function(tile) {
-    var buffer = this.buffer,
-        worldPosition = tile.metrics.getWorldCoordinates(tile.position);
-
-    gfx.drawer.drawImage(
-      buffer,
-      worldPosition[0] - buffer.width / 2,
-      worldPosition[1] - buffer.height
-    );
   };
 
 /*  TileRender.prototype.getRenderSubmodels = function() {
