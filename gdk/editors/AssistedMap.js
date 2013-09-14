@@ -5,6 +5,7 @@ define(function(require) {
 
   var S = require('hadron/scaffolding'),
       Model = require('hadron/Model'),
+      TiledMap = require('hadron/models/map/TiledMap'),
       WorldMetrics =  require('hadron/models/visualization/WorldMetrics'),
       ScreenAxis = require('helpers/ScreenAxis'),
       IsometricGrid = require('helpers/IsometricGrid'),
@@ -13,6 +14,7 @@ define(function(require) {
 
   function AssistedMap() {
     this.setupGizmos();
+    this.setupMap(DEFAULT_CELL_SIZE);
     Model.call(this);
   }
   S.theClass(AssistedMap).inheritsFrom(Model);
@@ -23,6 +25,10 @@ define(function(require) {
     this.screenAxis = new ScreenAxis();
     this.grid = new IsometricGrid(DEFAULT_CELL_SIZE);
     this.pointedCellGizmo = new CellHighlighter(DEFAULT_CELL_SIZE);
+  };
+
+  AssistedMap.prototype.setupMap = function(tileSize) {
+    this.map = new TiledMap(tileSize);
   };
 
   AssistedMap.prototype.getSubmodels = function() {
