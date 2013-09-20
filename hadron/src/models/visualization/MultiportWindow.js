@@ -34,7 +34,7 @@ define(function(require) {
     return submodels;
   };
 
-  MultiportWindow.prototype.setPointer = function(coordinates) {
+  MultiportWindow.prototype.setPointer = function(coordinates, isClicking) {
     var name, viewport, selectedViewport;
     for (name in this._viewports) {
       viewport = this._viewports[name];
@@ -51,7 +51,7 @@ define(function(require) {
       selectedViewport.setPointer([
         coordinates[0] - viewport.position[0],
         coordinates[1] - viewport.position[1]
-      ]);
+      ], isClicking);
       return selectedViewport;
     }
     return undefined;

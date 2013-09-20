@@ -44,12 +44,20 @@ define(function(require) {
     return T.clone(this._position);
   };
 
-  Camera.prototype.setPointer = function(coordinates) {
+  Camera.prototype.setPointer = function(coordinates, isClicking) {
     // TODO: Apply zoom factor
+    var worldX = coordinates[0] + this._position[0] - this.semiWidth,
+        worldY = coordinates[1] + this._position[1] - this.semiHeight;
     this.dispatchEvent('pointermove', {
-      worldX: coordinates[0] + this._position[0] - this.semiWidth,
-      worldY: coordinates[1] + this._position[1] - this.semiHeight
+      worldX: worldX,
+      worldY: worldY
     });
+    if (isClicking) {
+      this.dispatchEvent('click', {
+        worldX: worldX,
+        worldY: worldY
+      });
+    }
   };
 
   return Camera;

@@ -3,14 +3,18 @@ define(function(require) {
 
   var T = require('hadron/toolkit'),
       S = require('hadron/scaffolding'),
+      Cell = require('hadron/models/map/Cell'),
       Model = require('hadron/Model'),
+      WorldMetrics = require('hadron/models/visualization/WorldMetrics'),
       Render = require('hadron/models/map/TiledMapRender');
 
-  function TiledMap(tileSize) {
+  function TiledMap(cellSize, palette) {
     S.theObject(this)
-      .has('tileSize', tileSize)
-      .has('_tiles', {});
+      .has('cellSize', cellSize)
+      .has('_cells', {})
+      .has('metrics', new WorldMetrics(cellSize));
 
+    this.palette = palette; // TODO: dynamic switch of palette?
     this.topLeft = undefined;
     this.bottomRight = undefined;
 
@@ -20,31 +24,34 @@ define(function(require) {
 
   TiledMap.prototype.render = Render;
 
-  TiledMap.prototype.addTile = function(tile) {
-    var tilePosition = tile.position,
-        zIndex = this.getZIndex(tilePosition),
-        naturalIndex = this.getNaturalIndex(tilePosition);
+  TiledMap.prototype.removeCell = function(cellPosition) {
+    var zIndex = this.getZIndex(cellPosition),
+        naturalIndex = this.getNaturalIndex(cellPosition);
 
-    !this._tiles[zIndex] && (this._tiles[zIndex] = {});
-    this._tiles[zIndex][naturalIndex] = tile;
-    this.expandBoundingBox(zIndex, naturalIndex);
-  };
-
-  TiledMap.prototype.removeTile = function(tilePosition) {
-    var zIndex = this.getZIndex(tilePosition),
-        naturalIndex = this.getNaturalIndex(tilePosition);
-
-    !this._tiles[zIndex] && (this._tiles[zIndex] = {});
-    delete this._tiles[zIndex][naturalIndex];
+    !this._cells[zIndex] && (this._cells[zIndex] = {});
+    delete this._cells[zIndex][naturalIndex];
     // TODO: constrainBoundingBox?
   };
 
-  TiledMap.prototype.getTile = function(tilePosition) {
-    var zIndex = this.getZIndex(tilePosition),
-        naturalIndex = this.getNaturalIndex(tilePosition);
+  TiledMap.prototype.getCell = function(cellPosition) {
+    var zIndex = this.getZIndex(cellPosition),
+        naturalIndex = this.getNaturalIndex(cellPosition);
 
-    !this._tiles[zIndex] && (this._tiles[zIndex] = {});
-    return this._tiles[zIndex][naturalIndex] || null;
+    !this._cells[zIndex] && (this._cells[zIndex] = {});
+    return this._cells[zIndex][naturalIndex] || this.newCell(cellPosition);
+  };
+
+  TiledMap.prototype.newCell = function(cellPosition) {
+    var zIndex = this.getZIndex(cellPosition),
+        naturalIndex = this.getNaturalIndex(cellPosition),
+        newCell = new Cell(this.cellSize);
+
+    !this._cells[zIndex] && (this._cells[zIndex] = {});
+    this._cells[zIndex][naturalIndex] = newCell;
+    this.expandBoundingBox(zIndex, naturalIndex);
+
+    newCell.position = cellPosition;
+    return newCell;
   };
 
   TiledMap.prototype.getZIndex = function(position) {
@@ -65,6 +72,22 @@ define(function(require) {
       this.minColumn = Math.min(this.minColumn, n);
       this.maxRow = Math.max(this.maxRow, z);
       this.maxColumn = Math.max(this.maxColumn, n);
+    }
+  };
+
+  TiledMap.prototype.setPointer = function(coordinates, isClicking) {
+    var mapPosition = this.metrics.getMapCoordinates(coordinates);
+
+    this.dispatchEvent('pointermove', {
+      mapX: mapPosition[0],
+      mapZ: mapPosition[1]
+    });
+
+    if (isClicking) {
+      this.dispatchEvent('click', {
+        mapX: mapPosition[0],
+        mapZ: mapPosition[1]
+      });
     }
   };
 
