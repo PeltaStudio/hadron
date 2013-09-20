@@ -153,6 +153,10 @@ html {
   border-bottom: 0.15rem solid #DEDEDE;
 }
 
+#tile-palette .tile-list > li.selected {
+  border: dashed 0.1rem rgba(82, 168, 236, 1);
+}
+
 #tile-palette .tile-list > li:hover {
   background-color: white;
 }

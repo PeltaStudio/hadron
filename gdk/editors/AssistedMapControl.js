@@ -7,7 +7,7 @@ define(function(require) {
   function AssistedMapControl(assistedMap) {
     Simulator.call(this)
 
-    assistedMap.addEventListener('pointermove', moveCellGizmo);
+    assistedMap.map.addEventListener('pointermove', moveCellGizmo);
 
     function moveCellGizmo(evt) {
       assistedMap.pointedCellGizmo.position = [evt.mapX, evt.mapZ];

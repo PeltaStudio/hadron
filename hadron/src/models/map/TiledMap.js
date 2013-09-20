@@ -5,12 +5,14 @@ define(function(require) {
       S = require('hadron/scaffolding'),
       Cell = require('hadron/models/map/Cell'),
       Model = require('hadron/Model'),
+      WorldMetrics = require('hadron/models/visualization/WorldMetrics'),
       Render = require('hadron/models/map/TiledMapRender');
 
   function TiledMap(cellSize, palette) {
     S.theObject(this)
       .has('cellSize', cellSize)
-      .has('_cells', {});
+      .has('_cells', {})
+      .has('metrics', new WorldMetrics(cellSize));
 
     this.palette = palette; // TODO: dynamic switch of palette?
     this.topLeft = undefined;
@@ -70,6 +72,22 @@ define(function(require) {
       this.minColumn = Math.min(this.minColumn, n);
       this.maxRow = Math.max(this.maxRow, z);
       this.maxColumn = Math.max(this.maxColumn, n);
+    }
+  };
+
+  TiledMap.prototype.setPointer = function(coordinates, isClicking) {
+    var mapPosition = this.metrics.getMapCoordinates(coordinates);
+
+    this.dispatchEvent('pointermove', {
+      mapX: mapPosition[0],
+      mapZ: mapPosition[1]
+    });
+
+    if (isClicking) {
+      this.dispatchEvent('click', {
+        mapX: mapPosition[0],
+        mapZ: mapPosition[1]
+      });
     }
   };
 

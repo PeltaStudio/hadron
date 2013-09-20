@@ -10,14 +10,18 @@ define(function(require) {
 
     S.theObject(this).has('target', target);
 
-    this.updateTargetPointer = this.updateTargetPointer.bind(this);
-    camera.addEventListener('pointermove', this.updateTargetPointer);
+    camera.addEventListener('pointermove', this.updateTargetPointer.bind(this));
+    camera.addEventListener('click', this.doTargetClick.bind(this));
   }
   S.theClass(SceneControl).inheritsFrom(Simulator);
 
   SceneControl.prototype.updateTargetPointer = function(evt) {
     this.target.setPointer([evt.worldX, evt.worldY]);
-  }
+  };
+
+  SceneControl.prototype.doTargetClick = function(evt) {
+    this.target.setPointer([evt.worldX, evt.worldY], true);
+  };
 
   return SceneControl;
 });

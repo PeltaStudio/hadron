@@ -17,7 +17,7 @@ define(function(require) {
     this.setupMap(tileSize, palette);
     Model.call(this);
   }
-  S.theClass(AssistedMap).inheritsFrom(Model);
+  S.theClass(AssistedMap).inheritsFrom(Tiled);
 
   AssistedMap.prototype.simulate = Control;
 
@@ -36,13 +36,8 @@ define(function(require) {
     return [this.map, this.pointedCellGizmo, this.grid, this.screenAxis];
   };
 
-  AssistedMap.prototype.setPointer = function(coordinates) {
-    var mapPosition = this.metrics.getMapCoordinates(coordinates);
-
-    this.dispatchEvent('pointermove', {
-      mapX: mapPosition[0],
-      mapZ: mapPosition[1]
-    })
+  AssistedMap.prototype.setPointer = function(coordinates, isClicking) {
+    this.map.setPointer(coordinates, isClicking);
   };
 
   return AssistedMap;

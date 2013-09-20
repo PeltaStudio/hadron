@@ -45,16 +45,21 @@ define(function(require) {
 
     self.updateViewport();
 
-    mapEditorWindow.onmousemove = updateWindowPointer;
+    mapEditorWindow.onmousemove = function(evt) {
+      updateWindowPointer(evt);
+    };
+    mapEditorWindow.onclick = function(evt) {
+      updateWindowPointer(evt, true);
+    };
 
-    function updateWindowPointer(evt) {
+    function updateWindowPointer(evt, isClicking) {
       var canvas = evt.target;
       var rect = canvas.getBoundingClientRect();
       var canvasCoords = [
         evt.clientX - rect.left,
         evt.clientY - rect.top
       ];
-      self.mapEditor.setPointer(canvasCoords);
+      self.mapEditor.setPointer(canvasCoords, isClicking);
     };
   };
 
@@ -135,11 +140,12 @@ define(function(require) {
 
   PalettePanel.prototype.addImages = function(evt) {
     var self = this;
-    var files = [].slice.call(evt.target.files, 0), img, li, p, tileList,
+    var files = [].slice.call(evt.target.files, 0), tileList,
         pathComponents,
         fragment = document.createDocumentFragment();
 
     files.forEach(function(file) {
+      var img, li, p;
       img = document.createElement('img');
       p = document.createElement('p');
       p.textContent = file.name;
@@ -147,6 +153,13 @@ define(function(require) {
       li = document.createElement('li');
       li.appendChild(img);
       li.appendChild(p);
+      li.onclick = function(evt) {
+        var brothers = [].slice.call(li.parentNode.children, 0);
+        brothers.forEach(function(element) {
+          element.classList.remove('selected');
+        });
+        li.classList.add('selected');
+      };
       fragment.appendChild(li);
 
       loadImage(img, file);

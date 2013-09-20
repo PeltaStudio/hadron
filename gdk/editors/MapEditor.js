@@ -40,8 +40,8 @@ define(function(require) {
     mainViewport.scene.camera.resize(width, height);
   };
 
-  MapEditor.prototype.setPointer = function(coordinates) {
-    this._viewportManager.setPointer(coordinates);
+  MapEditor.prototype.setPointer = function(coordinates, isClicking) {
+    this._viewportManager.setPointer(coordinates, isClicking);
   };
 
   MapEditor.prototype.getSubmodels = function(aspect) {
@@ -59,6 +59,8 @@ define(function(require) {
    for (var x = -3; x <= 3; x++) {
       for (var z = -3; z <= 3; z++) {
         cell = this.target.map.getCell([x, z]);
+        cell.clearTiles();
+        // TODO: Replace by retrieving from Palette
         tile = new Tile(DEFAULT_CELL_SIZE, palette.getSprite(1));
         cell.tiles.push(tile);
       }

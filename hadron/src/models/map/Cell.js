@@ -18,6 +18,13 @@ define(function(require) {
   }
   S.theClass(Cell).inheritsFrom(Model);
 
+  Cell.prototype.clearTiles = function() {
+    var tiles = this.tiles;
+    while(tiles.length) {
+      tiles.shift();
+    }
+  };
+
   Cell.prototype.render = Render;
 
   return Cell;
