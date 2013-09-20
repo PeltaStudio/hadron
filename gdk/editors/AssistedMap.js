@@ -15,9 +15,9 @@ define(function(require) {
   function AssistedMap(tileSize, palette) {
     this.setupGizmos(tileSize);
     this.setupMap(tileSize, palette);
-    Model.call(this);
+    Model.apply(this, arguments);
   }
-  S.theClass(AssistedMap).inheritsFrom(Tiled);
+  S.theClass(AssistedMap).inheritsFrom(Model);
 
   AssistedMap.prototype.simulate = Control;
 

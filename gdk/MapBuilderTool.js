@@ -9,6 +9,7 @@ define(function(require) {
 
   var S = require('hadron/scaffolding'),
       R = require('hadron/res/ResourceManager'),
+      Tile = require('hadron/models/map/tiling/Tile'),
       MapEditor = require('editors/MapEditor'),
       Game = require('hadron/Game');
 
@@ -66,6 +67,26 @@ define(function(require) {
   MapBuilderTool.prototype.setupControl = function() {
     var self = this;
     window.onresize = this.updateViewport.bind(this);
+    self.mapEditor.target.map.addEventListener('click', function(evt) {
+      var cell, img, sprite, tile;
+      img = document.querySelector('#tile-palette .selected img');
+      if (!img) return;
+
+      cell = self.mapEditor.target.map.getCell([evt.mapX, evt.mapZ]);
+      sprite = R.getImage(img.dataset.resourceId);
+      tile = new Tile(self.mapEditor.target.map.cellSize, sprite);
+      if (!self.pushMode) {
+        cell.clearTiles();
+      }
+      cell.tiles.push(tile);
+    });
+    self.pushMode = false;
+    window.addEventListener('keyup', function(evt) {
+      var keyCode = evt.keyCode || evt.which;
+      if ('p'.charCodeAt(0)) {
+        self.pushMode = !self.pushMode;
+      }
+    });
     window.addEventListener('keypress', function(evt) {
       var keyCode = evt.keyCode || evt.which;
       if ('t'.charCodeAt(0) === keyCode) {

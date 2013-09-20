@@ -50,9 +50,8 @@ define(function(require) {
     if (selectedViewport) {
       selectedViewport.setPointer([
         coordinates[0] - viewport.position[0],
-        coordinates[1] - viewport.position[1],
-        isClicking
-      ]);
+        coordinates[1] - viewport.position[1]
+      ], isClicking);
       return selectedViewport;
     }
     return undefined;

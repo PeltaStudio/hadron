@@ -26,7 +26,7 @@ define(function(require) {
     for (var z = minZ; z <= maxZ; z++) {
       for (var n = minN; n <= maxN; n++) {
         // TODO: Crop by visualization area
-        cell = cells[z][n];
+        cell = cells[z] ? cells[z][n] : null;
         if (cell)
           submodels.push(cell);
       }

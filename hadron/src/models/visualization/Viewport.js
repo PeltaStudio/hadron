@@ -27,9 +27,8 @@ define(function(require) {
 
     this.scene.camera.setPointer([
       coordinates[0] * factorX,
-      coordinates[1] * factorY,
-      isClicking
-    ]);
+      coordinates[1] * factorY
+    ], isClicking);
   };
 
   return Viewport;
