@@ -159,7 +159,8 @@ html {
 
 #tile-palette .tile-list img {
   float: left;
-  margin-right: 0.5rem;
+  margin-right: 0.6rem;
+  max-height: 4rem;
 }
 
 #tile-palette .tile-list > li .file-name {

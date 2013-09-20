@@ -7,9 +7,9 @@ define(function(require) {
 
   var gfx = require('hadron/gfx/GraphicSystem');
 
-  function TiledMapRender(tiledMap) {
+  function TiledMapRender(celldMap) {
     Render.apply(this, arguments);
-    tiledMap.getRenderSubmodels = this.getRenderSubmodels;
+    celldMap.getRenderSubmodels = this.getRenderSubmodels;
   }
   S.theClass(TiledMapRender).inheritsFrom(Render);
 
@@ -21,14 +21,14 @@ define(function(require) {
         maxZ = this.maxRow,
         minN = this.minColumn,
         maxN = this.maxColumn,
-        submodels = [], tiles = this._tiles, tile;
+        submodels = [], cells = this._cells, cell;
 
     for (var z = minZ; z <= maxZ; z++) {
       for (var n = minN; n <= maxN; n++) {
         // TODO: Crop by visualization area
-        tile = tiles[z][n];
-        if (tile)
-          submodels.push(tile);
+        cell = cells[z][n];
+        if (cell)
+          submodels.push(cell);
       }
     }
 

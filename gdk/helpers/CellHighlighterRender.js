@@ -16,10 +16,11 @@ define(function(require) {
         drawer = gfx.drawer,
         gizmo = drawer.getIsoCube(model.cellSize, 0, {
           faceColor: false,
-          lineColor: '#333',
-          lineWidth: 3
+          lineColor: '#00E000',
+          lineWidth: 2
         });
 
+    // TODO: For eficency reasons, consider to draw in the buffer directly.
     drawer.drawImage(gizmo,
       worldPosition[0] - gizmo.width / 2,
       worldPosition[1] - gizmo.height

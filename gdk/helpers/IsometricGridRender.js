@@ -26,7 +26,7 @@ define(function(require) {
     drawer.save();
     drawer.setDimetricProjection();
     drawer.beginPath();
-    drawer.strokeStyle = 'black';
+    drawer.strokeStyle = '#555';
     drawer.lineWidth = 1;
     for (var col = left; col <= right; col += size) {
       drawer.moveTo(col, top);

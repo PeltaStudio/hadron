@@ -33,7 +33,7 @@ define(function(require) {
   };
 
   AssistedMap.prototype.getSubmodels = function() {
-    return [this.grid, /*this.screenAxis,*/ this.map, this.pointedCellGizmo];
+    return [this.map, this.pointedCellGizmo, this.grid, this.screenAxis];
   };
 
   AssistedMap.prototype.setPointer = function(coordinates) {

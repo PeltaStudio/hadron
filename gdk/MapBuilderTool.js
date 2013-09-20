@@ -8,6 +8,7 @@ define(function(require) {
   'use strict';
 
   var S = require('hadron/scaffolding'),
+      R = require('hadron/res/ResourceManager'),
       MapEditor = require('editors/MapEditor'),
       Game = require('hadron/Game');
 
@@ -64,8 +65,14 @@ define(function(require) {
       var keyCode = evt.keyCode || evt.which;
       if ('t'.charCodeAt(0) === keyCode) {
         self.mapEditor.doTestScenario({
-          getSprite: function(spriteId) {
-            return document.querySelector('#tile-palette img[data-sprite-id="' + spriteId + '"]');
+          getSprite: function(n) {
+            var query = '#tile-palette :nth-of-type(' + n + ') img',
+                img = document.querySelector(query),
+                resourceId = img ? img.dataset.resourceId : undefined;
+
+            return resourceId !== undefined ?
+                   R.getImage(resourceId) :
+                   undefined;
           }
         });
       }
@@ -84,7 +91,7 @@ define(function(require) {
 
   MapBuilderTool.prototype.setupPanels = function() {
     var tilePalette = document.getElementById('tile-palette');
-    S.theObject(this).has('tilePalette', new Panel(tilePalette, this.mapEditor.metrics.H_DIAGONAL));
+    S.theObject(this).has('tilePalette', new PalettePanel(tilePalette));
   };
 
   MapBuilderTool.prototype.updateViewport = function() {
@@ -99,28 +106,34 @@ define(function(require) {
   };
 
   var spriteId = 0;
-  function Panel(panel, imageWidth) {
+  function Panel(panel) {
     S.theObject(this)
       .has('panel', panel)
-      .has('pinButton', panel.querySelector('.pin'))
-      .has('addTileButton', panel.querySelector('.add-tile'))
-      .has('addTileInput', panel.querySelector('.add-tile + input'))
-      .has('imageWidth', imageWidth);
+      .has('pinButton', panel.querySelector('.pin'));
 
     this.pinButton.addEventListener('click', this.togglePin.bind(this));
-    this.addTileButton.addEventListener('click', this.selectFile.bind(this));
-    this.addTileInput.addEventListener('change', this.addImages.bind(this));
-  }
+  };
 
   Panel.prototype.togglePin = function(evt) {
     this.panel.classList.toggle('pinned');
   };
 
-  Panel.prototype.selectFile = function(evt) {
+  function PalettePanel(panel, imageWidth) {
+    Panel.apply(this, arguments);
+    S.theObject(this)
+      .has('addTileButton', panel.querySelector('.add-tile'))
+      .has('addTileInput', panel.querySelector('.add-tile + input'));
+
+    this.addTileButton.addEventListener('click', this.selectFile.bind(this));
+    this.addTileInput.addEventListener('change', this.addImages.bind(this));
+  }
+  S.theClass(PalettePanel).inheritsFrom(Panel);
+
+  PalettePanel.prototype.selectFile = function(evt) {
     this.addTileInput.click();
   };
 
-  Panel.prototype.addImages = function(evt) {
+  PalettePanel.prototype.addImages = function(evt) {
     var self = this;
     var files = [].slice.call(evt.target.files, 0), img, li, p, tileList,
         pathComponents,
@@ -128,9 +141,6 @@ define(function(require) {
 
     files.forEach(function(file) {
       img = document.createElement('img');
-      img.src = window.URL.createObjectURL(file);
-      img.dataset.spriteId = spriteId++;
-      img.width = self.imageWidth;
       p = document.createElement('p');
       p.textContent = file.name;
       p.classList.add('file-name');
@@ -138,7 +148,16 @@ define(function(require) {
       li.appendChild(img);
       li.appendChild(p);
       fragment.appendChild(li);
+
+      loadImage(img, file);
     });
+
+    function loadImage(img, file) {
+      R.newImageFromFile(file).then(function(id) {
+        img.src = R.getImage(id).src;
+        img.dataset.resourceId = id;
+      });
+    }
 
     tileList = this.panel.querySelector('.tile-list');
     tileList.appendChild(fragment);
