@@ -51,7 +51,7 @@
 
         it('places m(0, 0) at w(0, 0).', function() {
           var mapCoords = [0, 0],
-              worldCoords = metrics.getWorldCoordinates(mapCoords);
+              worldCoords = metrics.getWorkSpaceCoordinates(mapCoords);
 
           expect(worldCoords).toEqual([0.0, 0.0]);
         });
@@ -63,7 +63,7 @@
               mapSample = [mX, mY],
               wCoordinates, mCoordinates;
 
-          wCoordinates = metrics.getWorldCoordinates(mapSample);
+          wCoordinates = metrics.getWorkSpaceCoordinates(mapSample);
           mCoordinates = metrics.getMapCoordinates(wCoordinates);
 
           expect(mapSample).toEqual(mCoordinates);

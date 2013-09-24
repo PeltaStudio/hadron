@@ -18,7 +18,7 @@ define(function(require) {
   CellRender.prototype.render = function(cell) {
     // TODO: Make ALL async
     var sprite, tiles = cell.tiles,
-        worldPosition = cell.metrics.getWorldCoordinates(cell.position);
+        worldPosition = cell.metrics.getWorkSpaceCoordinates(cell.position);
 
     for (var i = 0, tile; tile = tiles[i]; i++) {
       tile.render.setOffset(worldPosition);

@@ -12,7 +12,7 @@ define(function(require) {
 
   CellHighlighterRender.prototype.render = function(model) {
     var metrics = new WorldMetrics(model.cellSize),
-        worldPosition = metrics.getWorldCoordinates(model.position),
+        worldPosition = metrics.getWorkSpaceCoordinates(model.position),
         drawer = gfx.drawer,
         gizmo = drawer.getIsoCube(model.cellSize, 0, {
           faceColor: false,
