@@ -68,12 +68,12 @@ define(function(require) {
     var self = this;
     window.onresize = this.updateViewport.bind(this);
     self.mapEditor.target.map.addEventListener('click', function(evt) {
-      var cell, img, sprite, tile;
-      img = document.querySelector('#tile-palette .selected img');
-      if (!img) return;
+      var cell, li, sprite, tile;
+      li = document.querySelector('#tile-palette .selected');
+      if (!li) return;
 
       cell = self.mapEditor.target.map.getCell([evt.mapX, evt.mapZ]);
-      sprite = R.getImage(img.dataset.resourceId);
+      sprite = R.getImage(li.dataset.resourceId);
       tile = new Tile(self.mapEditor.target.map.cellSize, sprite);
       if (!self.pushMode) {
         cell.clearTiles();
@@ -116,8 +116,11 @@ define(function(require) {
   };
 
   MapBuilderTool.prototype.setupPanels = function() {
-    var tilePalette = document.getElementById('tile-palette');
+    var tilePalette, compositionTools;
+    tilePalette = document.getElementById('tile-palette');
+    compositionTools = document.getElementById('composition-tools');
     S.theObject(this).has('tilePalette', new PalettePanel(tilePalette));
+    S.theObject(this).has('compositionTools', new Panel(compositionTools));
   };
 
   MapBuilderTool.prototype.updateViewport = function() {
@@ -162,10 +165,10 @@ define(function(require) {
   PalettePanel.prototype.addImages = function(evt) {
     var self = this;
     var files = [].slice.call(evt.target.files, 0), tileList,
-        pathComponents,
+        pathComponents, fileCount = files.length,
         fragment = document.createDocumentFragment();
 
-    files.forEach(function(file) {
+    files.forEach(function(file, index) {
       var img, li, p;
       img = document.createElement('img');
       p = document.createElement('p');
@@ -181,15 +184,17 @@ define(function(require) {
         });
         li.classList.add('selected');
       };
+      // TODO: Make a function to select one tile (and deselect brothers)
+      if (index === fileCount - 1) li.classList.add('selected');
       fragment.appendChild(li);
 
-      loadImage(img, file);
+      loadImage(li, img, file);
     });
 
-    function loadImage(img, file) {
+    function loadImage(li, img, file) {
       R.newImageFromFile(file).then(function(id) {
         img.src = R.getImage(id).src;
-        img.dataset.resourceId = id;
+        li.dataset.resourceId = id;
       });
     }
 
