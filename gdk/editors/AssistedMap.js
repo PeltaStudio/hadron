@@ -15,7 +15,7 @@ define(function(require) {
   function AssistedMap(tileSize, palette) {
     this.setupGizmos(tileSize);
     this.setupMap(tileSize, palette);
-    Model.call(this);
+    Model.apply(this, arguments);
   }
   S.theClass(AssistedMap).inheritsFrom(Model);
 
@@ -33,16 +33,11 @@ define(function(require) {
   };
 
   AssistedMap.prototype.getSubmodels = function() {
-    return [this.grid, /*this.screenAxis,*/ this.map, this.pointedCellGizmo];
+    return [this.map, this.pointedCellGizmo, this.grid, this.screenAxis];
   };
 
-  AssistedMap.prototype.setPointer = function(coordinates) {
-    var mapPosition = this.metrics.getMapCoordinates(coordinates);
-
-    this.dispatchEvent('pointermove', {
-      mapX: mapPosition[0],
-      mapZ: mapPosition[1]
-    })
+  AssistedMap.prototype.setPointer = function(coordinates, isClicking) {
+    this.map.setPointer(coordinates, isClicking);
   };
 
   return AssistedMap;

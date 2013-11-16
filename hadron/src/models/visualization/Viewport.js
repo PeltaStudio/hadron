@@ -21,14 +21,14 @@ define(function(require) {
     return [this.scene];
   };
 
-  Viewport.prototype.setPointer = function(coordinates) {
+  Viewport.prototype.setPointer = function(coordinates, isClicking) {
     var factorX = this.scene.camera.width / this.width,
         factorY = this.scene.camera.height / this.height;
 
     this.scene.camera.setPointer([
       coordinates[0] * factorX,
       coordinates[1] * factorY
-    ]);
+    ], isClicking);
   };
 
   return Viewport;

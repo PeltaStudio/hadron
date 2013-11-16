@@ -8,6 +8,8 @@ define(function(require) {
   'use strict';
 
   var S = require('hadron/scaffolding'),
+      R = require('hadron/res/ResourceManager'),
+      Tile = require('hadron/models/map/tiling/Tile'),
       MapEditor = require('editors/MapEditor'),
       Game = require('hadron/Game');
 
@@ -44,28 +46,59 @@ define(function(require) {
 
     self.updateViewport();
 
-    mapEditorWindow.onmousemove = updateWindowPointer;
+    mapEditorWindow.onmousemove = function(evt) {
+      updateWindowPointer(evt);
+    };
+    mapEditorWindow.onclick = function(evt) {
+      updateWindowPointer(evt, true);
+    };
 
-    function updateWindowPointer(evt) {
+    function updateWindowPointer(evt, isClicking) {
       var canvas = evt.target;
       var rect = canvas.getBoundingClientRect();
       var canvasCoords = [
         evt.clientX - rect.left,
         evt.clientY - rect.top
       ];
-      self.mapEditor.setPointer(canvasCoords);
+      self.mapEditor.setPointer(canvasCoords, isClicking);
     };
   };
 
   MapBuilderTool.prototype.setupControl = function() {
     var self = this;
     window.onresize = this.updateViewport.bind(this);
+    self.mapEditor.target.map.addEventListener('click', function(evt) {
+      var cell, li, sprite, tile;
+      li = document.querySelector('#tile-palette .selected');
+      if (!li) return;
+
+      cell = self.mapEditor.target.map.getCell([evt.mapX, evt.mapZ]);
+      sprite = R.getImage(li.dataset.resourceId);
+      tile = new Tile(self.mapEditor.target.map.cellSize, sprite);
+      if (!self.pushMode) {
+        cell.clearTiles();
+      }
+      cell.tiles.push(tile);
+    });
+    self.pushMode = false;
+    window.addEventListener('keyup', function(evt) {
+      var keyCode = evt.keyCode || evt.which;
+      if ('p'.charCodeAt(0)) {
+        self.pushMode = !self.pushMode;
+      }
+    });
     window.addEventListener('keypress', function(evt) {
       var keyCode = evt.keyCode || evt.which;
       if ('t'.charCodeAt(0) === keyCode) {
         self.mapEditor.doTestScenario({
-          getSprite: function(spriteId) {
-            return document.querySelector('#tile-palette img[data-sprite-id="' + spriteId + '"]');
+          getSprite: function(n) {
+            var query = '#tile-palette :nth-of-type(' + n + ') img',
+                img = document.querySelector(query),
+                resourceId = img ? img.dataset.resourceId : undefined;
+
+            return resourceId !== undefined ?
+                   R.getImage(resourceId) :
+                   undefined;
           }
         });
       }
@@ -83,8 +116,11 @@ define(function(require) {
   };
 
   MapBuilderTool.prototype.setupPanels = function() {
-    var tilePalette = document.getElementById('tile-palette');
-    S.theObject(this).has('tilePalette', new Panel(tilePalette, this.mapEditor.metrics.H_DIAGONAL));
+    var tilePalette, compositionTools;
+    tilePalette = document.getElementById('tile-palette');
+    compositionTools = document.getElementById('composition-tools');
+    S.theObject(this).has('tilePalette', new PalettePanel(tilePalette));
+    S.theObject(this).has('compositionTools', new Panel(compositionTools));
   };
 
   MapBuilderTool.prototype.updateViewport = function() {
@@ -99,46 +135,68 @@ define(function(require) {
   };
 
   var spriteId = 0;
-  function Panel(panel, imageWidth) {
+  function Panel(panel) {
     S.theObject(this)
       .has('panel', panel)
-      .has('pinButton', panel.querySelector('.pin'))
-      .has('addTileButton', panel.querySelector('.add-tile'))
-      .has('addTileInput', panel.querySelector('.add-tile + input'))
-      .has('imageWidth', imageWidth);
+      .has('pinButton', panel.querySelector('.pin'));
 
     this.pinButton.addEventListener('click', this.togglePin.bind(this));
-    this.addTileButton.addEventListener('click', this.selectFile.bind(this));
-    this.addTileInput.addEventListener('change', this.addImages.bind(this));
-  }
+  };
 
   Panel.prototype.togglePin = function(evt) {
     this.panel.classList.toggle('pinned');
   };
 
-  Panel.prototype.selectFile = function(evt) {
+  function PalettePanel(panel, imageWidth) {
+    Panel.apply(this, arguments);
+    S.theObject(this)
+      .has('addTileButton', panel.querySelector('.add-tile'))
+      .has('addTileInput', panel.querySelector('.add-tile + input'));
+
+    this.addTileButton.addEventListener('click', this.selectFile.bind(this));
+    this.addTileInput.addEventListener('change', this.addImages.bind(this));
+  }
+  S.theClass(PalettePanel).inheritsFrom(Panel);
+
+  PalettePanel.prototype.selectFile = function(evt) {
     this.addTileInput.click();
   };
 
-  Panel.prototype.addImages = function(evt) {
+  PalettePanel.prototype.addImages = function(evt) {
     var self = this;
-    var files = [].slice.call(evt.target.files, 0), img, li, p, tileList,
-        pathComponents,
+    var files = [].slice.call(evt.target.files, 0), tileList,
+        pathComponents, fileCount = files.length,
         fragment = document.createDocumentFragment();
 
-    files.forEach(function(file) {
+    files.forEach(function(file, index) {
+      var img, li, p;
       img = document.createElement('img');
-      img.src = window.URL.createObjectURL(file);
-      img.dataset.spriteId = spriteId++;
-      img.width = self.imageWidth;
       p = document.createElement('p');
       p.textContent = file.name;
       p.classList.add('file-name');
       li = document.createElement('li');
       li.appendChild(img);
       li.appendChild(p);
+      li.onclick = function(evt) {
+        var brothers = [].slice.call(li.parentNode.children, 0);
+        brothers.forEach(function(element) {
+          element.classList.remove('selected');
+        });
+        li.classList.add('selected');
+      };
+      // TODO: Make a function to select one tile (and deselect brothers)
+      if (index === fileCount - 1) li.classList.add('selected');
       fragment.appendChild(li);
+
+      loadImage(li, img, file);
     });
+
+    function loadImage(li, img, file) {
+      R.newImageFromFile(file).then(function(id) {
+        img.src = R.getImage(id).src;
+        li.dataset.resourceId = id;
+      });
+    }
 
     tileList = this.panel.querySelector('.tile-list');
     tileList.appendChild(fragment);

@@ -6,7 +6,7 @@ define(function(require) {
   var S = require('hadron/scaffolding'),
       Model = require('hadron/Model'),
       Simulator = require('hadron/Simulator'),
-      Tile = require('hadron/models/map/Tile'),
+      Tile = require('hadron/models/map/tiling/Tile'),
       Camera = require('hadron/models/visualization/Camera'),
       Scene = require('hadron/models/visualization/Scene'),
       MultiportWindow = require('hadron/models/visualization/MultiportWindow'),
@@ -40,8 +40,8 @@ define(function(require) {
     mainViewport.scene.camera.resize(width, height);
   };
 
-  MapEditor.prototype.setPointer = function(coordinates) {
-    this._viewportManager.setPointer(coordinates);
+  MapEditor.prototype.setPointer = function(coordinates, isClicking) {
+    this._viewportManager.setPointer(coordinates, isClicking);
   };
 
   MapEditor.prototype.getSubmodels = function(aspect) {
@@ -53,32 +53,24 @@ define(function(require) {
   };
 
   MapEditor.prototype.doTestScenario = function(palette) {
-    var tile, block, centerObject, throneTile;
+    var cell, tile, centerObject, throneCell;
 
     // Suelo
    for (var x = -3; x <= 3; x++) {
       for (var z = -3; z <= 3; z++) {
-        tile = new Tile(DEFAULT_CELL_SIZE);
-        tile.position = [x, z];
-        block = {
-          sprite: palette.getSprite(0),
-          bottom: 0
-        };
-        block.top = block.sprite.height - this.metrics.V_DIAGONAL;
-        tile.blocks.push(block);
-        this.target.map.addTile(tile);
+        cell = this.target.map.getCell([x, z]);
+        cell.clearTiles();
+        // TODO: Replace by retrieving from Palette
+        tile = new Tile(DEFAULT_CELL_SIZE, palette.getSprite(1));
+        cell.tiles.push(tile);
       }
     }
 
-    centerObject = palette.getSprite(1);
+    centerObject = palette.getSprite(2);
     if (centerObject) {
-      throneTile = this.target.map.getTile([0, 0]);
-      block = {
-        sprite: centerObject,
-        bottom: 0
-      }
-      block.top = block.sprite.height - this.metrics.V_DIAGONAL;
-      throneTile.blocks.push(block);
+      throneCell = this.target.map.getCell([0, 0]);
+      tile = new Tile(DEFAULT_CELL_SIZE, centerObject);
+      throneCell.tiles.push(tile);
     }
   }
 

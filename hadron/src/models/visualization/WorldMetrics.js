@@ -35,7 +35,7 @@ define(function(require) {
     return metricCache[cellSize];
   }
 
-  WorldMetrics.prototype.getWorldCoordinates = function(cellPosition) {
+  WorldMetrics.prototype.getWorkSpaceCoordinates = function(cellPosition) {
     var x = cellPosition[0], z = cellPosition[1];
     return [(x - z) * this.H_RADIUS, (x + z) * this.V_RADIUS];
   };
