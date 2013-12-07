@@ -1,0 +1,117 @@
+﻿/****************************************
+ *************** GENERAL ****************
+ ****************************************/
+
+*{
+	margin: 0px;
+	padding: 0px;
+}
+html, body{
+	height: 100%;
+	width: 100%;
+}
+.BodyWrapper{
+	height: 100%;
+	min-height: 100%;
+	position: relative;
+	margin-bottom: 20px;
+}
+.Panel{
+	position: relative;
+	background-color: #DDD;
+	border: #AAA 1px solid;
+}
+
+/****************************************
+ *************** TOP MENU ***************
+ ****************************************/
+
+#topMenu.Panel{
+	height: 100px;
+	clear: both;
+	max-width: 100%;
+}
+
+/****************************************
+ **************** TOOLS *****************
+ ****************************************/
+
+#tools.Panel{
+	float: left;
+	height: 500px;
+	width: 200px;
+}
+
+/****************************************
+ **************** CANVAS ****************
+ ****************************************/
+#canvasWrapper.AbsoluteDynamicWrapper{
+	position: absolute;
+	height: auto;
+	width: auto;
+	top: 125px;
+	left: 225px;
+}
+#window{
+	border: 1px #888 solid;
+}
+#anchor.AnchorBar{
+	position: relative;
+	height: 25px;
+	width: 100%;
+	background-color: #666;
+	border-bottom: 1px #AAA solid;
+}
+#canvas{
+	background-color: #FDD;
+}
+
+
+/****************************************
+ **************** LAYERS ****************
+ ****************************************/
+#layers.Panel{
+	float: right;
+	height: 500px;
+	width: 200px;
+}
+
+
+/****************************************
+ ************ NAVIGATION BAR ************
+ ****************************************/
+#infoBar.NavigationBar{
+	position: fixed;
+	bottom: 0px;
+	width: 100%;
+	height: 20px;
+	background-color: #333;
+	opacity: 0.85;
+	color: #EEE;
+	padding: 0px 20px;
+	font-family: courier;
+}
+#infoBarSimulator.NavigationBar{
+	position: relative;
+	bottom: 0px;
+	clear: both;
+	width: 100%;
+	height: 20px;
+}
+/**************************************
+ *********** GRAPHIC DEBUG ************
+ **************************************/
+/*
+#topMenu.Panel{
+	background-color: #F00;
+}
+#canvasWrapper.Panel{
+	background-color: #0F0;
+}
+#tools.Panel{
+	background-color: #00F;
+}
+#layers.Panel{
+	background-color: #F0F;
+}
+//*/
