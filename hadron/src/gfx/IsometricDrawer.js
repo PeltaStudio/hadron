@@ -122,7 +122,7 @@ define(function(require) {
           break;
 
         case 'bottom':
-        case 'right':
+        case 'left':
         case 'back':
           top = right = front = darkestColor;
           break;
